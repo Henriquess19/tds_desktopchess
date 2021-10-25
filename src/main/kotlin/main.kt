@@ -1,6 +1,6 @@
 
 
 fun main(){
-    val sut = Board().print()
-    println(sut)
+    val sut = Board()
+    print(sut.toString())
 }
