@@ -1,1 +1,1 @@
-# tsd_desktopchess
+# tds_desktopchess
