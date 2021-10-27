@@ -3,7 +3,7 @@ import kotlin.test.assertEquals
 class Test {
         @Test
         fun `Initial position Board`() {
-            val sut = Board().board
+            val sut = Board()
             assertEquals(
                 "rnbqkbnr" +
                         "pppppppp" +
