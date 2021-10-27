@@ -8,7 +8,7 @@ class BoardTests {
         assertEquals(
             "rnbqkbnr" +
                     "pppppppp" +
-                    " ".repeat(4) +
+                    "        ".repeat(4) +
                     "PPPPPPPP" +
                     "RNBQKBNR", sut.toString()
         )
