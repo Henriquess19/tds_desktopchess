@@ -1,24 +1,40 @@
+enum class Columns{CA,CB,CC,CD,CE,CF,CG,CH }
+enum class Lines{L1,L2,L3,L4,L5,L6,L7,L8}
+enum class Pieces{r,n,b,q,k,p,R,N,B,Q,K, empty}
+data class Positions(val line:Lines,val columns:Columns)
 
-enum class Collum
-    (val collum:Int){ a(1), b(2), c(3), d(4), e(5), f(6), g(7), h(8) }
-data class Positions(val line: Int,val collum:Collum)
+const val INITAL_BOARD = "rnbqkbnr" +
+    "pppppppp" +
+    "        " +
+    "        " +
+    "        " +
+    "        " +
+    "PPPPPPPP" +
+    "RNBQKBNR"
 
 class Board(): BoardInterface {
-    private var board = arrayListOf<String>(
-        "rnbqkbnr"+
-        "pppppppp"+
-        " "+
-        " "+
-        " "+
-        " "+
-        "PPPPPPPP"+
-        "RNBQKBNR"
-    )
+    private val board= mutableMapOf<Positions,Pieces>()
+    init {
+        var k = 0
+        for (i in Lines.L1.ordinal..Lines.L8.ordinal){
+            for (j in Columns.CA.ordinal..Columns.CH.ordinal){
+                val key = INITAL_BOARD[k++]
+                if ( key != ' '){
+                    board.put(Positions(Lines.values()[i], Columns.values()[j]), key)
+                }
+            }
+        }
+    }
 
-    override fun makeMove(move: String): Board {
-        val movecommands = move.toCharArray()
-        val piece = movecommands[0]
 
+    override fun makeMove(move: String){
+        /*val piece= move[0]
+        val start:Positions = Positions(move[2].toInt(),move[1])
+        val end:Positions = Positions(move[4].toInt(),move[5])
+
+        // board.put(start,TODO())
+        //board.put(end,piece)
+        draw()*/
     }
 
     override fun toString(): String {
@@ -26,4 +42,9 @@ class Board(): BoardInterface {
         this.board.forEach { res += it.toString() }
         return res
     }
+
+    override fun draw(){
+        TODO()
+    }
 }
+

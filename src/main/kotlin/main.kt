@@ -2,5 +2,5 @@
 
 fun main(){
     val sut = Board()
-    print(sut)
+    print(sut.toString())
 }
