@@ -1,9 +1,10 @@
-enum class Columns{CA,CB,CC,CD,CE,CF,CG,CH }
+enum class Columns(val char: Char){CA('a'),CB('b'),CC('c'),CD('d'),CE('e'),CF('f'),CG('g'),CH('h') }
 enum class Lines{L1,L2,L3,L4,L5,L6,L7,L8}
 enum class Pieces(val char: Char){r('r'),n('n'),b('b'),q('q'),k('k'),p('p'),R('R'),N('N'),B('B'),Q('Q'),K('K'),P('P')}
 data class Positions(val line:Lines,val columns:Columns)
 
-const val INITAL_BOARD = "rnbqkbnr" +
+const val INITAL_BOARD =
+    "rnbqkbnr" +
     "pppppppp" +
     "        " +
     "        " +
@@ -27,14 +28,21 @@ class Board(): BoardInterface {
     }
 
 
-    override fun makeMove(move: String){
-        /*val piece= move[0]
-        val start:Positions = Positions(move[2].toInt(),move[1])
-        val end:Positions = Positions(move[4].toInt(),move[5])
+    override fun makeMove(move: String): Board {
+        val piece = Pieces.valueOf(move[0].toString())
+        val oldline = move[2].toString().toInt()-1
+        val newline = move[4].toString().toInt()-1
+        val oldcolumn = "C" + move[1].toUpperCase()
+        val newcolumn = "C" + move[3].toUpperCase()
 
-        // board.put(start,TODO())
-        //board.put(end,piece)
-        draw()*/
+        val oldposition = Positions(Lines.values()[oldline], Columns.valueOf(oldcolumn))
+        val newposition = Positions(Lines.values()[newline], Columns.valueOf(newcolumn))
+
+        board.remove(oldposition)
+        board[newposition] = piece
+        draw()
+
+        return
     }
 
     override fun toString(): String {
@@ -52,14 +60,20 @@ class Board(): BoardInterface {
         return strboard
     }
 
-    override fun draw(strboard:String){
+    override fun draw(){
+        val strboard = toString()
+        var itrstrboard = 0
+
         println("    a b c d e f g h ")
         println("   -----------------")
-        print("8 | ")
-            for (i in 0 .. 7){
-                print(strboard[i] + " ")
-            }
-        println("| ")
+        for(i in Lines.L8.ordinal downTo Lines.L1.ordinal){
+             print("${i+1} | ")
+                for (k in 0 .. 7){
+                    print(strboard[itrstrboard++] + " ")
+                }
+            println("| ")
+        }
+        println("   -----------------")
     }
 }
 

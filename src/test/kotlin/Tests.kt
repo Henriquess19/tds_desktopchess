@@ -14,8 +14,8 @@ class BoardTests {
         )
     }
 
-/*@Test
-    fun MakeMove in Board`() {
+@Test
+    fun `MakeMove in Board`() {
     val sut = Board().makeMove("Pe2e4").makeMove("Pe7e5").makeMove("Nb1c3")
     assertEquals(
         "rnbqkbnr" +
@@ -27,5 +27,5 @@ class BoardTests {
                 "PPPP PPP" +
                 "R BQKBNR", sut.toString()
     )
-}*/
+}
 }

@@ -1,7 +1,5 @@
 
 
 fun main(){
-    /*val sut = Board()
-    print(sut.toString())*/
-    Board().draw(Board().toString())
+    Board().makeMove("Pe2e4").makeMove("Pe7e5").makeMove("Nb1c3")
 }

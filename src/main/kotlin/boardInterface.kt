@@ -1,4 +1,4 @@
 interface BoardInterface {
-    fun makeMove(move:String)
-    fun draw(strboard:String)
+    fun makeMove(move:String): Board
+    fun draw()
 }
