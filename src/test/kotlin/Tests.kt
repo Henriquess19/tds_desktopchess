@@ -18,14 +18,14 @@ class BoardTests {
     fun `MakeMove in Board`() {
     val sut = Board().makeMove("Pe2e4").makeMove("Pe7e5").makeMove("Nb1c3")
     assertEquals(
-        "rnbqkbnr" +
-                "pppp ppp" +
-                " " +
-                " p " +
-                " P " +
-                " N " +
-                "PPPP PPP" +
-                "R BQKBNR", sut.toString()
+        "rnbqkbnr"+
+                "pppp ppp"+
+                "        "+
+                "    p   "+
+                "    P   "+
+                "  N     "+
+                "PPPP PPP"+
+                "R BQKBNR",sut.toString()
     )
 }
 }
