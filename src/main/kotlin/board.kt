@@ -1,4 +1,4 @@
-enum class Columns(val char: Char){CA('a'),CB('b'),CC('c'),CD('d'),CE('e'),CF('f'),CG('g'),CH('h') }
+enum class Columns{CA,CB,CC,CD,CE,CF,CG,CH}
 enum class Lines{L1,L2,L3,L4,L5,L6,L7,L8}
 enum class Pieces(val char: Char){r('r'),n('n'),b('b'),q('q'),k('k'),p('p'),R('R'),N('N'),B('B'),Q('Q'),K('K'),P('P')}
 data class Positions(val line:Lines,val columns:Columns)
@@ -14,7 +14,7 @@ const val INITAL_BOARD =
     "RNBQKBNR"
 
 class Board(): BoardInterface {
-    private val board= mutableMapOf<Positions,Pieces>()
+    private val board= mutableMapOf<Positions,Pieces?>()
     init {
         var k = 0
         for (i in Lines.L8.ordinal downTo Lines.L1.ordinal){
@@ -29,7 +29,6 @@ class Board(): BoardInterface {
 
 
     override fun makeMove(move: String): Board {
-        val piece = Pieces.valueOf(move[0].toString())
         val oldline = move[2].toString().toInt()-1
         val newline = move[4].toString().toInt()-1
         val oldcolumn = "C" + move[1].toUpperCase()
@@ -38,11 +37,14 @@ class Board(): BoardInterface {
         val oldposition = Positions(Lines.values()[oldline], Columns.valueOf(oldcolumn))
         val newposition = Positions(Lines.values()[newline], Columns.valueOf(newcolumn))
 
+        val piece = board[oldposition]!!
+
+
+        board[newposition] = Pieces.values()[piece.ordinal]
         board.remove(oldposition)
-        board[newposition] = piece
         draw()
 
-        return
+        return this
     }
 
     override fun toString(): String {
