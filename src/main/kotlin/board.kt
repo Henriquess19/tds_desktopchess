@@ -13,6 +13,9 @@ const val INITAL_BOARD =
     "PPPPPPPP" +
     "RNBQKBNR"
 
+const val GAME_ID = "g1"
+enum class Colors{BLACK,WHITE}
+
 class Board(): BoardInterface {
     private val board= mutableMapOf<Positions,Pieces?>()
     init {
@@ -25,20 +28,20 @@ class Board(): BoardInterface {
                 }
             }
         }
+        println("$GAME_ID:${Colors.values()[0]}>\n ")
     }
 
 
     override fun makeMove(move: String): Board {
         val oldline = move[2].toString().toInt()-1
         val newline = move[4].toString().toInt()-1
-        val oldcolumn = "C" + move[1].toUpperCase()
-        val newcolumn = "C" + move[3].toUpperCase()
+        val oldcolumn = "C" + move[1].uppercaseChar()
+        val newcolumn = "C" + move[3].uppercaseChar()
 
         val oldposition = Positions(Lines.values()[oldline], Columns.valueOf(oldcolumn))
         val newposition = Positions(Lines.values()[newline], Columns.valueOf(newcolumn))
 
-        val piece = board[oldposition]!!
-
+        val piece = board[oldposition] ?: throw Throwable("Piece not founded in the initialposition.")
 
         board[newposition] = Pieces.values()[piece.ordinal]
         board.remove(oldposition)
@@ -75,7 +78,9 @@ class Board(): BoardInterface {
                 }
             println("| ")
         }
-        println("   -----------------")
+        println("   -----------------\n")
+
+        println("$GAME_ID:${Colors.values()[0]}>\n ")
     }
 }
 
