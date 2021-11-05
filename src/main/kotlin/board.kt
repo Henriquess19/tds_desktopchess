@@ -86,11 +86,11 @@ class Board(): BoardInterface {
     }
 
     fun moveVerity(piece: Pieces, initialposition: Positions, wantedposition: Positions): Boolean {
-        // TODO: Verificar a peça a ser jogada e se é equivalente a peça que quer ser jogada
+
+        if (piece != board[initialposition]) return false // Wrong piece
+        if (initialposition == wantedposition) return false //Same position
 
         val ocupied = board.containsKey(wantedposition)
-
-        if(initialposition == wantedposition) return false //Same position
 
         if (ocupied) {
             val ocupiedcolor = board[wantedposition]?.team
