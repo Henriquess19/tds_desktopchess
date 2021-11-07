@@ -1,5 +1,5 @@
 class VerificationBoard():InterfaceVerificationBoard {
-    val board=mutableMapOf<Positions, Pieces?>()
+    val board = mutableMapOf<Positions, Pieces?>()
     override fun moveVerity(piece: Pieces, initialposition: Positions, wantedposition: Positions): Boolean {
         val ocupied = board.containsKey(wantedposition)
 
@@ -9,11 +9,11 @@ class VerificationBoard():InterfaceVerificationBoard {
                 return false //Same team
             }
         }
-        return when(piece) {
-            Pieces.r  -> moveVerityRook(piece,initialposition,wantedposition)
-            Pieces.R  -> moveVerityRook(piece,initialposition,wantedposition)
-            Pieces.P  -> moveVerityPawn(piece,initialposition,wantedposition, ocupied)
-            else      -> moveVerityPawn(piece,initialposition,wantedposition, ocupied)
+        return when (piece) {
+            Pieces.r -> moveVerityRook(piece, initialposition, wantedposition)
+            Pieces.R -> moveVerityRook(piece, initialposition, wantedposition)
+            Pieces.P -> moveVerityPawn(piece, initialposition, wantedposition, ocupied)
+            else -> moveVerityPawn(piece, initialposition, wantedposition, ocupied)
         }
     }
 
@@ -24,25 +24,39 @@ class VerificationBoard():InterfaceVerificationBoard {
                 val lowercolumn = Math.min(initialposition.columns.ordinal, wantedposition.columns.ordinal)
 
                 for (i in highercolumn - 1 until lowercolumn + 1) {
-                    if (board.containsKey(Positions(Lines.values()[i],wantedposition.columns))) return false //Encounter
+                    if (board.containsKey(
+                            Positions(
+                                Lines.values()[i],
+                                wantedposition.columns
+                            )
+                        )
+                    ) return false //Encounter
                 }
-            }
-
-            else if (initialposition.columns == wantedposition.columns) {
+            } else if (initialposition.columns == wantedposition.columns) {
                 val higherline = Math.max(initialposition.line.ordinal, wantedposition.line.ordinal)
                 val lowerline = Math.min(initialposition.line.ordinal, wantedposition.line.ordinal)
 
                 for (i in higherline - 1 until lowerline + 1) {
-                    if (board.containsKey(Positions(Lines.values()[i],wantedposition.columns))) return false //Encounter
+                    if (board.containsKey(
+                            Positions(
+                                Lines.values()[i],
+                                wantedposition.columns
+                            )
+                        )
+                    ) return false //Encounter
                 }
-            }
-            else
+            } else
                 return true //Valid piece movement
         }
-         return true
+        return true
     }
 
-    override fun moveVerityPawn(piece: Pieces, initialposition: Positions, wantedposition: Positions, ocupied:Boolean): Boolean {
+    override fun moveVerityPawn(
+        piece: Pieces,
+        initialposition: Positions,
+        wantedposition: Positions,
+        ocupied: Boolean
+    ): Boolean {
         if (piece == Pieces.P || piece == Pieces.p) {
             //Initial pawn position
             if (piece == Pieces.P && initialposition.line == Lines.L2 && initialposition.columns == wantedposition.columns) {
@@ -83,6 +97,157 @@ class VerificationBoard():InterfaceVerificationBoard {
         }
 
         return true
+    }
+
+    override fun moveVerityBishop(
+        piece: Pieces,
+        initialposition: Positions,
+        wantedposition: Positions,
+        ocupied: Boolean
+    ): Boolean {
+        if (piece == Pieces.b || piece == Pieces.B) {
+
+            if (initialposition.columns.ordinal == wantedposition.columns.ordinal
+                || initialposition.line.ordinal == wantedposition.line.ordinal
+            ) return false // Invalid movement
+
+            var line = Lines.values()[initialposition.line.ordinal]
+            var column = Columns.values()[initialposition.columns.ordinal]
+
+            if (initialposition.columns.ordinal > wantedposition.columns.ordinal) {
+
+                // Diagonal left_x
+                column = Columns.values()[initialposition.columns.ordinal - 1]
+
+                if (initialposition.line.ordinal > wantedposition.line.ordinal) {
+
+                    // Diagonal left_down
+                    line = Lines.values()[initialposition.line.ordinal - 1]
+
+                    while (line.ordinal >= wantedposition.line.ordinal + 1
+                        && column.ordinal >= wantedposition.columns.ordinal + 1
+                    ) {
+
+                        if (board.containsKey(Positions(line, column))) return false // Encounter
+
+                        line = Lines.values()[initialposition.line.ordinal - 1]
+                        column = Columns.values()[initialposition.columns.ordinal - 1]
+                    }
+
+                } else {
+
+                    // Diagonal left_up
+                    line = Lines.values()[initialposition.line.ordinal + 1]
+
+                    while (line.ordinal <= wantedposition.line.ordinal + 1
+                        && column.ordinal >= wantedposition.columns.ordinal + 1
+                    ) {
+
+                        if (board.containsKey(Positions(line, column))) return false // Encounter
+
+                        line = Lines.values()[initialposition.line.ordinal + 1]
+                        column = Columns.values()[initialposition.columns.ordinal - 1]
+                    }
+
+                }
+
+            } else {
+
+                // Diagonal right_x
+                column = Columns.values()[initialposition.columns.ordinal + 1]
+
+                if (initialposition.line.ordinal > wantedposition.line.ordinal) {
+
+                    // Diagonal right_down
+                    line = Lines.values()[initialposition.line.ordinal - 1]
+
+                    while (line.ordinal >= wantedposition.line.ordinal + 1
+                        && column.ordinal >= wantedposition.columns.ordinal + 1
+                    ) {
+
+                        if (board.containsKey(Positions(line, column))) return false // Encounter
+
+                        line = Lines.values()[initialposition.line.ordinal - 1]
+                        column = Columns.values()[initialposition.columns.ordinal + 1]
+                    }
+
+                } else {
+
+                    // Diagonal right_up
+                    line = Lines.values()[initialposition.line.ordinal + 1]
+
+                    while (line.ordinal <= wantedposition.line.ordinal + 1
+                        && column.ordinal >= wantedposition.columns.ordinal + 1
+                    ) {
+
+                        if (board.containsKey(Positions(line, column))) return false // Encounter
+
+                        line = Lines.values()[initialposition.line.ordinal + 1]
+                        column = Columns.values()[initialposition.columns.ordinal + 1]
+                    }
+                }
+            }
+        }
+        return true // Valid movement
+    }
+
+    override fun moveVerityKing(
+        piece: Pieces,
+        initialposition: Positions,
+        wantedposition: Positions,
+        ocupied: Boolean
+    ): Boolean {
+        if (piece == Pieces.k || piece == Pieces.K) {
+            if (wantedposition.columns.ordinal != initialposition.columns.ordinal
+                || wantedposition.columns.ordinal != initialposition.columns.ordinal - 1
+                || wantedposition.columns.ordinal != initialposition.columns.ordinal + 1
+            ) return false // Wrong column
+
+            if (wantedposition.line.ordinal != initialposition.line.ordinal
+                || wantedposition.line.ordinal != initialposition.line.ordinal - 1
+                || wantedposition.line.ordinal != initialposition.line.ordinal + 1
+            )
+                return false // Wrong line
+
+        }
+        return true // Valid movement
+    }
+
+    override fun moveVerityKnight(
+        piece: Pieces,
+        initialposition: Positions,
+        wantedposition: Positions,
+        ocupied: Boolean
+    ): Boolean {
+        if (piece == Pieces.n || piece == Pieces.N) {
+
+            //Up movement
+            if (initialposition.line.ordinal == wantedposition.line.ordinal - 2) {
+                if (initialposition.columns.ordinal == wantedposition.columns.ordinal + 1) return true // Valid movement; left
+                if (initialposition.columns.ordinal == wantedposition.columns.ordinal - 1) return true // Valid movement; right
+            }
+
+            //Down movement
+            if (initialposition.line.ordinal == wantedposition.line.ordinal + 2) {
+                if (initialposition.columns.ordinal == wantedposition.columns.ordinal + 1) return true // Valid movement; left
+                if (initialposition.columns.ordinal == wantedposition.columns.ordinal - 1) return true // Valid movement; right
+            }
+
+            //Left movement
+            if (initialposition.columns.ordinal == wantedposition.columns.ordinal + 2) {
+                if (initialposition.line.ordinal == wantedposition.line.ordinal - 1) return true // Valid movement; up
+                if (initialposition.line.ordinal == wantedposition.line.ordinal + 1) return true // Valid movement; down
+            }
+
+            //Right movement
+            if (initialposition.columns.ordinal == wantedposition.columns.ordinal - 2) {
+                if (initialposition.line.ordinal == wantedposition.line.ordinal - 1) return true // Valid movement; up
+                if (initialposition.line.ordinal == wantedposition.line.ordinal + 1) return true // Valid movement; down
+            }
+
+            return false // Invalid movement
+        }
+        return true // Valid movement
     }
 }
 
