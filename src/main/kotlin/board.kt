@@ -18,7 +18,7 @@ enum class Colors{BLACK,WHITE}
 
 class Board(): BoardInterface {
     private val board = mutableMapOf<Positions, Pieces?>()
-
+    private val moveslist = emptyArray<String>()
     init {
         var k = 0
         for (i in Lines.L8.ordinal downTo Lines.L1.ordinal) {
@@ -47,6 +47,7 @@ class Board(): BoardInterface {
 
         board[newposition] = Pieces.values()[piece.ordinal]
         board.remove(oldposition)
+        moveslist[moveslist.size] = move
         draw()
 
         return this
@@ -65,6 +66,20 @@ class Board(): BoardInterface {
             }
         }
         return strboard
+    }
+
+    override fun moves() {
+        var teamselector = 0
+        var team:String
+        moveslist.forEach {i->
+            if (teamselector%2 != 0){
+                team="BLACK"
+            }else{
+                team="White"
+            }
+            teamselector++
+            println("Play number ${teamselector+1}: ${team} -> ${i}")
+        }
     }
 
     override fun draw() {
