@@ -17,7 +17,7 @@ const val GAME_ID = "g1"
 enum class Colors{BLACK,WHITE}
 
 class Board(): BoardInterface {
-    private val board = mutableMapOf<Positions, Pieces?>()
+    private val board = mutableMapOf<Positions, Pieces>()
     private val moveslist = emptyArray<String>()
     init {
         var k = 0
@@ -45,10 +45,12 @@ class Board(): BoardInterface {
 
         val piece = board[oldposition] ?: throw Throwable("Piece not founded in the initialposition.")
 
-        board[newposition] = Pieces.values()[piece.ordinal]
-        board.remove(oldposition)
-        moveslist[moveslist.size] = move
-        draw()
+        if(VerificationBoard(board).moveVerity(piece, oldposition, newposition)) {
+            board[newposition] = Pieces.values()[piece.ordinal]
+            board.remove(oldposition)
+        }
+        //moveslist[moveslist.size] = move
+        BoardConsoleDraw(board).draw()
 
         return this
     }
@@ -80,24 +82,6 @@ class Board(): BoardInterface {
             teamselector++
             println("Play number ${teamselector+1}: ${team} -> ${i}")
         }
-    }
-
-    override fun draw() {
-        val strboard = toString()
-        var itrstrboard = 0
-
-        println("    a b c d e f g h ")
-        println("   -----------------")
-        for (i in Lines.L8.ordinal downTo Lines.L1.ordinal) {
-            print("${i + 1} | ")
-            for (k in 0..7) {
-                print(strboard[itrstrboard++] + " ")
-            }
-            println("| ")
-        }
-        println("   -----------------\n")
-
-        println("$GAME_ID:${Colors.values()[0]}>\n ")
     }
 }
 

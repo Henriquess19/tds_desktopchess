@@ -1,5 +1,10 @@
-class VerificationBoard():InterfaceVerificationBoard {
-    private val board = mutableMapOf<Positions, Pieces?>()
+private val board:MutableMap<Positions,Pieces> = mutableMapOf()
+
+/**
+ *
+ */
+class VerificationBoard(private val board:MutableMap<Positions,Pieces> = mutableMapOf()):InterfaceVerificationBoard {
+
     override fun moveVerity(piece: Pieces, initialposition: Positions, wantedposition: Positions): Boolean {
         val ocupied = board.containsKey(wantedposition)
 
@@ -14,8 +19,8 @@ class VerificationBoard():InterfaceVerificationBoard {
             Pieces.r -> moveVerityRook(initialposition, wantedposition)
             Pieces.R -> moveVerityRook(initialposition, wantedposition)
             //Pawns
-            Pieces.p -> moveVerityPawn(Colors.BLACK,initialposition, wantedposition,ocupied)
-            Pieces.P -> moveVerityPawn(Colors.WHITE,initialposition, wantedposition,ocupied)
+            Pieces.p -> moveVerityPawn(Colors.BLACK, initialposition, wantedposition, ocupied)
+            Pieces.P -> moveVerityPawn(Colors.WHITE, initialposition, wantedposition, ocupied)
             //Bishops
             Pieces.b -> moveVerityBishop(initialposition, wantedposition)
             Pieces.B -> moveVerityBishop(initialposition, wantedposition)
@@ -26,226 +31,256 @@ class VerificationBoard():InterfaceVerificationBoard {
             Pieces.n -> moveVerityKnight(initialposition, wantedposition)
             Pieces.N -> moveVerityKnight(initialposition, wantedposition)
             //Queens (they have the movement from a knight plus bishop, so if one of the is true, she can move)
-            else -> moveVerityKnight(initialposition, wantedposition)||moveVerityBishop(initialposition, wantedposition)
+            else -> moveVerityKnight(initialposition, wantedposition) || moveVerityBishop(
+                initialposition,
+                wantedposition
+            )
         }
     }
+}
 
-    override fun moveVerityRook(
-        initialposition: Positions,
-        wantedposition: Positions
+private fun moveVerityRook(
+    initialposition: Positions,
+    wantedposition: Positions
     ): Boolean {
+    //walk on the collumn
+    if (initialposition.line == wantedposition.line) {
+        val highercolumn = Math.max(initialposition.columns.ordinal, wantedposition.columns.ordinal)
+        val lowercolumn = Math.min(initialposition.columns.ordinal, wantedposition.columns.ordinal)
 
-        if (initialposition.line == wantedposition.line) {
-            val highercolumn = Math.max(initialposition.columns.ordinal, wantedposition.columns.ordinal)
-            val lowercolumn = Math.min(initialposition.columns.ordinal, wantedposition.columns.ordinal)
-
-            for (i in highercolumn - 1 until lowercolumn + 1) {
-                if (board.containsKey(
-                        Positions(
-                            Lines.values()[i],
-                            wantedposition.columns
-                        )
+        for (i in highercolumn - 1 until lowercolumn + 1) {
+            if (board.containsKey(
+                    Positions(
+                        Lines.values()[i],
+                        wantedposition.columns
                     )
-                ) return false //Encounter
-            }
-        } else if (initialposition.columns == wantedposition.columns) {
-            val higherline = Math.max(initialposition.line.ordinal, wantedposition.line.ordinal)
-            val lowerline = Math.min(initialposition.line.ordinal, wantedposition.line.ordinal)
-
-            for (i in higherline - 1 until lowerline + 1) {
-                if (board.containsKey(
-                        Positions(
-                            Lines.values()[i],
-                            wantedposition.columns
-                        )
-                    )
-                ) return false //Encounter
-            }
-        }
-        return true //Valid piece movement
-    }
-
-    override fun moveVerityPawn(
-        pieceteam: Colors,
-        initialposition: Positions,
-        wantedposition: Positions,
-        ocupied: Boolean
-    ): Boolean {
-
-        //Initial pawn position
-        if (pieceteam == Colors.WHITE && initialposition.line == Lines.L2 && initialposition.columns == wantedposition.columns) {
-            if (board.containsKey(Positions(Lines.L3, initialposition.columns))
-                || board.containsKey(Positions(Lines.L4, initialposition.columns))
+                )
             ) return false //Encounter
         }
+    }//walk on the line
+    else if (initialposition.columns == wantedposition.columns) {
+        val higherline = Math.max(initialposition.line.ordinal, wantedposition.line.ordinal)
+        val lowerline = Math.min(initialposition.line.ordinal, wantedposition.line.ordinal)
 
-        //Move infront
-        if (pieceteam == Colors.WHITE) {
-            if (initialposition.columns == wantedposition.columns) {
-                if (initialposition.line.ordinal != wantedposition.line.ordinal - 1 || ocupied) return false //Encounter
-
-            }
-
-            if (pieceteam == Colors.BLACK) {
-                if (initialposition.columns == wantedposition.columns) {
-                    if (initialposition.line.ordinal != wantedposition.line.ordinal + 1 || ocupied) return false //Encounter
-                }
-            }
-
-            //Move diagonal
-            if (initialposition.columns.ordinal != wantedposition.columns.ordinal - 1
-                || initialposition.columns.ordinal != wantedposition.columns.ordinal + 1
-            ) return false //Invalid Movement
-
-            else {
-                if (pieceteam == Colors.WHITE) {
-                    if (initialposition.line.ordinal != wantedposition.line.ordinal + 1 || !ocupied) return false //Not Encounter
-                }
-
-                if (pieceteam == Colors.BLACK) {
-                    if (initialposition.line.ordinal != wantedposition.line.ordinal - 1 && !ocupied) return false //Not Encounter
-                }
-            }
-            return true //Valid piece movement
+        for (i in higherline - 1 until lowerline + 1) {
+            if (board.containsKey(
+                    Positions(
+                        Lines.values()[i],
+                        wantedposition.columns
+                    )
+                )
+            ) return false //Encounter
         }
-        return true
     }
+    else return false //invalid movement
 
-    override fun moveVerityBishop(
-        initialposition: Positions,
-        wantedposition: Positions,
+    return true //Valid piece movement
+}
+
+private fun moveVerityPawn(
+    pieceteam: Colors,
+    initialposition: Positions,
+    wantedposition: Positions,
+    ocupied: Boolean
     ): Boolean {
 
-        if (initialposition.columns.ordinal == wantedposition.columns.ordinal
-            || initialposition.line.ordinal == wantedposition.line.ordinal
-        ) return false // Invalid movement
+    //Initial pawn position
+    if (pieceteam == Colors.WHITE &&
+        initialposition.line == Lines.L2 &&
+        (wantedposition.line == Lines.L3 ||
+        wantedposition.line == Lines.L4) &&
+        initialposition.columns == wantedposition.columns) {
+        if (board.containsKey(Positions(Lines.L3, initialposition.columns))
+            || board.containsKey(Positions(Lines.L4, initialposition.columns))
+        ) return false //Encounter
+        else {
+            return true
+        }
+    }
 
-        var line = Lines.values()[initialposition.line.ordinal]
-        var column = Columns.values()[initialposition.columns.ordinal]
+    //Move infront
+    if (pieceteam == Colors.WHITE) {
+        if (initialposition.columns == wantedposition.columns) {
+            if (initialposition.line.ordinal != wantedposition.line.ordinal - 1 || ocupied)
+                return false //Encounter
+            else
+                return true
+        }
+    }
+    if (pieceteam == Colors.BLACK &&
+        initialposition.line == Lines.L7 &&
+        (wantedposition.line == Lines.L6 ||
+        wantedposition.line == Lines.L5) &&
+        initialposition.columns == wantedposition.columns) {
+        if (board.containsKey(Positions(Lines.L6, initialposition.columns))
+            || board.containsKey(Positions(Lines.L5, initialposition.columns))
+        ) return false //Encounter
+        else {
+            return true
+        }
+    }
+    if (pieceteam == Colors.BLACK) {
+        if (initialposition.columns == wantedposition.columns) {
+            if (initialposition.line.ordinal != wantedposition.line.ordinal + 1 || ocupied)
+                return false //Encounter
+            else
+                return true
+        }
+    }
 
-        if (initialposition.columns.ordinal > wantedposition.columns.ordinal) {
+    //Move diagonal
+    if (initialposition.columns.ordinal != wantedposition.columns.ordinal - 1
+        && initialposition.columns.ordinal != wantedposition.columns.ordinal + 1
+    )
+        return false //Invalid Movement
 
-            // Diagonal left_x
-            column = Columns.values()[initialposition.columns.ordinal - 1]
+    else {
+        if (pieceteam == Colors.WHITE) {
+            if (initialposition.line.ordinal != wantedposition.line.ordinal + 1 || !ocupied) return false //Not Encounter
+        }
+        else
+            if (initialposition.line.ordinal != wantedposition.line.ordinal - 1 || !ocupied)
+                return false //Not Encounter
+        }
+    return true //Valid piece movement
+}
 
-            if (initialposition.line.ordinal > wantedposition.line.ordinal) {
 
-                // Diagonal left_down
+private fun moveVerityBishop(
+    initialposition: Positions,
+    wantedposition: Positions,
+    ): Boolean {
+
+    if (initialposition.columns.ordinal == wantedposition.columns.ordinal
+        || initialposition.line.ordinal == wantedposition.line.ordinal
+    ) return false // Invalid movement
+
+    var line = Lines.values()[initialposition.line.ordinal]
+    var column = Columns.values()[initialposition.columns.ordinal]
+
+    if (initialposition.columns.ordinal > wantedposition.columns.ordinal) {
+
+        // Diagonal left_x
+        column = Columns.values()[initialposition.columns.ordinal - 1]
+
+        if (initialposition.line.ordinal > wantedposition.line.ordinal) {
+
+            // Diagonal left_down
+            line = Lines.values()[initialposition.line.ordinal - 1]
+
+            while (line.ordinal >= wantedposition.line.ordinal + 1
+                && column.ordinal >= wantedposition.columns.ordinal + 1
+            ) {
+
+                if (board.containsKey(Positions(line, column))) return false // Encounter
+
                 line = Lines.values()[initialposition.line.ordinal - 1]
-
-                while (line.ordinal >= wantedposition.line.ordinal + 1
-                    && column.ordinal >= wantedposition.columns.ordinal + 1
-                ) {
-
-                    if (board.containsKey(Positions(line, column))) return false // Encounter
-
-                    line = Lines.values()[initialposition.line.ordinal - 1]
-                    column = Columns.values()[initialposition.columns.ordinal - 1]
-                }
-
-            } else {
-
-                // Diagonal left_up
-                line = Lines.values()[initialposition.line.ordinal + 1]
-
-                while (line.ordinal <= wantedposition.line.ordinal + 1
-                    && column.ordinal >= wantedposition.columns.ordinal + 1
-                ) {
-
-                    if (board.containsKey(Positions(line, column))) return false // Encounter
-
-                    line = Lines.values()[initialposition.line.ordinal + 1]
-                    column = Columns.values()[initialposition.columns.ordinal - 1]
-                }
-
+                column = Columns.values()[initialposition.columns.ordinal - 1]
             }
 
         } else {
 
-            // Diagonal right_x
-            column = Columns.values()[initialposition.columns.ordinal + 1]
+            // Diagonal left_up
+            line = Lines.values()[initialposition.line.ordinal + 1]
 
-            if (initialposition.line.ordinal > wantedposition.line.ordinal) {
+            while (line.ordinal <= wantedposition.line.ordinal + 1
+                && column.ordinal >= wantedposition.columns.ordinal + 1
+            ) {
 
-                // Diagonal right_down
-                line = Lines.values()[initialposition.line.ordinal - 1]
+                if (board.containsKey(Positions(line, column))) return false // Encounter
 
-                while (line.ordinal >= wantedposition.line.ordinal + 1
-                    && column.ordinal >= wantedposition.columns.ordinal + 1
-                ) {
-
-                    if (board.containsKey(Positions(line, column))) return false // Encounter
-
-                    line = Lines.values()[initialposition.line.ordinal - 1]
-                    column = Columns.values()[initialposition.columns.ordinal + 1]
-                }
-
-            } else {
-
-                // Diagonal right_up
                 line = Lines.values()[initialposition.line.ordinal + 1]
+                column = Columns.values()[initialposition.columns.ordinal - 1]
+            }
 
-                while (line.ordinal <= wantedposition.line.ordinal + 1
-                    && column.ordinal >= wantedposition.columns.ordinal + 1
-                ) {
+        }
 
-                    if (board.containsKey(Positions(line, column))) return false // Encounter
+    } else {
 
-                    line = Lines.values()[initialposition.line.ordinal + 1]
-                    column = Columns.values()[initialposition.columns.ordinal + 1]
-                }
+        // Diagonal right_x
+        column = Columns.values()[initialposition.columns.ordinal + 1]
+
+        if (initialposition.line.ordinal > wantedposition.line.ordinal) {
+
+            // Diagonal right_down
+            line = Lines.values()[initialposition.line.ordinal - 1]
+
+            while (line.ordinal >= wantedposition.line.ordinal + 1
+                && column.ordinal >= wantedposition.columns.ordinal + 1
+            ) {
+
+                if (board.containsKey(Positions(line, column))) return false // Encounter
+
+                line = Lines.values()[initialposition.line.ordinal - 1]
+                column = Columns.values()[initialposition.columns.ordinal + 1]
+            }
+
+        } else {
+
+            // Diagonal right_up
+            line = Lines.values()[initialposition.line.ordinal + 1]
+
+            while (line.ordinal <= wantedposition.line.ordinal + 1
+                && column.ordinal >= wantedposition.columns.ordinal + 1
+            ) {
+
+                if (board.containsKey(Positions(line, column))) return false // Encounter
+
+                line = Lines.values()[initialposition.line.ordinal + 1]
+                column = Columns.values()[initialposition.columns.ordinal + 1]
             }
         }
-        return true // Valid movement
+    }
+    return true // Valid movement
     }
 
-    override fun moveVerityKing(
-        initialposition: Positions,
-        wantedposition: Positions,
-        ): Boolean {
-
-        if (wantedposition.columns.ordinal != initialposition.columns.ordinal
-            || wantedposition.columns.ordinal != initialposition.columns.ordinal - 1
-            || wantedposition.columns.ordinal != initialposition.columns.ordinal + 1
-        ) return false // Wrong column
-
-        if (wantedposition.line.ordinal != initialposition.line.ordinal
-            || wantedposition.line.ordinal != initialposition.line.ordinal - 1
-            || wantedposition.line.ordinal != initialposition.line.ordinal + 1
-        ) return false // Wrong line
-
-        return true // Valid movement
-    }
-
-    override fun moveVerityKnight(
-        initialposition: Positions,
-        wantedposition: Positions,
+private fun moveVerityKing(
+    initialposition: Positions,
+    wantedposition: Positions,
     ): Boolean {
 
-        //Up movement
-        if (initialposition.line.ordinal == wantedposition.line.ordinal - 2) {
-            if (initialposition.columns.ordinal == wantedposition.columns.ordinal + 1) return true // Valid movement; left
-            if (initialposition.columns.ordinal == wantedposition.columns.ordinal - 1) return true // Valid movement; right
-        }
+    if (wantedposition.columns.ordinal != initialposition.columns.ordinal
+        || wantedposition.columns.ordinal != initialposition.columns.ordinal - 1
+        || wantedposition.columns.ordinal != initialposition.columns.ordinal + 1
+    ) return false // Wrong column
 
-        //Down movement
-        if (initialposition.line.ordinal == wantedposition.line.ordinal + 2) {
-            if (initialposition.columns.ordinal == wantedposition.columns.ordinal + 1) return true // Valid movement; left
-            if (initialposition.columns.ordinal == wantedposition.columns.ordinal - 1) return true // Valid movement; right
-        }
+    if (wantedposition.line.ordinal != initialposition.line.ordinal
+        || wantedposition.line.ordinal != initialposition.line.ordinal - 1
+        || wantedposition.line.ordinal != initialposition.line.ordinal + 1
+    ) return false // Wrong line
 
-        //Left movement
-        if (initialposition.columns.ordinal == wantedposition.columns.ordinal + 2) {
-            if (initialposition.line.ordinal == wantedposition.line.ordinal - 1) return true // Valid movement; up
-            if (initialposition.line.ordinal == wantedposition.line.ordinal + 1) return true // Valid movement; down
-        }
-
-        //Right movement
-        if (initialposition.columns.ordinal == wantedposition.columns.ordinal - 2) {
-            if (initialposition.line.ordinal == wantedposition.line.ordinal - 1) return true // Valid movement; up
-            if (initialposition.line.ordinal == wantedposition.line.ordinal + 1) return true // Valid movement; down
-        }
-        return false // Invalid movement
+    return true // Valid movement
     }
+
+    private fun moveVerityKnight(
+    initialposition: Positions,
+    wantedposition: Positions,
+    ): Boolean {
+
+    //Up movement
+    if (initialposition.line.ordinal == wantedposition.line.ordinal - 2) {
+        if (initialposition.columns.ordinal == wantedposition.columns.ordinal + 1) return true // Valid movement; left
+        if (initialposition.columns.ordinal == wantedposition.columns.ordinal - 1) return true // Valid movement; right
+    }
+
+    //Down movement
+    if (initialposition.line.ordinal == wantedposition.line.ordinal + 2) {
+        if (initialposition.columns.ordinal == wantedposition.columns.ordinal + 1) return true // Valid movement; left
+        if (initialposition.columns.ordinal == wantedposition.columns.ordinal - 1) return true // Valid movement; right
+    }
+
+    //Left movement
+    if (initialposition.columns.ordinal == wantedposition.columns.ordinal + 2) {
+        if (initialposition.line.ordinal == wantedposition.line.ordinal - 1) return true // Valid movement; up
+        if (initialposition.line.ordinal == wantedposition.line.ordinal + 1) return true // Valid movement; down
+    }
+
+    //Right movement
+    if (initialposition.columns.ordinal == wantedposition.columns.ordinal - 2) {
+        if (initialposition.line.ordinal == wantedposition.line.ordinal - 1) return true // Valid movement; up
+        if (initialposition.line.ordinal == wantedposition.line.ordinal + 1) return true // Valid movement; down
+    }
+    return false // Invalid movement
 }
+
 
