@@ -1,9 +1,9 @@
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class HorseTests {
+class KnightTests {
     @Test
-    fun `legal horse move return horses moved`() {
+    fun `legal horse move return knight moved`() {
         val sut = Board()
             .makeMove("Nb8c6")
             .makeMove("Ng8f6")
@@ -21,7 +21,7 @@ class HorseTests {
         )
     }
     @Test
-    fun `ilegal moves with the horse on boath sides`() {
+    fun `ilegal moves with the knight on both sides`() {
         val sut = Board()
             .makeMove("Nb8c6")
             .makeMove("Nc6c5")
@@ -43,7 +43,7 @@ class HorseTests {
         )
     }
     @Test
-    fun `eating a piece with horse on boath sides`() {
+    fun `eating a piece with knight on both sides`() {
         val sut = Board()
             .makeMove("Nb8c6")
             .makeMove("Pd2d4")
