@@ -69,4 +69,27 @@ class BishopTests {
                       "RNBQK NR",sut.toString()
         )
     }
+
+    @Test
+    fun `ilegal bishop moves encounter`() {
+        val sut = Board()
+            .makeMove("pb7b5")
+            .makeMove("bc8a6")
+            .makeMove("ba6c4")  //Ilegal move
+            .makeMove("Pb2b4")
+            .makeMove("Bc1a3")
+            .makeMove("Ba3c5")  //Ilegal move
+
+
+        assertEquals(
+            "rn qkbnr"+
+                  "p pppppp"+
+                  "b       "+
+                  " p      "+
+                  " P      "+
+                  "B       "+
+                  "P PPPPPP"+
+                  "RN QKBNR",sut.toString()
+        )
+    }
 }

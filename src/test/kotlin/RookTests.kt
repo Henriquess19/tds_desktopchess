@@ -49,24 +49,24 @@ class RookTests {
     fun `ilegal moves with boath rooks`() {
         val sut = Board()
             .makeMove("pa7a5")
+            .makeMove("ra8a4") //Ilegal movement
             .makeMove("ra8a6")
-            .makeMove("ra6e6")
-            .makeMove("re6f5")
-            .makeMove("re6d5")
-
+            .makeMove("ra6c4") //Ilegal movement
+            .makeMove("pb7b6")
+            .makeMove("ra6d6") //Ilegal movement
             .makeMove("Pa2a4")
+            .makeMove("Ra1a5") //Ilegal movement
             .makeMove("Ra1a3")
-            .makeMove("Ra3e3")
-            .makeMove("Re3f5")
-            .makeMove("Re3d5")
+            .makeMove("Pb2b3")
+            .makeMove("Ra3d3") //Ilegal movement
         assertEquals(
             " nbqkbnr"+
-                    " ppppppp"+
-                    "    r   "+
+                    "  pppppp"+
+                    "rp      "+
                     "p       "+
                     "P       "+
-                    "    R   "+
-                    " PPPPPPP"+
+                    "RP      "+
+                    "  PPPPPP"+
                     " NBQKBNR",sut.toString()
         )
     }

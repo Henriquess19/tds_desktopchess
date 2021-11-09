@@ -5,17 +5,22 @@ class KnightTests {
     @Test
     fun `legal horse move return knight moved`() {
         val sut = Board()
-            .makeMove("Nb8c6")
-            .makeMove("Ng8f6")
+            .makeMove("nb8c6")
+            .makeMove("ng8f6")
             .makeMove("Nb1c3")
             .makeMove("Ng1f3")
+            .makeMove("nc6a5")
+            .makeMove("nf6h5")
+            .makeMove("Nc3a4")
+            .makeMove("Nf3h4")
+
         assertEquals(
             "r bqkb r"+
                     "pppppppp"+
-                    "  n  n  "+
                     "        "+
+                    "n      n"+
+                    "N      N"+
                     "        "+
-                    "  N  N  "+
                     "PPPPPPPP"+
                     "R BQKB R",sut.toString()
         )

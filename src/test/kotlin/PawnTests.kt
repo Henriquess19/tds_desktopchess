@@ -5,10 +5,13 @@ class PawnTests {
     @Test
     fun `illegal pawn move return the board not change`() {
         val sut = Board()
+            .makeMove("Pa2b3") //Ilegal movement
+            .makeMove("Pg7h6") //Ilegal movement
             .makeMove("Pe7e4")
             .makeMove("Pe2e5")
             .makeMove("Pe2f5")
             .makeMove("Pe7f5")
+
         assertEquals(
             "rnbqkbnr"+
                     "pppppppp"+

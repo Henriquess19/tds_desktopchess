@@ -1,5 +1,3 @@
-private val board:MutableMap<Positions,Pieces> = mutableMapOf()
-
 /**
  *
  */
@@ -16,43 +14,42 @@ class VerificationBoard(private val board:MutableMap<Positions,Pieces> = mutable
         }
         return when (piece) {
             //Rooks
-            Pieces.r -> moveVerityRook(initialposition, wantedposition)
-            Pieces.R -> moveVerityRook(initialposition, wantedposition)
+            Pieces.r -> moveVerityRook(initialposition, wantedposition,board)
+            Pieces.R -> moveVerityRook(initialposition, wantedposition,board)
             //Pawns
-            Pieces.p -> moveVerityPawn(Colors.BLACK, initialposition, wantedposition, ocupied)
-            Pieces.P -> moveVerityPawn(Colors.WHITE, initialposition, wantedposition, ocupied)
+            Pieces.p -> moveVerityPawn(Colors.BLACK, initialposition, wantedposition, ocupied,board)
+            Pieces.P -> moveVerityPawn(Colors.WHITE, initialposition, wantedposition, ocupied,board)
             //Bishops
-            Pieces.b -> moveVerityBishop(initialposition, wantedposition)
-            Pieces.B -> moveVerityBishop(initialposition, wantedposition)
+            Pieces.b -> moveVerityBishop(initialposition, wantedposition,board)
+            Pieces.B -> moveVerityBishop(initialposition, wantedposition,board)
             //Kings
-            Pieces.k -> moveVerityKing(initialposition, wantedposition)
-            Pieces.K -> moveVerityKing(initialposition, wantedposition)
+            Pieces.k -> moveVerityKing(initialposition, wantedposition,board)
+            Pieces.K -> moveVerityKing(initialposition, wantedposition,board)
             //Knights
-            Pieces.n -> moveVerityKnight(initialposition, wantedposition)
-            Pieces.N -> moveVerityKnight(initialposition, wantedposition)
+            Pieces.n -> moveVerityKnight(initialposition, wantedposition,board)
+            Pieces.N -> moveVerityKnight(initialposition, wantedposition,board)
             //Queens (they have the movement from a knight plus bishop, so if one of the is true, she can move)
-            else -> moveVerityKnight(initialposition, wantedposition) || moveVerityBishop(
-                initialposition,
-                wantedposition
-            )
+            else -> moveVerityRook(initialposition, wantedposition,board)
+              || moveVerityBishop(initialposition, wantedposition, board)
         }
     }
 }
 
 private fun moveVerityRook(
     initialposition: Positions,
-    wantedposition: Positions
+    wantedposition: Positions,
+    board: MutableMap<Positions, Pieces>
     ): Boolean {
     //walk on the collumn
     if (initialposition.line == wantedposition.line) {
         val highercolumn = Math.max(initialposition.columns.ordinal, wantedposition.columns.ordinal)
         val lowercolumn = Math.min(initialposition.columns.ordinal, wantedposition.columns.ordinal)
 
-        for (i in highercolumn - 1 until lowercolumn + 1) {
+        for (i in highercolumn - 1 downTo lowercolumn + 1) {
             if (board.containsKey(
                     Positions(
-                        Lines.values()[i],
-                        wantedposition.columns
+                        wantedposition.line,
+                        Columns.values()[i],
                     )
                 )
             ) return false //Encounter
@@ -62,7 +59,7 @@ private fun moveVerityRook(
         val higherline = Math.max(initialposition.line.ordinal, wantedposition.line.ordinal)
         val lowerline = Math.min(initialposition.line.ordinal, wantedposition.line.ordinal)
 
-        for (i in higherline - 1 until lowerline + 1) {
+        for (i in higherline - 1 downTo lowerline + 1) {
             if (board.containsKey(
                     Positions(
                         Lines.values()[i],
@@ -81,8 +78,9 @@ private fun moveVerityPawn(
     pieceteam: Colors,
     initialposition: Positions,
     wantedposition: Positions,
-    ocupied: Boolean
-    ): Boolean {
+    ocupied: Boolean,
+    board: MutableMap<Positions, Pieces>
+): Boolean {
 
     //Initial pawn position
     if (pieceteam == Colors.WHITE &&
@@ -94,20 +92,22 @@ private fun moveVerityPawn(
           || board.containsKey(Positions(Lines.L4, initialposition.columns)))
     }
 
+    if (pieceteam == Colors.BLACK &&
+        initialposition.line == Lines.L7 &&
+        (wantedposition.line == Lines.L6 ||
+          wantedposition.line == Lines.L5) &&
+        initialposition.columns == wantedposition.columns) {
+        return !(board.containsKey(Positions(Lines.L6, initialposition.columns))
+          || board.containsKey(Positions(Lines.L5, initialposition.columns)))
+    }
+
     //Move infront
     if (pieceteam == Colors.WHITE) {
         if (initialposition.columns == wantedposition.columns) {
             return !(initialposition.line.ordinal != wantedposition.line.ordinal - 1 || ocupied)
         }
     }
-    if (pieceteam == Colors.BLACK &&
-        initialposition.line == Lines.L7 &&
-        (wantedposition.line == Lines.L6 ||
-        wantedposition.line == Lines.L5) &&
-        initialposition.columns == wantedposition.columns) {
-        return !(board.containsKey(Positions(Lines.L6, initialposition.columns))
-          || board.containsKey(Positions(Lines.L5, initialposition.columns)))
-    }
+
     if (pieceteam == Colors.BLACK) {
         if (initialposition.columns == wantedposition.columns) {
             return !(initialposition.line.ordinal != wantedposition.line.ordinal + 1 || ocupied)
@@ -115,23 +115,18 @@ private fun moveVerityPawn(
     }
 
     //Move diagonal
-    if (initialposition.columns.ordinal != wantedposition.columns.ordinal - 1
-        && initialposition.columns.ordinal != wantedposition.columns.ordinal + 1
-    )
-        return false //Invalid Movement
+    if (initialposition.columns.ordinal == wantedposition.columns.ordinal - 1
+        || initialposition.columns.ordinal == wantedposition.columns.ordinal + 1){
 
-    else {
         if (pieceteam == Colors.WHITE) {
-            if ((initialposition.line.ordinal != wantedposition.line.ordinal + 1
-                || initialposition.line.ordinal != wantedposition.line.ordinal - 1)
+            if (initialposition.line.ordinal != wantedposition.line.ordinal + 1
                 && !ocupied) return false //Not Encounter
         }
         else
-            if ((initialposition.line.ordinal != wantedposition.line.ordinal - 1
-                || initialposition.line.ordinal != wantedposition.line.ordinal + 1)
+            if (initialposition.line.ordinal != wantedposition.line.ordinal - 1
                 && !ocupied)
                 return false //Not Encounter
-        }
+    }
     return true //Valid piece movement
 }
 
@@ -139,7 +134,8 @@ private fun moveVerityPawn(
 private fun moveVerityBishop(
     initialposition: Positions,
     wantedposition: Positions,
-    ): Boolean {
+    board: MutableMap<Positions, Pieces>
+): Boolean {
 
     if (initialposition.columns.ordinal == wantedposition.columns.ordinal
         || initialposition.line.ordinal == wantedposition.line.ordinal
@@ -151,16 +147,16 @@ private fun moveVerityBishop(
     if (initialposition.columns.ordinal > wantedposition.columns.ordinal) {
 
         // Diagonal left_x
-        column = Columns.values()[initialposition.columns.ordinal - 1]
+        column = Columns.values()[initialposition.columns.ordinal-1]
 
         if (initialposition.line.ordinal > wantedposition.line.ordinal) {
 
             // Diagonal left_down
             if(!diagonalrighttoleftverity(initialposition,wantedposition)) return false //Diferent diagonal
-            line = Lines.values()[initialposition.line.ordinal - 1]
+            line = Lines.values()[initialposition.line.ordinal -1]
 
             while (line.ordinal >= wantedposition.line.ordinal + 1
-                && column.ordinal >= wantedposition.columns.ordinal + 1
+                && column.ordinal >= wantedposition.columns.ordinal +1
             ) {
 
                 if (board.containsKey(Positions(line, column))) return false // Encounter
@@ -175,7 +171,7 @@ private fun moveVerityBishop(
             if (!diagonallefttorightverity(initialposition,wantedposition)) return false //Diferent diagonal
             line = Lines.values()[initialposition.line.ordinal + 1]
 
-            while (line.ordinal <= wantedposition.line.ordinal + 1
+            while (line.ordinal <= wantedposition.line.ordinal - 1
                 && column.ordinal >= wantedposition.columns.ordinal + 1
             ) {
 
@@ -199,9 +195,9 @@ private fun moveVerityBishop(
             line = Lines.values()[initialposition.line.ordinal - 1]
 
             while (line.ordinal >= wantedposition.line.ordinal + 1
-                && column.ordinal >= wantedposition.columns.ordinal + 1
+                && column.ordinal <= wantedposition.columns.ordinal - 1
             ) {
-
+                println(board.values)
                 if (board.containsKey(Positions(line, column))) return false // Encounter
 
                 line = Lines.values()[line.ordinal - 1]
@@ -214,8 +210,8 @@ private fun moveVerityBishop(
             if(!diagonalrighttoleftverity(initialposition,wantedposition)) return false //Diferent diagonal
             line = Lines.values()[initialposition.line.ordinal + 1]
 
-            while (line.ordinal <= wantedposition.line.ordinal + 1
-                && column.ordinal >= wantedposition.columns.ordinal + 1
+            while (line.ordinal <= wantedposition.line.ordinal - 1
+                && column.ordinal <= wantedposition.columns.ordinal - 1
             ) {
 
                 if (board.containsKey(Positions(line, column))) return false // Encounter
@@ -231,16 +227,17 @@ private fun moveVerityBishop(
 private fun moveVerityKing(
     initialposition: Positions,
     wantedposition: Positions,
-    ): Boolean {
+    board: MutableMap<Positions, Pieces>
+): Boolean {
 
     if (wantedposition.columns.ordinal != initialposition.columns.ordinal
-        || wantedposition.columns.ordinal != initialposition.columns.ordinal - 1
-        || wantedposition.columns.ordinal != initialposition.columns.ordinal + 1
+        && wantedposition.columns.ordinal != initialposition.columns.ordinal - 1
+        && wantedposition.columns.ordinal != initialposition.columns.ordinal + 1
     ) return false // Wrong column
 
     if (wantedposition.line.ordinal != initialposition.line.ordinal
-        || wantedposition.line.ordinal != initialposition.line.ordinal - 1
-        || wantedposition.line.ordinal != initialposition.line.ordinal + 1
+        && wantedposition.line.ordinal != initialposition.line.ordinal - 1
+        && wantedposition.line.ordinal != initialposition.line.ordinal + 1
     ) return false // Wrong line
 
     return true // Valid movement
@@ -249,6 +246,7 @@ private fun moveVerityKing(
     private fun moveVerityKnight(
     initialposition: Positions,
     wantedposition: Positions,
+    board: MutableMap<Positions, Pieces>
     ): Boolean {
 
     //Up movement

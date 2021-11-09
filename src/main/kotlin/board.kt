@@ -42,16 +42,16 @@ class Board(): BoardInterface {
 
         val oldposition = Positions(Lines.values()[oldline], Columns.valueOf(oldcolumn))
         val newposition = Positions(Lines.values()[newline], Columns.valueOf(newcolumn))
+        println(board)
 
         val piece = board[oldposition] ?: throw Throwable("Piece not founded in the initialposition.")
 
         if(VerificationBoard(board).moveVerity(piece, oldposition, newposition)) {
-            board[newposition] = Pieces.values()[piece.ordinal]
+            board[newposition] = piece
             board.remove(oldposition)
         }
         //moveslist[moveslist.size] = move
         BoardConsoleDraw(board).draw()
-
         return this
     }
 
