@@ -90,21 +90,14 @@ private fun moveVerityPawn(
         (wantedposition.line == Lines.L3 ||
         wantedposition.line == Lines.L4) &&
         initialposition.columns == wantedposition.columns) {
-        if (board.containsKey(Positions(Lines.L3, initialposition.columns))
-            || board.containsKey(Positions(Lines.L4, initialposition.columns))
-        ) return false //Encounter
-        else {
-            return true
-        }
+        return !(board.containsKey(Positions(Lines.L3, initialposition.columns))
+          || board.containsKey(Positions(Lines.L4, initialposition.columns)))
     }
 
     //Move infront
     if (pieceteam == Colors.WHITE) {
         if (initialposition.columns == wantedposition.columns) {
-            if (initialposition.line.ordinal != wantedposition.line.ordinal - 1 || ocupied)
-                return false //Encounter
-            else
-                return true
+            return !(initialposition.line.ordinal != wantedposition.line.ordinal - 1 || ocupied)
         }
     }
     if (pieceteam == Colors.BLACK &&
@@ -112,19 +105,12 @@ private fun moveVerityPawn(
         (wantedposition.line == Lines.L6 ||
         wantedposition.line == Lines.L5) &&
         initialposition.columns == wantedposition.columns) {
-        if (board.containsKey(Positions(Lines.L6, initialposition.columns))
-            || board.containsKey(Positions(Lines.L5, initialposition.columns))
-        ) return false //Encounter
-        else {
-            return true
-        }
+        return !(board.containsKey(Positions(Lines.L6, initialposition.columns))
+          || board.containsKey(Positions(Lines.L5, initialposition.columns)))
     }
     if (pieceteam == Colors.BLACK) {
         if (initialposition.columns == wantedposition.columns) {
-            if (initialposition.line.ordinal != wantedposition.line.ordinal + 1 || ocupied)
-                return false //Encounter
-            else
-                return true
+            return !(initialposition.line.ordinal != wantedposition.line.ordinal + 1 || ocupied)
         }
     }
 
@@ -136,10 +122,14 @@ private fun moveVerityPawn(
 
     else {
         if (pieceteam == Colors.WHITE) {
-            if (initialposition.line.ordinal != wantedposition.line.ordinal + 1 || !ocupied) return false //Not Encounter
+            if ((initialposition.line.ordinal != wantedposition.line.ordinal + 1
+                || initialposition.line.ordinal != wantedposition.line.ordinal - 1)
+                && !ocupied) return false //Not Encounter
         }
         else
-            if (initialposition.line.ordinal != wantedposition.line.ordinal - 1 || !ocupied)
+            if ((initialposition.line.ordinal != wantedposition.line.ordinal - 1
+                || initialposition.line.ordinal != wantedposition.line.ordinal + 1)
+                && !ocupied)
                 return false //Not Encounter
         }
     return true //Valid piece movement
@@ -166,6 +156,7 @@ private fun moveVerityBishop(
         if (initialposition.line.ordinal > wantedposition.line.ordinal) {
 
             // Diagonal left_down
+            if(!diagonalrighttoleftverity(initialposition,wantedposition)) return false //Diferent diagonal
             line = Lines.values()[initialposition.line.ordinal - 1]
 
             while (line.ordinal >= wantedposition.line.ordinal + 1
@@ -174,13 +165,14 @@ private fun moveVerityBishop(
 
                 if (board.containsKey(Positions(line, column))) return false // Encounter
 
-                line = Lines.values()[initialposition.line.ordinal - 1]
-                column = Columns.values()[initialposition.columns.ordinal - 1]
+                line = Lines.values()[line.ordinal- 1]
+                column = Columns.values()[column.ordinal - 1]
             }
 
         } else {
 
             // Diagonal left_up
+            if (!diagonallefttorightverity(initialposition,wantedposition)) return false //Diferent diagonal
             line = Lines.values()[initialposition.line.ordinal + 1]
 
             while (line.ordinal <= wantedposition.line.ordinal + 1
@@ -189,8 +181,8 @@ private fun moveVerityBishop(
 
                 if (board.containsKey(Positions(line, column))) return false // Encounter
 
-                line = Lines.values()[initialposition.line.ordinal + 1]
-                column = Columns.values()[initialposition.columns.ordinal - 1]
+                line = Lines.values()[line.ordinal + 1]
+                column = Columns.values()[column.ordinal - 1]
             }
 
         }
@@ -203,6 +195,7 @@ private fun moveVerityBishop(
         if (initialposition.line.ordinal > wantedposition.line.ordinal) {
 
             // Diagonal right_down
+            if (!diagonallefttorightverity(initialposition,wantedposition)) return false //Diferent diagonal
             line = Lines.values()[initialposition.line.ordinal - 1]
 
             while (line.ordinal >= wantedposition.line.ordinal + 1
@@ -211,13 +204,14 @@ private fun moveVerityBishop(
 
                 if (board.containsKey(Positions(line, column))) return false // Encounter
 
-                line = Lines.values()[initialposition.line.ordinal - 1]
-                column = Columns.values()[initialposition.columns.ordinal + 1]
+                line = Lines.values()[line.ordinal - 1]
+                column = Columns.values()[column.ordinal + 1]
             }
 
-        } else {
 
+        } else {
             // Diagonal right_up
+            if(!diagonalrighttoleftverity(initialposition,wantedposition)) return false //Diferent diagonal
             line = Lines.values()[initialposition.line.ordinal + 1]
 
             while (line.ordinal <= wantedposition.line.ordinal + 1
@@ -226,8 +220,8 @@ private fun moveVerityBishop(
 
                 if (board.containsKey(Positions(line, column))) return false // Encounter
 
-                line = Lines.values()[initialposition.line.ordinal + 1]
-                column = Columns.values()[initialposition.columns.ordinal + 1]
+                line = Lines.values()[line.ordinal + 1]
+                column = Columns.values()[column.ordinal + 1]
             }
         }
     }
@@ -282,5 +276,18 @@ private fun moveVerityKing(
     }
     return false // Invalid movement
 }
+
+private fun diagonallefttorightverity (initialposition: Positions,wantedposition: Positions): Boolean {
+    val initialdif = initialposition.line.ordinal - initialposition.columns.ordinal
+    val finaldif = wantedposition.line.ordinal - wantedposition.columns.ordinal
+    return initialdif == finaldif + 2 * (wantedposition.columns.ordinal - initialposition.columns.ordinal)
+}
+
+private fun diagonalrighttoleftverity (initialposition: Positions,wantedposition: Positions): Boolean {
+    val initialdif = initialposition.line.ordinal - initialposition.columns.ordinal
+    val finaldif = wantedposition.line.ordinal - wantedposition.columns.ordinal
+    return initialdif == finaldif
+}
+
 
 

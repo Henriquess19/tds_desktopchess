@@ -78,19 +78,21 @@ class PawnTests {
     @Test
     fun `move diagonaly after eating a piece`() {
         val sut = Board()
-            .makeMove("Pa7a5")
-            .makeMove("Pa5a4")
-            .makeMove("Pb2b3")
-            .makeMove("Pa4b3")
+            .makeMove("pa7a5")
+            .makeMove("Pb2b4")
+            .makeMove("pa5b4")  //Eating movement
+            .makeMove("Pc2c3")
+            .makeMove("Pc3b4")  //Eating movement
+
 
         assertEquals(
             "rnbqkbnr"+
                     " ppppppp"+
                     "        "+
                     "        "+
+                    " P      "+
                     "        "+
-                    " p      "+
-                    "P PPPPPP"+
+                    "P  PPPPP"+
                     "RNBQKBNR",sut.toString()
         )
     }
