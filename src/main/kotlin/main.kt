@@ -1,18 +1,29 @@
+import isel.leic.tds.mongodb.createMongoClient
 
 
 fun main(){
-    val sut = Board()
-        .makeMove("ph7h5")
-        .makeMove("ph5h4")//Ilegal move
-        /*
-        .makeMove("pb7b6")
-        .makeMove("bc8a6")
-        .makeMove("ba6b3")  //Ilegal move
-        .makeMove("Bc1c3")  //Ilegal move
-        .makeMove("Pd2d3")
-        .makeMove("Bc1h6")
-        .makeMove("Bh6e4")  //Ilegal move
-         */
-        BoardConsoleDraw(sut).draw()
+    val driver =
+        if (checkEnvironment() == DbMode.REMOTE)
+            createMongoClient(System.getenv(ENV_DB_CONNECTION))
+        else createMongoClient()
 
+    val board: Board = MongoDbChess(driver.getDatabase(System.getenv(ENV_DB_NAME)))
+    board.open("9")
+    board.open("18")
+    board.open("28")
+}
+
+
+private const val ENV_DB_NAME = "MONGO_DB_NAME"
+private const val ENV_DB_CONNECTION = "MONGO_DB_CONNECTION"
+
+private enum class DbMode { LOCAL, REMOTE }
+
+private fun checkEnvironment(): DbMode {
+    requireNotNull(System.getenv(ENV_DB_NAME)) {
+        "You must specify the environment variable $ENV_DB_NAME"
+    }
+
+    return if (System.getenv(ENV_DB_CONNECTION) != null) DbMode.REMOTE
+    else DbMode.LOCAL
 }
