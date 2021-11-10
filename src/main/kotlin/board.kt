@@ -72,7 +72,7 @@ class Board: BoardInterface {
     */
 
    override fun makeMove(move: String): Board {
-      val oldLine = move[2].toString().toInt() - 1
+      val oldLine = (move[2].toInt() - '0'.code) - 1
       val newline = move[4].toString().toInt() - 1
       val oldColumn = "C" + move[1].uppercaseChar()
       val newColumn = "C" + move[3].uppercaseChar()
@@ -82,13 +82,21 @@ class Board: BoardInterface {
 
       val piece = board[oldPosition] ?: throw Throwable("Piece not founded in the initialposition.")
 
-      if (moveVerity(piece, oldPosition, newPosition,board)) {
+      if (moveVerity(piece, oldPosition, newPosition,this)) {
          board[newPosition] = piece
          board.remove(oldPosition)
          //TODO -> If kings dies, the other team wins, maybe add to moveverity and add result END
       }
       movesList[numberOfPlay++] = PlayMade(piece.team, move)
       return this
+   }
+
+   override fun containsPiece(positions: Positions): Boolean {
+      return board.containsKey(positions)
+   }
+
+   override fun getPiece(positions: Positions): Pieces? {
+      return board[positions]
    }
 
    /**

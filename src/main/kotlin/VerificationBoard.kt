@@ -6,11 +6,11 @@
  * @param   board current state of the board
  * @return  if its a valid movement returns true else returns false
  */
-fun moveVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positions, board: MutableMap<Positions, Pieces>): Boolean {
-    val ocupied = board.containsKey(wantedPosition)
+fun moveVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positions, board: Board): Boolean {
+    val ocupied = board.containsPiece(wantedPosition)
 
     if (ocupied) {
-        val ocupiedcolor = board[wantedPosition]?.team
+        val ocupiedcolor = board.getPiece(wantedPosition)?.team
         if (ocupiedcolor == piece.team) {
             return false //Same team
         }
@@ -43,7 +43,7 @@ fun moveVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positi
 private fun moveVerityRook(
     initialposition: Positions,
     wantedposition: Positions,
-    board: MutableMap<Positions, Pieces>
+    board: Board
     ): Boolean {
     //walk on the collumn
     if (initialposition.line == wantedposition.line) {
@@ -51,13 +51,8 @@ private fun moveVerityRook(
         val lowercolumn = Math.min(initialposition.column.ordinal, wantedposition.column.ordinal)
 
         for (i in highercolumn - 1 downTo lowercolumn + 1) {
-            if (board.containsKey(
-                    Positions(
-                        wantedposition.line,
-                        Columns.values()[i],
-                    )
-                )
-            ) return false //Encounter
+            if (board.containsPiece(Positions(wantedposition.line, Columns.values()[i])))
+                return false //Encounter
         }
     }//walk on the line
     else if (initialposition.column == wantedposition.column) {
@@ -65,13 +60,8 @@ private fun moveVerityRook(
         val lowerline = Math.min(initialposition.line.ordinal, wantedposition.line.ordinal)
 
         for (i in higherline - 1 downTo lowerline + 1) {
-            if (board.containsKey(
-                    Positions(
-                        Lines.values()[i],
-                        wantedposition.column
-                    )
-                )
-            ) return false //Encounter
+            if (board.containsPiece(Positions( Lines.values()[i], wantedposition.column)))
+                return false //Encounter
         }
     }
     else return false //invalid movement
@@ -90,7 +80,7 @@ private fun moveVerityPawn(
     initialposition: Positions,
     wantedposition: Positions,
     ocupied: Boolean,
-    board: MutableMap<Positions, Pieces>
+    board: Board
 ): Boolean {
 
     //Initial pawn position
@@ -99,8 +89,8 @@ private fun moveVerityPawn(
         (wantedposition.line == Lines.L3 ||
                 wantedposition.line == Lines.L4) &&
         initialposition.column == wantedposition.column) {
-        return !(board.containsKey(Positions(Lines.L3, initialposition.column))
-                || board.containsKey(Positions(Lines.L4, initialposition.column)))
+        return !(board.containsPiece(Positions(Lines.L3, initialposition.column)))
+                || board.containsPiece(Positions(Lines.L4, initialposition.column))
     }
 
     if (pieceteam == Colors.BLACK &&
@@ -108,8 +98,8 @@ private fun moveVerityPawn(
         (wantedposition.line == Lines.L6 ||
                 wantedposition.line == Lines.L5) &&
         initialposition.column == wantedposition.column) {
-        return !(board.containsKey(Positions(Lines.L6, initialposition.column))
-                || board.containsKey(Positions(Lines.L5, initialposition.column)))
+        return !(board.containsPiece(Positions(Lines.L6, initialposition.column))
+                || board.containsPiece(Positions( Lines.L5, initialposition.column)))
     }
 
     //Move infront
@@ -145,7 +135,7 @@ private fun moveVerityPawn(
 private fun moveVerityBishop(
     initialposition: Positions,
     wantedposition: Positions,
-    board: MutableMap<Positions, Pieces>
+    board: Board
 ): Boolean {
 
     if (initialposition.column.ordinal == wantedposition.column.ordinal
@@ -170,7 +160,7 @@ private fun moveVerityBishop(
                 && column.ordinal >= wantedposition.column.ordinal +1
             ) {
 
-                if (board.containsKey(Positions(line, column))) return false // Encounter
+                if (board.containsPiece(Positions( line, column))) return false // Encounter
 
                 line = Lines.values()[line.ordinal- 1]
                 column = Columns.values()[column.ordinal - 1]
@@ -186,7 +176,7 @@ private fun moveVerityBishop(
                 && column.ordinal >= wantedposition.column.ordinal + 1
             ) {
 
-                if (board.containsKey(Positions(line, column))) return false // Encounter
+                if (board.containsPiece(Positions( line, column))) return false // Encounter
 
                 line = Lines.values()[line.ordinal + 1]
                 column = Columns.values()[column.ordinal - 1]
@@ -209,7 +199,7 @@ private fun moveVerityBishop(
                 && column.ordinal <= wantedposition.column.ordinal - 1
             ) {
 
-                if (board.containsKey(Positions(line, column))) return false // Encounter
+                if (board.containsPiece(Positions( line, column))) return false // Encounter
 
                 line = Lines.values()[line.ordinal - 1]
                 column = Columns.values()[column.ordinal + 1]
@@ -225,7 +215,7 @@ private fun moveVerityBishop(
                 && column.ordinal <= wantedposition.column.ordinal - 1
             ) {
 
-                if (board.containsKey(Positions(line, column))) return false // Encounter
+                if (board.containsPiece(Positions( line, column))) return false // Encounter
 
                 line = Lines.values()[line.ordinal + 1]
                 column = Columns.values()[column.ordinal + 1]
