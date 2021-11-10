@@ -90,17 +90,27 @@ class Board: BoardInterface {
       movesList[numberOfPlay++] = PlayMade(piece.team, move)
       return this
    }
-
+   /**
+    * Verify if the position contains the piece
+    * @param positions position where the piece should be
+    * @return if contains return true else false
+    */
    override fun containsPiece(positions: Positions): Boolean {
       return board.containsKey(positions)
    }
-
+   /**
+    * Gets the piece specified
+    * @param line line where the piece should be
+    * @param positions position where the piece should be
+    * @return the piece itself
+    */
    override fun getPiece(positions: Positions): Pieces? {
       return board[positions]
    }
 
    /**
-    * Overwrites the function string to a use more adequate to the project
+    * Overwrites the function string to transform the board in something readble
+    * @return the board in form of a string
     */
    override fun toString(): String {
       var strboard = ""
