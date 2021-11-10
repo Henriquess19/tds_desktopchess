@@ -8,7 +8,29 @@ fun main(){
     val board: Board = MongoDbChess(driver.getDatabase(System.getenv(ENV_DB_NAME)))
     */
 
+
+   val board = Board()  //TODO -> ARRANJAR MELHOR MANEIRA DE COMEÇAR
+
+   val dispatcher = chessCommands(board)
+
+   while (true){
+      val(command,parameter) = readChessCommand()
+      val action = dispatcher[command.uppercase()]
+      if (action == null) println("Invalid command") //TODO -> USE RESULT STUFF
+      else action(parameter)
+   }
 }
+
+private fun readChessCommand():Pair<String,String?>{
+   print("(gameId:color)> ")
+   val input = readln()
+   val command = input.substringBefore(delimiter = ' ')
+   val argument = input.substringAfter(delimiter = ' ', missingDelimiterValue = "").trim()
+   return Pair(command.trim(), if (argument.isNotBlank()) argument else null)
+}
+
+private fun readln() = readLine()!!
+
 
 /*
 private const val ENV_DB_NAME = "MONGO_DB_NAME"

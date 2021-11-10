@@ -24,7 +24,5 @@ class BoardConsoleDraw(board: Board){
             println("| ")
         }
         println("   -----------------\n")
-
-        println("$GAME_ID:${Colors.values()[0]}>\n ")
     }
 }

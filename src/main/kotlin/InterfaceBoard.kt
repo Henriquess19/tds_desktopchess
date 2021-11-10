@@ -11,7 +11,4 @@ interface BoardInterface {
     * @return [Board] the board change after the movement
     */
    fun makeMove(move:String):Board
-
-
-
 }

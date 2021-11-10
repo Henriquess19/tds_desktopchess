@@ -1,36 +1,44 @@
 import kotlin.system.exitProcess
 
-fun chessCommands(board: Board,command:String):Map<>{
+typealias Command = (String?) -> Unit
+
+fun chessCommands(board: Board):Map<String,Command>{
    return mapOf(
-      "OPEN" to {open(gameId,board)},
-      "JOIN" to {join(gameId,board)},
-      "PLAY" to {play(move,board)},
+      "OPEN" to {open(board)},
+      "JOIN" to {join(board)},
+      "PLAY" to {play(board)},
       "REFRESH" to {refresh(board)},
       "MOVES" to {moves(board)},
       "EXIT" to {exit()}
    )
 }
 
-private fun open(gameId: String,board: Board) {
+private fun open(board: Board) {
    //TODO -> Create conditions for DB later
+   //Call board.gameId
    if (board.movesList.isEmpty()){
       Board()
+      println("${board.gameId} opened..")
    }else{
       //TODO -> Function to make board to the state && WHITES start
+
    }
+
 }
 
-private fun join(gameId: String,board: Board) {
+private fun join(board: Board) {
    //TODO -> Create conditions for DB later ?: throw error
+   //Call board.gameId
    if (board.movesList.isEmpty()){
-      //TODO -> throw error
+      println("${board.gameId}: error")
    }else{
       //TODO -> Function to make board to the state && BLACK start
    }
 }
 
-private fun play(move: String,board: Board) {
-  board.makeMove(move)
+private fun play(board: Board) {
+  //board.makeMove(move)
+   println("Playtest")
 }
 
 private fun refresh(board: Board) {

@@ -44,9 +44,10 @@ const val INITIAL_BOARD =
 
 const val GAME_ID = "g1"
 
-class Board(): BoardInterface {
+class Board: BoardInterface {
    private val board = mutableMapOf<Positions, Pieces>()
    val movesList = mutableMapOf<Int, PlayMade>()
+   val gameId = GAME_ID //TODO -> ARRANJAR DEPOIS MANEIRA MELHOR
    private var numberOfPlay = 0
 
    /**
