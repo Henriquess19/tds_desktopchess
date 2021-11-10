@@ -17,23 +17,18 @@ fun moveVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positi
     }
     return when (piece) {
         //Rooks
-        Pieces.r -> moveVerityRook(initialPosition, wantedPosition,board)
-        Pieces.R -> moveVerityRook(initialPosition, wantedPosition,board)
+        Pieces.r,Pieces.R -> moveVerityRook(initialPosition, wantedPosition,board)
         //Pawns
-        Pieces.p -> moveVerityPawn(Colors.BLACK, initialPosition, wantedPosition, ocupied,board)
-        Pieces.P -> moveVerityPawn(Colors.WHITE, initialPosition, wantedPosition, ocupied,board)
+        Pieces.p, Pieces.P -> moveVerityPawn(piece.team, initialPosition, wantedPosition, ocupied,board)
         //Bishops
-        Pieces.b -> moveVerityBishop(initialPosition, wantedPosition,board)
-        Pieces.B -> moveVerityBishop(initialPosition, wantedPosition,board)
+        Pieces.b, Pieces.B -> moveVerityBishop(initialPosition, wantedPosition,board)
         //Kings
-        Pieces.k -> moveVerityKing(initialPosition, wantedPosition)
-        Pieces.K -> moveVerityKing(initialPosition, wantedPosition)
+        Pieces.k, Pieces.K -> moveVerityKing(initialPosition, wantedPosition)
         //Knights
-        Pieces.n -> moveVerityKnight(initialPosition, wantedPosition)
-        Pieces.N -> moveVerityKnight(initialPosition, wantedPosition)
+        Pieces.n, Pieces.N  -> moveVerityKnight(initialPosition, wantedPosition)
         //Queens (they have the movement from a knight plus bishop, so if one of the is true, she can move)
         else -> moveVerityRook(initialPosition, wantedPosition,board)
-          || moveVerityBishop(initialPosition, wantedPosition, board)
+                || moveVerityBishop(initialPosition, wantedPosition, board)
     }
 }
 /**
@@ -43,6 +38,7 @@ fun moveVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positi
  * @param   board current state of the board
  * @return  if its a valid movement returns true else returns false
  */
+
 
 private fun moveVerityRook(
     initialposition: Positions,
@@ -101,34 +97,41 @@ private fun moveVerityPawn(
     if (pieceteam == Colors.WHITE &&
         initialposition.line == Lines.L2 &&
         (wantedposition.line == Lines.L3 ||
-        wantedposition.line == Lines.L4) &&
+                wantedposition.line == Lines.L4) &&
         initialposition.column == wantedposition.column) {
         return !(board.containsKey(Positions(Lines.L3, initialposition.column))
-          || board.containsKey(Positions(Lines.L4, initialposition.column)))
+                || board.containsKey(Positions(Lines.L4, initialposition.column)))
     }
 
     if (pieceteam == Colors.BLACK &&
         initialposition.line == Lines.L7 &&
         (wantedposition.line == Lines.L6 ||
-          wantedposition.line == Lines.L5) &&
+                wantedposition.line == Lines.L5) &&
         initialposition.column == wantedposition.column) {
         return !(board.containsKey(Positions(Lines.L6, initialposition.column))
-          || board.containsKey(Positions(Lines.L5, initialposition.column)))
+                || board.containsKey(Positions(Lines.L5, initialposition.column)))
     }
 
     //Move infront
+    if (pieceteam == Colors.WHITE) {
         if (initialposition.column == wantedposition.column) {
-            val blackOrWhite= if(pieceteam == Colors.WHITE) -1 else 1
-            return !(initialposition.line.ordinal != wantedposition.line.ordinal + blackOrWhite || ocupied)
+            return !(initialposition.line.ordinal != wantedposition.line.ordinal - 1 || ocupied)
         }
+    }
+
+    if (pieceteam == Colors.BLACK) {
+        if (initialposition.column == wantedposition.column) {
+            return !(initialposition.line.ordinal != wantedposition.line.ordinal + 1 || ocupied)
+        }
+    }
 
     //Move diagonal
     if (initialposition.column.ordinal == wantedposition.column.ordinal - 1
         || initialposition.column.ordinal == wantedposition.column.ordinal + 1){
-            val blackOrWhite= if(pieceteam == Colors.WHITE) 1 else -1
-            if (initialposition.line.ordinal != wantedposition.line.ordinal + blackOrWhite
-                && !ocupied) return false //Not Encounter
-        }
+        val blackOrWhite= if(pieceteam == Colors.WHITE) 1 else -1
+        if (initialposition.line.ordinal != wantedposition.line.ordinal + blackOrWhite
+            && !ocupied) return false //Not Encounter
+    }
     return true //Valid piece movement
 }
 /**
@@ -205,7 +208,7 @@ private fun moveVerityBishop(
             while (line.ordinal >= wantedposition.line.ordinal + 1
                 && column.ordinal <= wantedposition.column.ordinal - 1
             ) {
-                println(board.values)
+
                 if (board.containsKey(Positions(line, column))) return false // Encounter
 
                 line = Lines.values()[line.ordinal - 1]
