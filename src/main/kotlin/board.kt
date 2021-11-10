@@ -29,18 +29,19 @@ data class Positions(val line:Lines,val column:Columns)
  */
 data class PlayMade(val team:Colors, val play:String)
 
+
 /**
  * Initial game board format
  */
 const val INITIAL_BOARD =
-   "rnbqkbnr" +
-     "pppppppp" +
-     "        " +
-     "        " +
-     "        " +
-     "        " +
-     "PPPPPPPP" +
-     "RNBQKBNR"
+      "rnbqkbnr" +
+      "pppppppp" +
+      "        " +
+      "        " +
+      "        " +
+      "        " +
+      "PPPPPPPP" +
+      "RNBQKBNR"
 
 const val GAME_ID = "g1"
 
