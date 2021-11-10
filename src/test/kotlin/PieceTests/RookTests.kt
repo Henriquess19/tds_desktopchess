@@ -8,9 +8,9 @@ class RookTests {
     fun `two successful rook moves both sides`() {
         val sut = Board()
             .makeMove("pa7a5")
-            .makeMove("Ra8a6")
-            .makeMove("Ra6h6")
-            .makeMove("pa2a4")
+            .makeMove("ra8a6")
+            .makeMove("ra6h6")
+            .makeMove("Pa2a4")
             .makeMove("Ra1a3")
             .makeMove("Ra3h3")
 
@@ -29,13 +29,13 @@ class RookTests {
     fun `eating a piece with both sides`() {
         val sut = Board()
             .makeMove("pa7a5")
-            .makeMove("Ra8a6")
-            .makeMove("Ra6h6")
+            .makeMove("ra8a6")
+            .makeMove("ra6h6")
             .makeMove("rh6h2")
-            .makeMove("pa2a4")
+            .makeMove("Pa2a4")
             .makeMove("Ra1a3")
             .makeMove("Ra3g3")
-            .makeMove("rg3g7")
+            .makeMove("Rg3g7")
         assertEquals(
             " nbqkbnr"+
                     " pppppRp"+

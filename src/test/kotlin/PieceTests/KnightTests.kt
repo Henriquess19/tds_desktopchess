@@ -31,14 +31,14 @@ class KnightTests {
     @Test
     fun `ilegal moves with the knight on both sides`() {
         val sut = Board()
-            .makeMove("Nb8c6")
-            .makeMove("Nc6c5")
-            .makeMove("Nc6b6")
-            .makeMove("Nc6d6")
+            .makeMove("nb8c6")
+            .makeMove("nc6c5")//ilegal move
+            .makeMove("nc6b6")//ilegal move
+            .makeMove("nc6d6")//ilegal move
             .makeMove("Nb1c3")
-            .makeMove("Nc3c4")
-            .makeMove("Nc3b3")
-            .makeMove("Nc3d3")
+            .makeMove("Nc3c4")//ilegal move
+            .makeMove("Nc3b3")//ilegal move
+            .makeMove("Nc3d3")//ilegal move
         assertEquals(
             "r bqkbnr"+
                     "pppppppp"+
@@ -53,11 +53,11 @@ class KnightTests {
     @Test
     fun `eating a piece with knight on both sides`() {
         val sut = Board()
-            .makeMove("Nb8c6")
+            .makeMove("nb8c6")
             .makeMove("Pd2d4")
-            .makeMove("Nc6d4")
+            .makeMove("nc6d4")
             .makeMove("Nb1c3")
-            .makeMove("Pd7d5")
+            .makeMove("pd7d5")
             .makeMove("Nc3d5")
         assertEquals(
             "r bqkbnr"+

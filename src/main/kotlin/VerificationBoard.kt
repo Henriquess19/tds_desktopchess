@@ -38,8 +38,6 @@ fun moveVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positi
  * @param   board current state of the board
  * @return  if its a valid movement returns true else returns false
  */
-
-
 private fun moveVerityRook(
     initialposition: Positions,
     wantedposition: Positions,
@@ -103,18 +101,10 @@ private fun moveVerityPawn(
     }
 
     //Move infront
-    if (pieceteam == Colors.WHITE) {
         if (initialposition.column == wantedposition.column) {
-            return !(initialposition.line.ordinal != wantedposition.line.ordinal - 1 || ocupied)
+            val blackOrWhite= if(pieceteam==Colors.WHITE) - 1 else 1
+            return !(initialposition.line.ordinal != wantedposition.line.ordinal + blackOrWhite || ocupied)
         }
-    }
-
-    if (pieceteam == Colors.BLACK) {
-        if (initialposition.column == wantedposition.column) {
-            return !(initialposition.line.ordinal != wantedposition.line.ordinal + 1 || ocupied)
-        }
-    }
-
     //Move diagonal
     if (initialposition.column.ordinal == wantedposition.column.ordinal - 1
         || initialposition.column.ordinal == wantedposition.column.ordinal + 1){
