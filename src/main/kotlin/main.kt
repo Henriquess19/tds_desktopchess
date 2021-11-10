@@ -7,8 +7,6 @@ fun main(){
 
     val board: Board = MongoDbChess(driver.getDatabase(System.getenv(ENV_DB_NAME)))
     */
-
-
    val board = Board()  //TODO -> ARRANJAR MELHOR MANEIRA DE COMEÇAR
 
    val dispatcher = chessCommands(board)

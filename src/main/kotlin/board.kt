@@ -65,7 +65,6 @@ class Board: BoardInterface {
          }
       }
    }
-
    /**
     * Make the piece move, if its valid
     * @param move the move to be made
