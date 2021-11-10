@@ -1,8 +1,8 @@
 /**
- * Class the receives the [Board] and draw the information
+ * Fun the receives the [Board] and draw the information
  */
-class BoardConsoleDraw(board: Board){
-    private val boards= board.toString()
+fun boardConsoleDraw(board: Board){
+    val boards= board.toString()
     /**
      * Catch the current state of the board, when called, and print it
      */
