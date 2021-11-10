@@ -1,19 +1,16 @@
-import isel.leic.tds.mongodb.createMongoClient
-
-
 fun main(){
+    /*
     val driver =
         if (checkEnvironment() == DbMode.REMOTE)
             createMongoClient(System.getenv(ENV_DB_CONNECTION))
         else createMongoClient()
 
     val board: Board = MongoDbChess(driver.getDatabase(System.getenv(ENV_DB_NAME)))
-    board.open("9")
-    board.open("18")
-    board.open("28")
+    */
+
 }
 
-
+/*
 private const val ENV_DB_NAME = "MONGO_DB_NAME"
 private const val ENV_DB_CONNECTION = "MONGO_DB_CONNECTION"
 
@@ -27,3 +24,4 @@ private fun checkEnvironment(): DbMode {
     return if (System.getenv(ENV_DB_CONNECTION) != null) DbMode.REMOTE
     else DbMode.LOCAL
 }
+*/

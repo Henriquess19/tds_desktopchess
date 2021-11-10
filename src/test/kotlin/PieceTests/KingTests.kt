@@ -1,3 +1,6 @@
+package PieceTests
+
+import Board
 import org.junit.Test
 import kotlin.test.assertEquals
 

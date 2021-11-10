@@ -13,6 +13,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.litote.kmongo:kmongo:4.3.0")
+
 }
 
 tasks.test {
