@@ -6,7 +6,7 @@ fun chessCommands(board: Board):Map<String,Command>{
    return mapOf(
       "OPEN" to {open(board)},
       "JOIN" to {join(board)},
-      "PLAY" to {play(board)},
+      "PLAY" to {play(board,move)},//TODO -> get it
       "REFRESH" to {refresh(board)},
       "MOVES" to {moves(board)},
       "EXIT" to {exit()}
@@ -20,23 +20,22 @@ private fun open(board: Board) {
       Board()
       println("${board.gameId} opened..")
    }else{
-      //TODO -> Function to make board to the state && WHITES start
-
+      getboardstate(board.movesList,Colors.WHITE)
    }
-
 }
 
 private fun join(board: Board) {
    //TODO -> Create conditions for DB later ?: throw error
-   //Call board.gameId
+   //TODO -> Call board.gameId
    if (board.movesList.isEmpty()){
       println("${board.gameId}: error")
    }else{
-      //TODO -> Function to make board to the state && BLACK start
+      getboardstate(board.movesList,Colors.BLACK)
    }
 }
 
-private fun play(board: Board) {
+private fun play(board: Board,move:String) {
+   //TODO
   //board.makeMove(move)
    println("Playtest")
 }
@@ -54,4 +53,12 @@ private fun moves(board: Board) {
 private fun exit() {
       exitProcess(0)
       //TODO -> With DB implementation, make secure exit
+}
+
+private fun getboardstate(moves:MutableMap<Int,PlayMade>,team:Colors){
+      val board= Board()
+      moves.forEach{
+         board.makeMove(it.value.play)
+      }
+      //TODO() -> SET NEXT PLAYER BE 'TEAM'
 }
