@@ -41,7 +41,7 @@ private fun play(board: Board,move:String) {
 }
 
 private fun refresh(board: Board) {
-      boardConsoleDraw(board)
+      draw(board)
    }
 
 private fun moves(board: Board) {

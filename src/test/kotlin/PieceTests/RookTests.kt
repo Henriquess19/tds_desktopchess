@@ -1,6 +1,7 @@
 package PieceTests
 
 import Board
+import draw
 import kotlin.test.assertEquals
 import kotlin.test.Test
 class RookTests {
@@ -13,6 +14,7 @@ class RookTests {
             .makeMove("Pa2a4")
             .makeMove("Ra1a3")
             .makeMove("Ra3h3")
+        draw(sut)
 
         assertEquals(
             " nbqkbnr"+
@@ -36,6 +38,7 @@ class RookTests {
             .makeMove("Ra1a3")
             .makeMove("Ra3g3")
             .makeMove("Rg3g7")
+        draw(sut)
         assertEquals(
             " nbqkbnr"+
                     " pppppRp"+
@@ -61,6 +64,7 @@ class RookTests {
             .makeMove("Ra1a3")
             .makeMove("Pb2b3")
             .makeMove("Ra3d3") //Ilegal movement
+        draw(sut)
         assertEquals(
             " nbqkbnr"+
                     "  pppppp"+

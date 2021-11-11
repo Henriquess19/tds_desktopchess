@@ -1,6 +1,7 @@
 package PieceTests
 
 import Board
+import draw
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -12,6 +13,8 @@ class QueenTests {
          .makeMove("qd8d6")
          .makeMove("Pc2c3")
          .makeMove("Qd1a4")
+      draw(sut)
+
 
       assertEquals(
          "rnb kbnr"+
@@ -35,6 +38,7 @@ class QueenTests {
          .makeMove("Pe2e3")
          .makeMove("Pg2g4")
          .makeMove("Qd1h4") //Ilegal movement
+      draw(sut)
 
       assertEquals(
          "rnb kbnr"+
@@ -55,6 +59,8 @@ class QueenTests {
          .makeMove("pf7f6")
          .makeMove("Qd1h5")
          .makeMove("Qh5e8") //Eating movement
+       draw(sut)
+
 
       assertEquals(
          "rnbqQbnr"+

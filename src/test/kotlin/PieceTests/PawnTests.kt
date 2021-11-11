@@ -1,6 +1,7 @@
 package PieceTests
 
 import Board
+import draw
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,6 +15,7 @@ class PawnTests {
             .makeMove("Pe2e5")
             .makeMove("Pe2f5")
             .makeMove("Pe7f5")
+        draw(sut)
 
         assertEquals(
             "rnbqkbnr"+
@@ -33,6 +35,7 @@ class PawnTests {
             .makeMove("Pf7f5")
             .makeMove("Pc2c4")
             .makeMove("Pa2a3")
+        draw(sut)
 
         assertEquals(
             "rnbqkbnr"+
@@ -51,6 +54,7 @@ class PawnTests {
         val sut = Board()
             .makeMove("Pa7a5")
             .makeMove("Pa5a3")
+        draw(sut)
 
         assertEquals(
             "rnbqkbnr"+
@@ -68,6 +72,7 @@ class PawnTests {
         val sut = Board()
             .makeMove("Pa7a5")
             .makeMove("Pa5a4")
+        draw(sut)
 
         assertEquals(
             "rnbqkbnr"+
@@ -89,6 +94,7 @@ class PawnTests {
             .makeMove("pa5b4")  //Eating movement
             .makeMove("Pc2c3")
             .makeMove("Pc3b4")  //Eating movement
+        draw(sut)
 
 
         assertEquals(

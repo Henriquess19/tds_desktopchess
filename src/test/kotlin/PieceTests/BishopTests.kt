@@ -1,6 +1,8 @@
 package PieceTests
 
 import Board
+import draw
+
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
@@ -13,6 +15,7 @@ class BishopTests {
             .makeMove("Pd2d3")
             .makeMove("Bc1h6")
 
+        draw(sut)
 
         assertEquals(
             "rn qkbnr"+
@@ -37,7 +40,7 @@ class BishopTests {
             .makeMove("Pd2d3")
             .makeMove("Bc1h6")
             .makeMove("Bh6e4")  //Ilegal move
-
+        draw(sut)
 
         assertEquals(
               "rn qkbnr"+
@@ -60,6 +63,7 @@ class BishopTests {
             .makeMove("Bf1e2")  //Eating movement
             .makeMove("Be2h5")
             .makeMove("Bh5f7")  //Eating movement
+        draw(sut)
         assertEquals(
               "rn qkbnr"+
                       "p pppBpp"+
@@ -81,6 +85,7 @@ class BishopTests {
             .makeMove("Pb2b4")
             .makeMove("Bc1a3")
             .makeMove("Ba3c5")  //Ilegal move
+        draw(sut)
 
 
         assertEquals(

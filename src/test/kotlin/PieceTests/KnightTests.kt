@@ -1,6 +1,7 @@
 package PieceTests
 
 import Board
+import draw
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -16,6 +17,7 @@ class KnightTests {
             .makeMove("nf6h5")
             .makeMove("Nc3a4")
             .makeMove("Nf3h4")
+        draw(sut)
 
         assertEquals(
             "r bqkb r"+
@@ -39,6 +41,7 @@ class KnightTests {
             .makeMove("Nc3c4")//ilegal move
             .makeMove("Nc3b3")//ilegal move
             .makeMove("Nc3d3")//ilegal move
+        draw(sut)
         assertEquals(
             "r bqkbnr"+
                     "pppppppp"+
@@ -59,6 +62,7 @@ class KnightTests {
             .makeMove("Nb1c3")
             .makeMove("pd7d5")
             .makeMove("Nc3d5")
+        draw(sut)
         assertEquals(
             "r bqkbnr"+
                     "ppp pppp"+

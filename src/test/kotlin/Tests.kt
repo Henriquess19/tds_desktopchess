@@ -12,6 +12,7 @@ class BoardTests {
                     "PPPPPPPP" +
                     "RNBQKBNR", sut.toString()
         )
+        draw(sut)
     }
 
     @Test
@@ -31,6 +32,7 @@ class BoardTests {
                     "PPPP PPP"+
                     "R BQKBNR",sut.toString()
         )
+        draw(sut)
     }
 
     //TODO -> TESTES DAS STRINGS DE MOVE NAO COMPLETAS
