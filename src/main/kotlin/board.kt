@@ -47,9 +47,9 @@ const val GAME_ID = "g1"
 
 class Board: BoardInterface {
    private val board = mutableMapOf<Positions, Pieces>()
-   val movesList = mutableMapOf<Int, PlayMade>()
+   private val movesList = mutableMapOf<Int, PlayMade>()
    val gameId = GAME_ID //TODO -> ARRANJAR DEPOIS MANEIRA MELHOR
-   private var numberOfPlay = 0
+   private var numberOfPlays = 0
 
    /**
     * Init the board putting the pieces on corresponding initial positions
@@ -87,11 +87,11 @@ class Board: BoardInterface {
          board.remove(oldPosition)
          //TODO -> If kings dies, the other team wins, maybe add to moveverity and add result END
       }
-      movesList[numberOfPlay++] = PlayMade(piece.team, move)
+      movesList[numberOfPlays++] = PlayMade(piece.team, move)
       return this
    }
    /**
-    * Verify if the position contains the piece
+    * Verify if the position contains a piece
     * @param positions position where the piece should be
     * @return if contains return true else false
     */
@@ -107,6 +107,18 @@ class Board: BoardInterface {
    override fun getPiece(positions: Positions): Pieces? {
       return board[positions]
    }
+   /**
+    * Return all the play made
+    * @return list of all plays made
+    */
+   override fun getMoveList() : MutableList<PlayMade> {
+      val list = mutableListOf<PlayMade>()
+      movesList.forEach {
+         list+= it.value
+      }
+      return list
+   }
+
 
    /**
     * Overwrites the function string to transform the board in something readble

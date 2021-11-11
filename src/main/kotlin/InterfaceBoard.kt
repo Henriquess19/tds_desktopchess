@@ -12,7 +12,7 @@ interface BoardInterface {
     */
    fun makeMove(move:String):Board
    /**
-    * Verificate if the position contains the piece
+    * Verificate if the position contains a piece
     * @param positions position where the piece should be
     * @return if contains return true else false
     */
@@ -24,4 +24,10 @@ interface BoardInterface {
     * @return the piece itself
     */
    fun getPiece(positions: Positions):Pieces?
+   /**
+    * Return all the play made
+    * @return list of all plays made
+    */
+   fun getMoveList():MutableList<PlayMade>
+
 }
