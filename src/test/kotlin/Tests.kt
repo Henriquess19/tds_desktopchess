@@ -1,5 +1,6 @@
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import Board
 
 class BoardTests {
     @Test
