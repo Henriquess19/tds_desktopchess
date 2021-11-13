@@ -48,7 +48,7 @@ const val GAME_ID = "g1"
 class Board: BoardInterface {
    private val board = mutableMapOf<Positions, Pieces>()
    private val movesList = mutableMapOf<Int, PlayMade>()
-   val gameId = GAME_ID //TODO -> ARRANJAR DEPOIS MANEIRA MELHOR
+   //val gameId = GAME_ID //TODO -> ARRANJAR DEPOIS MANEIRA MELHOR
    private var numberOfPlays = 0
 
    /**
@@ -139,7 +139,7 @@ class Board: BoardInterface {
       return strboard
    }
 
-   override fun isYourTurnToPlay(move: Move, teamTurn: Team): Boolean {
+   override fun turnToplay(move: Move, teamTurn: Team): Boolean {
       val oldLine = (move.move[2].toInt() - '0'.code) - 1
       val oldColumn = "C" + move.move[1].uppercaseChar()
       val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))

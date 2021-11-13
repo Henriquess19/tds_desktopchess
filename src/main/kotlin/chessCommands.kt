@@ -1,11 +1,13 @@
 import kotlin.system.exitProcess
 
 typealias Command = (String?) -> Unit
+//Como se fosse a nossa database da rasca
+var listOfGames= mutableMapOf<Int, Board>()
 
-fun chessCommands(board: Board,):Map<String,Command>{
+fun chessCommands(board: Board, gameId: GameId):Map<String,Command>{
    return mapOf(
-      "OPEN" to {open(board)},
-      "JOIN" to {join(board)},
+      "OPEN" to {open(board,gameId)},
+      "JOIN" to {join(board,gameId)},
       "PLAY" to {play(board,it)},
       "REFRESH" to {refresh(board)},
       "MOVES" to {moves(board)},
@@ -13,30 +15,37 @@ fun chessCommands(board: Board,):Map<String,Command>{
    )
 }
 
-private fun open(board: Board) {
-   //TODO -> Create conditions for DB later
-   //Call board.gameId
-   if (board.getMoveList().isEmpty()){
-      Board()
-      println("${board.gameId} opened..")
-   }else{
-      getboardstate(board.getMoveList(),Team.WHITE)
-   }
+private fun open(board: Board, gameId: GameId) {
+    //TODO -> Create conditions for DB later
+    //Call board.gameId
+    if (listOfGames[gameId.gameId] == null) {
+        listOfGames.put(gameId.gameId, board)
+        Board()
+        println("$gameId opened..")
+    }
+    else {
+            listOfGames[gameId.gameId]
+            println("$gameId was created, opening..")
+        }
 }
 
-private fun join(board: Board) {
+private fun join(board: Board, gameId:GameId) {
    //TODO -> Create conditions for DB later ?: throw error
    //TODO -> Call board.gameId
-   if (board.getMoveList().isEmpty()){
-      println("${board.gameId}: error")
+   if (listOfGames[gameId.gameId] == null){
+      println("${gameId.gameId}: wasn´t created yet")
    }else{
       getboardstate(board.getMoveList(),Team.BLACK)
    }
 }
 
 private fun play(board: Board,move:String?) {
-   if (move != null ){
-       if(board.isYourTurnToPlay(Move(move),teamTurn(board.getMoveList()))) {
+    if (listOfGames.isEmpty()){
+        return println("You have to open the game first")
+    }
+
+    if (move != null ){
+       if(board.turnToplay(Move(move),teamTurn(board.getMoveList()))) {
                //val movePrepared = prepareTheMove(board, move)
                board.makeMove(Move(move), teamTurn(board.getMoveList()))
                draw(board)
@@ -55,8 +64,9 @@ fun prepareTheMove(board: Board,move: String):String {
 
 private fun refresh(board: Board) {
    //TODO() ATUALIZAR JOGO CONFORME DB
+    if (listOfGames.isEmpty()) { return println("You have to open the game first")}
       draw(board)
-   }
+}
 
 fun moves(board: Board) {
    var idx = 0
@@ -84,11 +94,8 @@ private fun getboardstate(moves:MutableList<PlayMade>,team:Team){
       //TODO() -> SET NEXT PLAYER BE 'TEAM'
 }
 
-fun getGameId(board: Board):String{
-   return board.gameId
-}
-
 fun teamTurn(moves: MutableList<PlayMade>):Team{
    return if (moves.isEmpty() || moves.size%2 == 0) Team.WHITE
             else Team.BLACK
 }
+
