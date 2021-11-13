@@ -1,4 +1,4 @@
-package PieceTests
+package pieceTests
 
 import Board
 import draw
@@ -6,74 +6,217 @@ import kotlin.test.assertEquals
 import kotlin.test.Test
 class RookTests {
     @Test
-    fun `two successful rook moves both sides`() {
+    fun `successful rook upwards movement`() {
         val sut = Board()
-            .makeMove("pa7a5")
-            .makeMove("ra8a6")
-            .makeMove("ra6h6")
             .makeMove("Pa2a4")
             .makeMove("Ra1a3")
-            .makeMove("Ra3h3")
-        draw(sut)
-
         assertEquals(
-            " nbqkbnr"+
-                    " ppppppp"+
-                    "       r"+
-                    "p       "+
+            "rnbqkbnr"+
+                    "pppppppp"+
+                    "        "+
+                    "        "+
                     "P       "+
-                    "       R"+
+                    "R       "+
                     " PPPPPPP"+
                     " NBQKBNR",sut.toString()
         )
     }
+
     @Test
-    fun `eating a piece with both sides`() {
+    fun `successful rook downwards movement`() {
         val sut = Board()
             .makeMove("pa7a5")
             .makeMove("ra8a6")
-            .makeMove("ra6h6")
-            .makeMove("rh6h2")
-            .makeMove("Pa2a4")
-            .makeMove("Ra1a3")
-            .makeMove("Ra3g3")
-            .makeMove("Rg3g7")
-        draw(sut)
         assertEquals(
             " nbqkbnr"+
-                    " pppppRp"+
-                    "        "+
-                    "p       "+
-                    "P       "+
-                    "        "+
-                    " PPPPPPr"+
-                    " NBQKBNR",sut.toString()
+              " ppppppp"+
+              "r       "+
+              "p       "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
         )
     }
+
     @Test
-    fun `ilegal moves with boath rooks`() {
+    fun `successful rook rightwards movement`() {
         val sut = Board()
-            .makeMove("pa7a5")
-            .makeMove("ra8a4") //Ilegal movement
-            .makeMove("ra8a6")
-            .makeMove("ra6c4") //Ilegal movement
-            .makeMove("pb7b6")
-            .makeMove("ra6d6") //Ilegal movement
             .makeMove("Pa2a4")
-            .makeMove("Ra1a5") //Ilegal movement
             .makeMove("Ra1a3")
-            .makeMove("Pb2b3")
-            .makeMove("Ra3d3") //Ilegal movement
-        draw(sut)
+            .makeMove("Ra3h3")
         assertEquals(
-            " nbqkbnr"+
-                    "  pppppp"+
-                    "rp      "+
-                    "p       "+
-                    "P       "+
-                    "RP      "+
-                    "  PPPPPP"+
-                    " NBQKBNR",sut.toString()
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "        "+
+              "P       "+
+              "       R"+
+              " PPPPPPP"+
+              " NBQKBNR",sut.toString()
         )
     }
+
+    @Test
+    fun `successful rook leftwards movement`() {
+        val sut = Board()
+            .makeMove("Ph2h4")
+            .makeMove("Rh1h3")
+            .makeMove("Rh3a3")
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "        "+
+              "       P"+
+              "R       "+
+              "PPPPPPP "+
+              "RNBQKBN ",sut.toString()
+        )
+    }
+
+    @Test
+    fun `successful rook upwards eating movement`() {
+        val sut = Board()
+            .makeMove("pb7b5")
+            .makeMove("Pa2a4")
+            .makeMove("pb5a4")
+            .makeMove("Ra1a4")
+        assertEquals(
+            "rnbqkbnr"+
+              "p pppppp"+
+              "        "+
+              "        "+
+              "R       "+
+              "        "+
+              " PPPPPPP"+
+              " NBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `successful rook downwards eating movement`() {
+        val sut = Board()
+            .makeMove("Pb2b4")
+            .makeMove("pa7a5")
+            .makeMove("Pb4a5")
+            .makeMove("ra8a5")
+        assertEquals(
+            " nbqkbnr"+
+              " ppppppp"+
+              "        "+
+              "r       "+
+              "        "+
+              "        "+
+              "P PPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `successful rook rightwards eating movement`() {
+        val sut = Board()
+            .makeMove("ph7h5")
+            .makeMove("Pa2a4")
+            .makeMove("ra1a3")
+            .makeMove("ph5h4")
+            .makeMove("ph4h3")
+            .makeMove("Ra3h3")
+        assertEquals(
+            "rnbqkbnr"+
+              "ppppppp "+
+              "        "+
+              "        "+
+              "P       "+
+              "       R"+
+              " PPPPPPP"+
+              " NBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `successful rook leftwards eating movement`() {
+        val sut = Board()
+            .makeMove("Ph2h4")
+            .makeMove("pa7a5")
+            .makeMove("Rh1h3")
+            .makeMove("pa5a4")
+            .makeMove("pa4a3")
+            .makeMove("Rh3a3")
+        assertEquals(
+            "rnbqkbnr"+
+              " ppppppp"+
+              "        "+
+              "        "+
+              "       P"+
+              "R       "+
+              "PPPPPPP "+
+              "RNBQKBN ",sut.toString()
+        )
+    }
+
+    @Test
+    fun `ilegal rook upwards movement`() {
+        val sut = Board()
+            .makeMove("Ra1a3")
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "        "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `ilegal rook downwards movement`() {
+        val sut = Board()
+            .makeMove("ra8a6")
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "        "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `ilegal rook rightwards movement`() {
+        val sut = Board()
+            .makeMove("Ra1a3")
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "        "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `ilegal rook leftwards movement`() {
+        val sut = Board()
+            .makeMove("Ra8a7")
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "        "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
 }

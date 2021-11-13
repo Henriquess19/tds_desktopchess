@@ -6,7 +6,7 @@ fun chessCommands(board: Board):Map<String,Command>{
    return mapOf(
       "OPEN" to {open(board)},
       "JOIN" to {join(board)},
-      //"PLAY" to {play(board,move)},//TODO -> get it
+      "PLAY" to {play(board,it)},
       "REFRESH" to {refresh(board)},
       "MOVES" to {moves(board)},
       "EXIT" to {exit()}
@@ -34,13 +34,14 @@ private fun join(board: Board) {
    }
 }
 
-private fun play(board: Board,move:String) {
-   //TODO
-  //board.makeMove(move)
-   println("Playtest")
+private fun play(board: Board,move:String?) {
+   if (move == null || move.length > 5 || move.length<2) throw Exception("wrong") //TODO() RETURN WORNG PARAMETER OR SOMETHING LIKE THAT
+   board.makeMove(move)
+   draw(board)
 }
 
 private fun refresh(board: Board) {
+   //TODO() ATUALIZAR JOGO CONFORME DB
       draw(board)
    }
 

@@ -1,4 +1,4 @@
-package PieceTests
+package pieceTests
 
 import Board
 import draw
@@ -7,15 +7,9 @@ import kotlin.test.assertEquals
 
 class PawnTests {
     @Test
-    fun `illegal pawn move return the board not change`() {
+    fun `legal pawn 1 block upward move`() {
         val sut = Board()
-            .makeMove("Pa2b3") //Ilegal movement
-            .makeMove("Pg7h6") //Ilegal movement
-            .makeMove("Pe7e4")
-            .makeMove("Pe2e5")
-            .makeMove("Pe2f5")
-            .makeMove("Pe7f5")
-        draw(sut)
+            .makeMove("Pa2a3")
 
         assertEquals(
             "rnbqkbnr"+
@@ -23,89 +17,298 @@ class PawnTests {
                     "        "+
                     "        "+
                     "        "+
-                    "        "+
-                    "PPPPPPPP"+
-                    "RNBQKBNR",sut.toString()
-        )
-    }
-    @Test
-    fun `the two possible first moves are ok on both sides`() {
-        val sut = Board()
-            .makeMove("Ph7h6")
-            .makeMove("Pf7f5")
-            .makeMove("Pc2c4")
-            .makeMove("Pa2a3")
-        draw(sut)
-
-        assertEquals(
-            "rnbqkbnr"+
-                    "ppppp p "+
-                    "       p"+
-                    "     p  "+
-                    "  P     "+
                     "P       "+
-                    " P PPPPP"+
+                    " PPPPPPP"+
                     "RNBQKBNR",sut.toString()
         )
     }
 
     @Test
-    fun `wrong pawn second move return false`() {
+    fun `legal pawn 2 block upward move`() {
         val sut = Board()
-            .makeMove("Pa7a5")
-            .makeMove("Pa5a3")
-        draw(sut)
+            .makeMove("Pa2a4")
 
         assertEquals(
             "rnbqkbnr"+
-                    " ppppppp"+
-                    "        "+
-                    "p       "+
-                    "        "+
-                    "        "+
-                    "PPPPPPPP"+
-                    "RNBQKBNR",sut.toString()
+              "pppppppp"+
+              "        "+
+              "        "+
+              "P       "+
+              "        "+
+              " PPPPPPP"+
+              "RNBQKBNR",sut.toString()
         )
     }
+
     @Test
-    fun `two successful pawn moves`() {
+    fun `legal pawn 1 block downward move`() {
         val sut = Board()
-            .makeMove("Pa7a5")
-            .makeMove("Pa5a4")
-        draw(sut)
+            .makeMove("pa7a6")
 
         assertEquals(
             "rnbqkbnr"+
-                    " ppppppp"+
-                    "        "+
-                    "        "+
-                    "p       "+
-                    "        "+
-                    "PPPPPPPP"+
-                    "RNBQKBNR",sut.toString()
+              " ppppppp"+
+              "p       "+
+              "        "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
         )
     }
-    //não dá para comer peças
+
     @Test
-    fun `move diagonaly after eating a piece`() {
+    fun `legal pawn 2 block downward move`() {
         val sut = Board()
             .makeMove("pa7a5")
-            .makeMove("Pb2b4")
-            .makeMove("pa5b4")  //Eating movement
-            .makeMove("Pc2c3")
-            .makeMove("Pc3b4")  //Eating movement
-        draw(sut)
-
 
         assertEquals(
             "rnbqkbnr"+
-                    " ppppppp"+
-                    "        "+
-                    "        "+
-                    " P      "+
-                    "        "+
-                    "P  PPPPP"+
-                    "RNBQKBNR",sut.toString()
+              " ppppppp"+
+              "        "+
+              "p       "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Pawn upleftdiagonal eat move`() {
+        val sut = Board()
+            .makeMove("ph7h5")
+            .makeMove("rh8h6")
+            .makeMove("rh6a6")
+            .makeMove("ra6a3")
+            .makeMove("Pb2a3")
+
+        assertEquals(
+            "rnbqkbn "+
+              "ppppppp "+
+              "        "+
+              "       p"+
+              "        "+
+              "P       "+
+              "P PPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Pawn uprightdiagonal eat move`() {
+        val sut = Board()
+            .makeMove("ph7h5")
+            .makeMove("rh8h6")
+            .makeMove("rh6a6")
+            .makeMove("ra6a3")
+            .makeMove("ra3b3")
+            .makeMove("Pa2b3")
+
+        assertEquals(
+            "rnbqkbn "+
+              "ppppppp "+
+              "        "+
+              "       p"+
+              "        "+
+              " P      "+
+              " PPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Pawn downrightdiagonal eat move`() {
+        val sut = Board()
+            .makeMove("Pa2a4")
+            .makeMove("Ra1a3")
+            .makeMove("Ra3h3")
+            .makeMove("Rh3h6")
+            .makeMove("pg7h6")
+
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppp p"+
+              "       p"+
+              "        "+
+              "P       "+
+              "        "+
+              " PPPPPPP"+
+              " NBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Pawn downleftdiagonal eat move`() {
+        val sut = Board()
+            .makeMove("Pa2a4")
+            .makeMove("Ra1a3")
+            .makeMove("Ra3h3")
+            .makeMove("Rh3h6")
+            .makeMove("Rh6g6")
+            .makeMove("ph7g6")
+
+        assertEquals(
+            "rnbqkbnr"+
+              "ppppppp "+
+              "      p "+
+              "        "+
+              "P       "+
+              "        "+
+              " PPPPPPP"+
+              " NBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Ilegal pawn 1 block upward move`() {
+        val sut = Board()
+            .makeMove("ph7h5")
+            .makeMove("rh8h6")
+            .makeMove("rh6a6")
+            .makeMove("ra6a3")
+            .makeMove("Pa2a3")
+
+        assertEquals(
+            "rnbqkbn "+
+              "ppppppp "+
+              "        "+
+              "       p"+
+              "        "+
+              "r       "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Ilegal pawn 2 block upward move`() {
+        val sut = Board()
+            .makeMove("ph7h5")
+            .makeMove("rh8h6")
+            .makeMove("rh6a6")
+            .makeMove("ra6a4")
+            .makeMove("Pa2a4")
+        draw(sut)
+        assertEquals(
+            "rnbqkbn "+
+              "ppppppp "+
+              "        "+
+              "       p"+
+              "r       "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Ilegal pawn 1 block downward move`() {
+        val sut = Board()
+            .makeMove("Pa2a4")
+            .makeMove("Ra1a3")
+            .makeMove("Ra3h3")
+            .makeMove("Rh3h6")
+            .makeMove("ph7h6")
+
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "       R"+
+              "        "+
+              "P       "+
+              "        "+
+              " PPPPPPP"+
+              " NBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Ilegal pawn 2 block downward move`() {
+        val sut = Board()
+            .makeMove("Pa2a4")
+            .makeMove("Ra1a3")
+            .makeMove("Ra3h3")
+            .makeMove("Rh3h5")
+            .makeMove("ph7h5")
+
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "       R"+
+              "P       "+
+              "        "+
+              " PPPPPPP"+
+              " NBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Ilegal pawn uprightdiagonal move`() {
+        val sut = Board()
+            .makeMove("Pa2b3")
+
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "        "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Ilegal pawn upleftdiagonal move`() {
+        val sut = Board()
+            .makeMove("Pb2a3")
+
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "        "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Ilegal pawn downleftdiagonal move`() {
+        val sut = Board()
+            .makeMove("pb7a6")
+
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "        "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
+        )
+    }
+
+    @Test
+    fun `Ilegal pawn downrightdiagonal move`() {
+        val sut = Board()
+            .makeMove("pa7b6")
+
+        assertEquals(
+            "rnbqkbnr"+
+              "pppppppp"+
+              "        "+
+              "        "+
+              "        "+
+              "        "+
+              "PPPPPPPP"+
+              "RNBQKBNR",sut.toString()
         )
     }
 }

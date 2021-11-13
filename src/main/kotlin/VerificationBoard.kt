@@ -86,7 +86,7 @@ private fun moveVerityPawn(
         initialposition.line == Lines.L2 &&
         (wantedposition.line == Lines.L3 ||
                 wantedposition.line == Lines.L4) &&
-        initialposition.column == wantedposition.column) {
+        initialposition.column == wantedposition.column && !ocupied) {
         return !(board.containsPiece(Positions(Lines.L3, initialposition.column)))
                 || board.containsPiece(Positions(Lines.L4, initialposition.column))
     }

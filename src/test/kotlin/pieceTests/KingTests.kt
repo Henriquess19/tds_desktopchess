@@ -288,5 +288,129 @@ class KingTests {
       )
    }
 
-   //TODO EAT
+   @Test
+   fun `king eating movement updiagonal rightward`() {
+      val sut = Board()
+         .makeMove("ph7h5")
+         .makeMove("rh8h6")
+         .makeMove("rh6f6")
+         .makeMove("rf6f2")
+         .makeMove("Ke1f2")
+
+      assertEquals(
+         "rnbqkbn "+
+           "ppppppp "+
+           "        "+
+           "       p"+
+           "        "+
+           "        "+
+           "PPPPPKPP"+
+           "RNBQ BNR",sut.toString()
+      )
+   }
+
+   @Test
+   fun `king eating movement updiagonal leftward`() {
+      val sut = Board()
+         .makeMove("ph7h5")
+         .makeMove("rh8h6")
+         .makeMove("rh6d6")
+         .makeMove("rd6d2")
+         .makeMove("Ke1d2")
+
+      assertEquals(
+         "rnbqkbn "+
+           "ppppppp "+
+           "        "+
+           "       p"+
+           "        "+
+           "        "+
+           "PPPKPPPP"+
+           "RNBQ BNR",sut.toString()
+      )
+   }
+
+   @Test
+   fun `king eating movement upward`() {
+      val sut = Board()
+         .makeMove("ph7h5")
+         .makeMove("rh8h6")
+         .makeMove("rh6e6")
+         .makeMove("re6e2")
+         .makeMove("Ke1e2")
+
+      assertEquals(
+         "rnbqkbn "+
+           "ppppppp "+
+           "        "+
+           "       p"+
+           "        "+
+           "        "+
+           "PPPPKPPP"+
+           "RNBQ BNR",sut.toString()
+      )
+   }
+
+   @Test
+   fun `king eating movement downward`() {
+      val sut = Board()
+         .makeMove("Ph2h4")
+         .makeMove("Rh1h3")
+         .makeMove("Rh3e3")
+         .makeMove("Re3e7")
+         .makeMove("ke8e7")
+
+      assertEquals(
+         "rnbq bnr"+
+           "ppppkppp"+
+           "        "+
+           "        "+
+           "       P"+
+           "        "+
+           "PPPPPPP "+
+           "RNBQKBN ",sut.toString()
+      )
+   }
+
+   @Test
+   fun `king eating movement rightdiagonal downward`() {
+      val sut = Board()
+         .makeMove("Ph2h4")
+         .makeMove("Rh1h3")
+         .makeMove("Rh3f3")
+         .makeMove("Rf3f7")
+         .makeMove("ke8f7")
+
+      assertEquals(
+         "rnbq bnr"+
+           "pppppkpp"+
+           "        "+
+           "        "+
+           "       P"+
+           "        "+
+           "PPPPPPP "+
+           "RNBQKBN ",sut.toString()
+      )
+   }
+
+   @Test
+   fun `king eating movement leftdiagonal downward`() {
+      val sut = Board()
+         .makeMove("Ph2h4")
+         .makeMove("Rh1h3")
+         .makeMove("Rh3d3")
+         .makeMove("Rd3d7")
+         .makeMove("ke8d7")
+
+      assertEquals(
+         "rnbq bnr"+
+           "pppkpppp"+
+           "        "+
+           "        "+
+           "       P"+
+           "        "+
+           "PPPPPPP "+
+           "RNBQKBN ",sut.toString()
+      )
+   }
 }
