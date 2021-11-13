@@ -2,7 +2,7 @@ import kotlin.system.exitProcess
 
 typealias Command = (String?) -> Unit
 
-fun chessCommands(board: Board):Map<String,Command>{
+fun chessCommands(board: Board,):Map<String,Command>{
    return mapOf(
       "OPEN" to {open(board)},
       "JOIN" to {join(board)},
@@ -35,17 +35,30 @@ private fun join(board: Board) {
 }
 
 private fun play(board: Board,move:String?) {
-   if (move == null || move.length > 5 || move.length<2) throw Exception("wrong") //TODO() RETURN WORNG PARAMETER OR SOMETHING LIKE THAT
-   board.makeMove(move,teamTurn(board.getMoveList()))
-   draw(board)
+   if (move != null ){
+       if(board.isYourTurnToPlay(Move(move),teamTurn(board.getMoveList()))) {
+               //val movePrepared = prepareTheMove(board, move)
+               board.makeMove(Move(move), teamTurn(board.getMoveList()))
+               draw(board)
+           }
+   }
+    else{
+        println("For play you need to write something...")
+   }
 }
+/*
+fun prepareTheMove(board: Board,move: String):String {
+    val piece= Pieces.valueOf()
+}
+
+ */
 
 private fun refresh(board: Board) {
    //TODO() ATUALIZAR JOGO CONFORME DB
       draw(board)
    }
 
-private fun moves(board: Board) {
+fun moves(board: Board) {
    var idx = 0
     val list = board.getMoveList()
    println("----------MOVES-----------")

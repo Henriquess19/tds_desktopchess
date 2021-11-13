@@ -10,7 +10,7 @@ interface BoardInterface {
     * @param move the move that its suppose to be made
     * @return [Board] the board change after the movement
     */
-   fun makeMove(move: String, teamTurn: Team):Board
+   fun makeMove(move: Move, teamTurn: Team):Board
    /**
     * Verificate if the position contains a piece
     * @param positions position where the piece should be
@@ -30,4 +30,5 @@ interface BoardInterface {
     */
    fun getMoveList():MutableList<PlayMade>
 
+   fun isYourTurnToPlay(move: Move, teamTurn: Team):Boolean
 }

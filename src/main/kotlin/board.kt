@@ -27,7 +27,7 @@ data class Positions(val line:Lines,val column:Columns)
  * @property team  The team where the piece was
  * @property play  The play itself
  */
-data class PlayMade(val team:Team, val play:String)
+data class PlayMade(val team:Team, val play:Move)
 
 
 /**
@@ -71,18 +71,18 @@ class Board: BoardInterface {
     * @return [Board] the game updated with the move
     */
 
-   override fun makeMove(move: String, teamTurn: Team): Board {
-      val oldLine = (move[2].toInt() - '0'.code) - 1
-      val newline = move[4].toString().toInt() - 1
-      val oldColumn = "C" + move[1].uppercaseChar()
-      val newColumn = "C" + move[3].uppercaseChar()
+   override fun makeMove(move: Move, teamTurn: Team): Board {
+      val oldLine = (move.move[2].toInt() - '0'.code) - 1
+      val newline = move.move[4].toString().toInt() - 1
+      val oldColumn = "C" + move.move[1].uppercaseChar()
+      val newColumn = "C" + move.move[3].uppercaseChar()
 
       val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
       val newPosition = Positions(Lines.values()[newline], Columns.valueOf(newColumn))
 
       val piece = board[oldPosition] ?: throw Throwable("Piece not founded in the initialposition.")
 
-      if (moveVerity(piece, oldPosition, newPosition,this,teamTurn)) {
+      if (movePieceVerity(piece, oldPosition, newPosition,this)) {
          board[newPosition] = piece
          board.remove(oldPosition)
          //TODO -> If kings dies, the other team wins, maybe add to moveverity and add result END
@@ -137,5 +137,13 @@ class Board: BoardInterface {
          }
       }
       return strboard
+   }
+
+   override fun isYourTurnToPlay(move: Move, teamTurn: Team): Boolean {
+      val oldLine = (move.move[2].toInt() - '0'.code) - 1
+      val oldColumn = "C" + move.move[1].uppercaseChar()
+      val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
+      val piece = board[oldPosition] ?: throw Throwable("Piece not founded in the initialposition.")
+      return teamTurn == piece.team
    }
 }

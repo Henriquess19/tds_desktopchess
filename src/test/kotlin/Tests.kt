@@ -18,9 +18,10 @@ class BoardTests {
     @Test
     fun `MakeMove in Board`() {
         val sut = Board()
-            .makeMove("Pe2e4", teamTurn(moves(board)))
-            .makeMove("Pe7e5", teamTurn(moves(board)))
-            .makeMove("Nb1c3", teamTurn(moves(board)))
+        sut
+            .makeMove("Pe2e4".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Pe7e5".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Nb1c3".toMove(), teamTurn(sut.getMoveList()))
 
         assertEquals(
             "rnbqkbnr"+

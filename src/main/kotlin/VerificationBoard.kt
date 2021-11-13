@@ -6,9 +6,7 @@
  * @param   board current state of the board
  * @return  if its a valid movement returns true else returns false
  */
-fun moveVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positions, board: Board, teamTurn: Team): Boolean {
-    if (teamTurn != board.getPiece(initialPosition)?.team) return false //Wrong piece color
-
+fun movePieceVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positions, board: Board): Boolean {
     val ocupied = board.containsPiece(wantedPosition)
 
     if (ocupied) {
@@ -33,6 +31,7 @@ fun moveVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positi
                 || moveVerityBishop(initialPosition, wantedPosition, board)
     }
 }
+
 /**
  * Verify if the movement of the rook its possible
  * @param   initialPosition original position of the rook
