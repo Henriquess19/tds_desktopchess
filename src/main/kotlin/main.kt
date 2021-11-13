@@ -12,19 +12,21 @@ fun main(){
    val dispatcher = chessCommands(board)
 
    while (true){
-      val(command,parameter) = readChessCommand()
+      val(command,parameter) = readChessCommand(board)
       val action = dispatcher[command.uppercase()]
       if (action == null) println("Invalid command") //TODO -> USE RESULT STUFF
       else action(parameter)
    }
 }
 
-private fun readChessCommand():Pair<String,String?>{
-   print("(gameId:color)> ")
+private fun readChessCommand(board:Board):Pair<String,String?>{
+   val gameId = getGameId(board)
+   val teamTurn = teamTurn(board.getMoveList())
+   print("$gameId:$teamTurn> ")
    val input = readln()
    val command = input.substringBefore(delimiter = ' ')
    val argument = input.substringAfter(delimiter = ' ', missingDelimiterValue = "").trim()
-   return Pair(command.trim(), if (argument.isNotBlank()) argument else null)
+   return Pair(command.trim(), argument.ifBlank { null })
 }
 
 private fun readln() = readLine()!!

@@ -10,11 +10,11 @@ enum class Lines{L1,L2,L3,L4,L5,L6,L7,L8}
 /**
  * All the the seven different pieces, for each team, that game of chess have
  */
-enum class Pieces(val team:Colors){r(Colors.BLACK),n(Colors.BLACK),b(Colors.BLACK),q(Colors.BLACK),k(Colors.BLACK),p(Colors.BLACK),R(Colors.WHITE),N(Colors.WHITE),B(Colors.WHITE),Q(Colors.WHITE),K(Colors.WHITE),P(Colors.WHITE)}
+enum class Pieces(val team:Team){r(Team.BLACK),n(Team.BLACK),b(Team.BLACK),q(Team.BLACK),k(Team.BLACK),p(Team.BLACK),R(Team.WHITE),N(Team.WHITE),B(Team.WHITE),Q(Team.WHITE),K(Team.WHITE),P(Team.WHITE)}
 /**
  * The two teams that are playable
  */
-enum class Colors{WHITE,BLACK}
+enum class Team{WHITE,BLACK}
 
 /**
  * Represents the position of the piece
@@ -27,7 +27,7 @@ data class Positions(val line:Lines,val column:Columns)
  * @property team  The team where the piece was
  * @property play  The play itself
  */
-data class PlayMade(val team:Colors, val play:String)
+data class PlayMade(val team:Team, val play:String)
 
 
 /**
@@ -71,7 +71,7 @@ class Board: BoardInterface {
     * @return [Board] the game updated with the move
     */
 
-   override fun makeMove(move: String): Board {
+   override fun makeMove(move: String, teamTurn: Team): Board {
       val oldLine = (move[2].toInt() - '0'.code) - 1
       val newline = move[4].toString().toInt() - 1
       val oldColumn = "C" + move[1].uppercaseChar()
@@ -82,12 +82,12 @@ class Board: BoardInterface {
 
       val piece = board[oldPosition] ?: throw Throwable("Piece not founded in the initialposition.")
 
-      if (moveVerity(piece, oldPosition, newPosition,this)) {
+      if (moveVerity(piece, oldPosition, newPosition,this,teamTurn)) {
          board[newPosition] = piece
          board.remove(oldPosition)
          //TODO -> If kings dies, the other team wins, maybe add to moveverity and add result END
+         movesList[numberOfPlays++] = PlayMade(piece.team, move)
       }
-      movesList[numberOfPlays++] = PlayMade(piece.team, move)
       return this
    }
    /**

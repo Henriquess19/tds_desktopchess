@@ -1,6 +1,5 @@
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import Board
 
 class BoardTests {
     @Test
@@ -19,9 +18,9 @@ class BoardTests {
     @Test
     fun `MakeMove in Board`() {
         val sut = Board()
-            .makeMove("Pe2e4")
-            .makeMove("Pe7e5")
-            .makeMove("Nb1c3")
+            .makeMove("Pe2e4", teamTurn(moves(board)))
+            .makeMove("Pe7e5", teamTurn(moves(board)))
+            .makeMove("Nb1c3", teamTurn(moves(board)))
 
         assertEquals(
             "rnbqkbnr"+

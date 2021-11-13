@@ -10,7 +10,7 @@ interface BoardInterface {
     * @param move the move that its suppose to be made
     * @return [Board] the board change after the movement
     */
-   fun makeMove(move:String):Board
+   fun makeMove(move: String, teamTurn: Team):Board
    /**
     * Verificate if the position contains a piece
     * @param positions position where the piece should be

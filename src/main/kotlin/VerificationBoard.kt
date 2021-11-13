@@ -6,7 +6,9 @@
  * @param   board current state of the board
  * @return  if its a valid movement returns true else returns false
  */
-fun moveVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positions, board: Board): Boolean {
+fun moveVerity(piece: Pieces, initialPosition: Positions, wantedPosition: Positions, board: Board, teamTurn: Team): Boolean {
+    if (teamTurn != board.getPiece(initialPosition)?.team) return false //Wrong piece color
+
     val ocupied = board.containsPiece(wantedPosition)
 
     if (ocupied) {
@@ -74,7 +76,7 @@ private fun moveVerityRook(
  * @return  if its a valid movement returns true else returns false
  */
 private fun moveVerityPawn(
-    pieceteam: Colors,
+    pieceteam: Team,
     initialposition: Positions,
     wantedposition: Positions,
     ocupied: Boolean,
@@ -82,7 +84,7 @@ private fun moveVerityPawn(
 ): Boolean {
 
     //Initial pawn position
-    if (pieceteam == Colors.WHITE &&
+    if (pieceteam == Team.WHITE &&
         initialposition.line == Lines.L2 &&
         (wantedposition.line == Lines.L3 ||
                 wantedposition.line == Lines.L4) &&
@@ -91,7 +93,7 @@ private fun moveVerityPawn(
                 || board.containsPiece(Positions(Lines.L4, initialposition.column))
     }
 
-    if (pieceteam == Colors.BLACK &&
+    if (pieceteam == Team.BLACK &&
         initialposition.line == Lines.L7 &&
         (wantedposition.line == Lines.L6 ||
                 wantedposition.line == Lines.L5) &&
@@ -102,13 +104,13 @@ private fun moveVerityPawn(
 
     //Move infront
         if (initialposition.column == wantedposition.column) {
-            val blackOrWhite= if(pieceteam==Colors.WHITE) - 1 else 1
+            val blackOrWhite= if(pieceteam==Team.WHITE) - 1 else 1
             return !(initialposition.line.ordinal != wantedposition.line.ordinal + blackOrWhite || ocupied)
         }
     //Move diagonal
     if (initialposition.column.ordinal == wantedposition.column.ordinal - 1
         || initialposition.column.ordinal == wantedposition.column.ordinal + 1){
-        val blackOrWhite= if(pieceteam == Colors.WHITE) 1 else -1
+        val blackOrWhite= if(pieceteam == Team.WHITE) 1 else -1
         if (initialposition.line.ordinal != wantedposition.line.ordinal + blackOrWhite
             && !ocupied) return false //Not Encounter
     }

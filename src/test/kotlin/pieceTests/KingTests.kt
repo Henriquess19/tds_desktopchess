@@ -9,8 +9,8 @@ class KingTests {
    @Test
    fun `king movement upward`() {
       val sut = Board()
-         .makeMove("Pe2e4")
-         .makeMove("Ke1e2")
+         .makeMove("Pe2e4", teamTurn(moves(board)))
+         .makeMove("Ke1e2", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -27,8 +27,8 @@ class KingTests {
    @Test
    fun `king movement downward`() {
       val sut = Board()
-         .makeMove("pe7e5")
-         .makeMove("ke8e7")
+         .makeMove("pe7e5", teamTurn(moves(board)))
+         .makeMove("ke8e7", teamTurn(moves(board)))
 
       assertEquals(
          "rnbq bnr"+
@@ -45,9 +45,9 @@ class KingTests {
    @Test
    fun `king movement rightward`() {
       val sut = Board()
-         .makeMove("pe7e5")
-         .makeMove("bf8d6")
-         .makeMove("ke8f8")
+         .makeMove("pe7e5", teamTurn(moves(board)))
+         .makeMove("bf8d6", teamTurn(moves(board)))
+         .makeMove("ke8f8", teamTurn(moves(board)))
 
       assertEquals(
          "rnbq knr"+
@@ -64,9 +64,9 @@ class KingTests {
    @Test
    fun `king movement leftward`() {
       val sut = Board()
-         .makeMove("pd7d5")
-         .makeMove("qd8d6")
-         .makeMove("ke8d8")
+         .makeMove("pd7d5", teamTurn(moves(board)))
+         .makeMove("qd8d6", teamTurn(moves(board)))
+         .makeMove("ke8d8", teamTurn(moves(board)))
 
       assertEquals(
          "rnbk bnr"+
@@ -83,8 +83,8 @@ class KingTests {
    @Test
    fun `king movement downdiagonal leftward`() {
       val sut = Board()
-         .makeMove("pd7d5")
-         .makeMove("ke8d7")
+         .makeMove("pd7d5", teamTurn(moves(board)))
+         .makeMove("ke8d7", teamTurn(moves(board)))
 
       assertEquals(
          "rnbq bnr"+
@@ -101,8 +101,8 @@ class KingTests {
    @Test
    fun `king movement downdiagonal rightward`() {
       val sut = Board()
-         .makeMove("pf7f5")
-         .makeMove("ke8f7")
+         .makeMove("pf7f5", teamTurn(moves(board)))
+         .makeMove("ke8f7", teamTurn(moves(board)))
 
       assertEquals(
          "rnbq bnr"+
@@ -119,8 +119,8 @@ class KingTests {
    @Test
    fun `king movement updiagonal leftward`() {
       val sut = Board()
-         .makeMove("Pd2d3")
-         .makeMove("Ke1d2")
+         .makeMove("Pd2d3", teamTurn(moves(board)))
+         .makeMove("Ke1d2", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -137,8 +137,8 @@ class KingTests {
    @Test
    fun `king movement updiagonal rightward`() {
       val sut = Board()
-         .makeMove("Pf2f3")
-         .makeMove("Ke1f2")
+         .makeMove("Pf2f3", teamTurn(moves(board)))
+         .makeMove("Ke1f2", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -155,7 +155,7 @@ class KingTests {
    @Test
    fun `king ilegal movement upward`() {
       val sut = Board()
-         .makeMove("Ke1e2")
+         .makeMove("Ke1e2", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -172,7 +172,7 @@ class KingTests {
    @Test
    fun `king ilegal movement downward`() {
       val sut = Board()
-         .makeMove("ke8e7")
+         .makeMove("ke8e7", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -189,7 +189,7 @@ class KingTests {
    @Test
    fun `king ilegal movement rightward`() {
       val sut = Board()
-         .makeMove("Ke1f1")
+         .makeMove("Ke1f1", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -206,7 +206,7 @@ class KingTests {
    @Test
    fun `king ilegal movement leftward`() {
       val sut = Board()
-         .makeMove("ke8d8")
+         .makeMove("ke8d8", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -223,7 +223,7 @@ class KingTests {
    @Test
    fun `king ilegal movement downdiagonal leftward`() {
       val sut = Board()
-         .makeMove("ke8d7")
+         .makeMove("ke8d7", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -240,7 +240,7 @@ class KingTests {
    @Test
    fun `king ilegal movement downdiagonal rightward`() {
       val sut = Board()
-         .makeMove("ke8f7")
+         .makeMove("ke8f7", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -257,7 +257,7 @@ class KingTests {
    @Test
    fun `king ilegal movement updiagonal leftward`() {
       val sut = Board()
-         .makeMove("Ke1d2")
+         .makeMove("Ke1d2", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -274,7 +274,7 @@ class KingTests {
    @Test
    fun `king ilegal movement updiagonal rightward`() {
       val sut = Board()
-         .makeMove("Ke1d2")
+         .makeMove("Ke1d2", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbnr"+
@@ -291,11 +291,11 @@ class KingTests {
    @Test
    fun `king eating movement updiagonal rightward`() {
       val sut = Board()
-         .makeMove("ph7h5")
-         .makeMove("rh8h6")
-         .makeMove("rh6f6")
-         .makeMove("rf6f2")
-         .makeMove("Ke1f2")
+         .makeMove("ph7h5", teamTurn(moves(board)))
+         .makeMove("rh8h6", teamTurn(moves(board)))
+         .makeMove("rh6f6", teamTurn(moves(board)))
+         .makeMove("rf6f2", teamTurn(moves(board)))
+         .makeMove("Ke1f2", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbn "+
@@ -312,11 +312,11 @@ class KingTests {
    @Test
    fun `king eating movement updiagonal leftward`() {
       val sut = Board()
-         .makeMove("ph7h5")
-         .makeMove("rh8h6")
-         .makeMove("rh6d6")
-         .makeMove("rd6d2")
-         .makeMove("Ke1d2")
+         .makeMove("ph7h5", teamTurn(moves(board)))
+         .makeMove("rh8h6", teamTurn(moves(board)))
+         .makeMove("rh6d6", teamTurn(moves(board)))
+         .makeMove("rd6d2", teamTurn(moves(board)))
+         .makeMove("Ke1d2", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbn "+
@@ -333,11 +333,11 @@ class KingTests {
    @Test
    fun `king eating movement upward`() {
       val sut = Board()
-         .makeMove("ph7h5")
-         .makeMove("rh8h6")
-         .makeMove("rh6e6")
-         .makeMove("re6e2")
-         .makeMove("Ke1e2")
+         .makeMove("ph7h5", teamTurn(moves(board)))
+         .makeMove("rh8h6", teamTurn(moves(board)))
+         .makeMove("rh6e6", teamTurn(moves(board)))
+         .makeMove("re6e2", teamTurn(moves(board)))
+         .makeMove("Ke1e2", teamTurn(moves(board)))
 
       assertEquals(
          "rnbqkbn "+
@@ -354,11 +354,11 @@ class KingTests {
    @Test
    fun `king eating movement downward`() {
       val sut = Board()
-         .makeMove("Ph2h4")
-         .makeMove("Rh1h3")
-         .makeMove("Rh3e3")
-         .makeMove("Re3e7")
-         .makeMove("ke8e7")
+         .makeMove("Ph2h4", teamTurn(moves(board)))
+         .makeMove("Rh1h3", teamTurn(moves(board)))
+         .makeMove("Rh3e3", teamTurn(moves(board)))
+         .makeMove("Re3e7", teamTurn(moves(board)))
+         .makeMove("ke8e7", teamTurn(moves(board)))
 
       assertEquals(
          "rnbq bnr"+
@@ -375,11 +375,11 @@ class KingTests {
    @Test
    fun `king eating movement rightdiagonal downward`() {
       val sut = Board()
-         .makeMove("Ph2h4")
-         .makeMove("Rh1h3")
-         .makeMove("Rh3f3")
-         .makeMove("Rf3f7")
-         .makeMove("ke8f7")
+         .makeMove("Ph2h4", teamTurn(moves(board)))
+         .makeMove("Rh1h3", teamTurn(moves(board)))
+         .makeMove("Rh3f3", teamTurn(moves(board)))
+         .makeMove("Rf3f7", teamTurn(moves(board)))
+         .makeMove("ke8f7", teamTurn(moves(board)))
 
       assertEquals(
          "rnbq bnr"+
@@ -396,11 +396,11 @@ class KingTests {
    @Test
    fun `king eating movement leftdiagonal downward`() {
       val sut = Board()
-         .makeMove("Ph2h4")
-         .makeMove("Rh1h3")
-         .makeMove("Rh3d3")
-         .makeMove("Rd3d7")
-         .makeMove("ke8d7")
+         .makeMove("Ph2h4", teamTurn(moves(board)))
+         .makeMove("Rh1h3", teamTurn(moves(board)))
+         .makeMove("Rh3d3", teamTurn(moves(board)))
+         .makeMove("Rd3d7", teamTurn(moves(board)))
+         .makeMove("ke8d7", teamTurn(moves(board)))
 
       assertEquals(
          "rnbq bnr"+

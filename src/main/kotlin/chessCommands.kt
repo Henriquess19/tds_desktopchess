@@ -20,7 +20,7 @@ private fun open(board: Board) {
       Board()
       println("${board.gameId} opened..")
    }else{
-      getboardstate(board.getMoveList(),Colors.WHITE)
+      getboardstate(board.getMoveList(),Team.WHITE)
    }
 }
 
@@ -30,13 +30,13 @@ private fun join(board: Board) {
    if (board.getMoveList().isEmpty()){
       println("${board.gameId}: error")
    }else{
-      getboardstate(board.getMoveList(),Colors.BLACK)
+      getboardstate(board.getMoveList(),Team.BLACK)
    }
 }
 
 private fun play(board: Board,move:String?) {
    if (move == null || move.length > 5 || move.length<2) throw Exception("wrong") //TODO() RETURN WORNG PARAMETER OR SOMETHING LIKE THAT
-   board.makeMove(move)
+   board.makeMove(move,teamTurn(board.getMoveList()))
    draw(board)
 }
 
@@ -63,10 +63,19 @@ private fun exit() {
       //TODO -> With DB implementation, make secure exit
 }
 
-private fun getboardstate(moves:MutableList<PlayMade>,team:Colors){
+private fun getboardstate(moves:MutableList<PlayMade>,team:Team){
       val board= Board()
       moves.forEach{
-         board.makeMove(it.play)
+         board.makeMove(it.play, teamTurn(moves))
       }
       //TODO() -> SET NEXT PLAYER BE 'TEAM'
+}
+
+fun getGameId(board: Board):String{
+   return board.gameId
+}
+
+fun teamTurn(moves: MutableList<PlayMade>):Team{
+   return if (moves.isEmpty() || moves.size%2 == 0) Team.WHITE
+            else Team.BLACK
 }
