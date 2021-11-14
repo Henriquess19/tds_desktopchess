@@ -17,13 +17,13 @@ class BishopTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "       B"+
-              "        "+
-              "        "+
-              "   P    "+
-              "PPP PPPP"+
-              "RN QKBNR",sut.toString()
+                    "pppppppp"+
+                    "       B"+
+                    "        "+
+                    "        "+
+                    "   P    "+
+                    "PPP PPPP"+
+                    "RN QKBNR",sut.toString()
         )
     }
 
@@ -36,13 +36,13 @@ class BishopTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "B       "+
-              "        "+
-              "        "+
-              "    P   "+
-              "PPPP PPP"+
-              "RNBQK NR",sut.toString()
+                    "pppppppp"+
+                    "B       "+
+                    "        "+
+                    "        "+
+                    "    P   "+
+                    "PPPP PPP"+
+                    "RNBQK NR",sut.toString()
         )
     }
 
@@ -54,13 +54,13 @@ class BishopTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "        "+
-              "        "+
-              "        "+
-              "        "+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "pppppppp"+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -73,13 +73,13 @@ class BishopTests {
             .makeMove("Ba6b7".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
-              "pBpppppp"+
-              "        "+
-              "        "+
-              "        "+
-              "    P   "+
-              "PPPP PPP"+
-              "RNBQK NR",sut.toString()
+                    "pBpppppp"+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "    P   "+
+                    "PPPP PPP"+
+                    "RNBQK NR",sut.toString()
         )
     }
 
@@ -94,13 +94,13 @@ class BishopTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "        "+
-              "        "+
-              "   P    "+
-              "    P   "+
-              "PPP  PPP"+
-              "RNBQKBNR",sut.toString()
+                    "pppppppp"+
+                    "        "+
+                    "        "+
+                    "   P    "+
+                    "    P   "+
+                    "PPP  PPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -113,13 +113,13 @@ class BishopTests {
 
         assertEquals(
             "rn qkbnr"+
-              "ppp pppp"+
-              "   p    "+
-              "        "+
-              "        "+
-              "       b"+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "ppp pppp"+
+                    "   p    "+
+                    "        "+
+                    "        "+
+                    "       b"+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -134,11 +134,11 @@ class BishopTests {
             "rnbqk nr"+
                     "pppp ppp"+
                     "    p   "+
-                  "        "+
-                  "        "+
-                  "b       "+
-                  "PPPPPPPP"+
-                  "RNBQKBNR",sut.toString()
+                    "        "+
+                    "        "+
+                    "b       "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -149,14 +149,14 @@ class BishopTests {
             .makeMove("bc8a3".toMove(), teamTurn(sut.getMoveList(),null))
 
         assertEquals(
-                  "rnbqkbnr"+
-                  "pppppppp"+
-                  "        "+
-                  "        "+
-                  "        "+
-                  "        "+
-                  "PPPPPPPP"+
-                  "RNBQKBNR",sut.toString()
+            "rnbqkbnr"+
+                    "pppppppp"+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
     @Test
@@ -168,13 +168,13 @@ class BishopTests {
             .makeMove("ba6e2".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rn qkbnr"+
-              "p pppppp"+
-              " p      "+
-              "        "+
-              "        "+
-              "        "+
-              "PPPPbPPP"+
-              "RNBQKBNR",sut.toString()
+                    "p pppppp"+
+                    " p      "+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "PPPPbPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -189,13 +189,13 @@ class BishopTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "ppp  ppp"+
-              "    p   "+
-              "   p    "+
-              "        "+
-              "        "+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "ppp  ppp"+
+                    "    p   "+
+                    "   p    "+
+                    "        "+
+                    "        "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 }

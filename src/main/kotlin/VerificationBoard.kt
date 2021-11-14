@@ -15,17 +15,17 @@ fun movePieceVerity(piece: Pieces, initialPosition: Positions, wantedPosition: P
             return SameTeam
         }
     }
-    return when (piece) {
+    return when (piece.typeOfPiece) {
         //Rooks
-        Pieces.r,Pieces.R -> moveVerityRook(initialPosition, wantedPosition,board)
+        TypeOfPieces.R -> moveVerityRook(initialPosition, wantedPosition,board)
         //Pawns
-        Pieces.p, Pieces.P -> moveVerityPawn(piece.team, initialPosition, wantedPosition, ocupied,board)
+        TypeOfPieces.P -> moveVerityPawn(piece.team, initialPosition, wantedPosition, ocupied,board)
         //Bishops
-        Pieces.b, Pieces.B -> moveVerityBishop(initialPosition, wantedPosition,board)
+        TypeOfPieces.B -> moveVerityBishop(initialPosition, wantedPosition,board)
         //Kings
-        Pieces.k, Pieces.K -> moveVerityKing(initialPosition, wantedPosition)
+        TypeOfPieces.K -> moveVerityKing(initialPosition, wantedPosition)
         //Knights
-        Pieces.n, Pieces.N  -> moveVerityKnight(initialPosition, wantedPosition)
+        TypeOfPieces.N  -> moveVerityKnight(initialPosition, wantedPosition)
         //Queens (they have the movement from a knight plus bishop, so if one of the is true, she can move)
         else -> moveVerityQueen(initialPosition, wantedPosition,board)
     }

@@ -34,13 +34,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "        "+
-              "        "+
-              "P       "+
-              "        "+
-              " PPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "pppppppp"+
+                    "        "+
+                    "        "+
+                    "P       "+
+                    "        "+
+                    " PPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -52,13 +52,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              " ppppppp"+
-              "p       "+
-              "        "+
-              "        "+
-              "        "+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    " ppppppp"+
+                    "p       "+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -70,13 +70,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              " ppppppp"+
-              "        "+
-              "p       "+
-              "        "+
-              "        "+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    " ppppppp"+
+                    "        "+
+                    "p       "+
+                    "        "+
+                    "        "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -92,13 +92,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbn "+
-              "ppppppp "+
-              "        "+
-              "       p"+
-              "        "+
-              "P       "+
-              "P PPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "ppppppp "+
+                    "        "+
+                    "       p"+
+                    "        "+
+                    "P       "+
+                    "P PPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -115,13 +115,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbn "+
-              "ppppppp "+
-              "        "+
-              "       p"+
-              "        "+
-              " P      "+
-              " PPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "ppppppp "+
+                    "        "+
+                    "       p"+
+                    "        "+
+                    " P      "+
+                    " PPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -137,13 +137,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppp p"+
-              "       p"+
-              "        "+
-              "P       "+
-              "        "+
-              " PPPPPPP"+
-              " NBQKBNR",sut.toString()
+                    "pppppp p"+
+                    "       p"+
+                    "        "+
+                    "P       "+
+                    "        "+
+                    " PPPPPPP"+
+                    " NBQKBNR",sut.toString()
         )
     }
 
@@ -160,13 +160,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "ppppppp "+
-              "      p "+
-              "        "+
-              "P       "+
-              "        "+
-              " PPPPPPP"+
-              " NBQKBNR",sut.toString()
+                    "ppppppp "+
+                    "      p "+
+                    "        "+
+                    "P       "+
+                    "        "+
+                    " PPPPPPP"+
+                    " NBQKBNR",sut.toString()
         )
     }
 
@@ -182,13 +182,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbn "+
-              "ppppppp "+
-              "        "+
-              "       p"+
-              "        "+
-              "r       "+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "ppppppp "+
+                    "        "+
+                    "       p"+
+                    "        "+
+                    "r       "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -204,13 +204,13 @@ class PawnTests {
         draw(sut)
         assertEquals(
             "rnbqkbn "+
-              "ppppppp "+
-              "        "+
-              "       p"+
-              "r       "+
-              "        "+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "ppppppp "+
+                    "        "+
+                    "       p"+
+                    "r       "+
+                    "        "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -226,13 +226,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "       R"+
-              "        "+
-              "P       "+
-              "        "+
-              " PPPPPPP"+
-              " NBQKBNR",sut.toString()
+                    "pppppppp"+
+                    "       R"+
+                    "        "+
+                    "P       "+
+                    "        "+
+                    " PPPPPPP"+
+                    " NBQKBNR",sut.toString()
         )
     }
 
@@ -248,13 +248,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "        "+
-              "       R"+
-              "P       "+
-              "        "+
-              " PPPPPPP"+
-              " NBQKBNR",sut.toString()
+                    "pppppppp"+
+                    "        "+
+                    "       R"+
+                    "P       "+
+                    "        "+
+                    " PPPPPPP"+
+                    " NBQKBNR",sut.toString()
         )
     }
 
@@ -266,13 +266,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "        "+
-              "        "+
-              "        "+
-              "        "+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "pppppppp"+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -284,13 +284,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "        "+
-              "        "+
-              "        "+
-              "        "+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "pppppppp"+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -302,13 +302,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "        "+
-              "        "+
-              "        "+
-              "        "+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "pppppppp"+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 
@@ -320,13 +320,13 @@ class PawnTests {
 
         assertEquals(
             "rnbqkbnr"+
-              "pppppppp"+
-              "        "+
-              "        "+
-              "        "+
-              "        "+
-              "PPPPPPPP"+
-              "RNBQKBNR",sut.toString()
+                    "pppppppp"+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "        "+
+                    "PPPPPPPP"+
+                    "RNBQKBNR",sut.toString()
         )
     }
 }

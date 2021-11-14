@@ -44,10 +44,10 @@ private fun join(board: Board) {
 private fun play(board: Board,move:String?) {
 
     if (move != null ){
-       val playCommand = board.turnToplay(Move(move),teamTurn(board.getMoveList(),null))
+       val playCommand = board.turnToPlay(Move(move),teamTurn(board.getMoveList(),null))
        if(playCommand == ValidCommand) {
                //val movePrepared = prepareTheMove(board, move)
-               board.makeMove(Move(move), teamTurn(board.getMoveList(),null))
+               board.makeMove(Move(move),teamTurn(board.getMoveList(),null))
                draw(board)
        }else{
           println(handleResult(playCommand))
