@@ -48,7 +48,7 @@ const val GAME_ID = "g1"
 class Board: BoardInterface {
    private val board = mutableMapOf<Positions, Pieces>()
    private val movesList = mutableMapOf<Int, PlayMade>()
-   //val gameId = GAME_ID //TODO -> ARRANJAR DEPOIS MANEIRA MELHOR
+   val gameId = GAME_ID //TODO -> ARRANJAR DEPOIS MANEIRA MELHOR PARA A DB
    private var numberOfPlays = 0
 
    /**
@@ -82,11 +82,15 @@ class Board: BoardInterface {
 
       val piece = board[oldPosition] ?: throw Throwable("Piece not founded in the initialposition.")
 
-      if (movePieceVerity(piece, oldPosition, newPosition,this)) {
+      val verification = movePieceVerity(piece, oldPosition, newPosition,this)
+      if (verification == ValidMovement) {
+         if (board[newPosition] == Pieces.k || board[newPosition] == Pieces.K) EndGameCond //TODO -> If kings dies, the other team wins, maybe add to moveverity and add result END
+
          board[newPosition] = piece
          board.remove(oldPosition)
-         //TODO -> If kings dies, the other team wins, maybe add to moveverity and add result END
          movesList[numberOfPlays++] = PlayMade(piece.team, move)
+      }else{
+         println(verification)//TODO() PRINT DO ERRO
       }
       return this
    }
@@ -139,11 +143,12 @@ class Board: BoardInterface {
       return strboard
    }
 
-   override fun turnToplay(move: Move, teamTurn: Team): Boolean {
+   override fun turnToplay(move: Move, teamTurn: Team): Result {
       val oldLine = (move.move[2].toInt() - '0'.code) - 1
       val oldColumn = "C" + move.move[1].uppercaseChar()
       val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
-      val piece = board[oldPosition] ?: throw Throwable("Piece not founded in the initialposition.")
-      return teamTurn == piece.team
+      val piece = board[oldPosition] ?: return InvalidCommand
+      return if(teamTurn == piece.team) ValidCommand
+         else InvalidCommand
    }
 }

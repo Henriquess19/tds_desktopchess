@@ -30,5 +30,5 @@ interface BoardInterface {
     */
    fun getMoveList():MutableList<PlayMade>
 
-   fun turnToplay(move: Move, teamTurn: Team):Boolean
+   fun turnToplay(move: Move, teamTurn: Team): Result
 }

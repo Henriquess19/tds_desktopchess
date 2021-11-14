@@ -7,28 +7,23 @@ fun main(){
 
     val board: Board = MongoDbChess(driver.getDatabase(System.getenv(ENV_DB_NAME)))
     */
-   val gameId = numberOfGameOpen()
    val board = Board()
    //TODO -> ARRANJAR MELHOR MANEIRA DE COMEÇAR
-   val dispatcher = chessCommands(board,gameId)
-   println("To use this board you have to open it first")
+   val dispatcher = chessCommands(board)
+
    while (true){
 
-      val(command,parameter) = readChessCommand(board,gameId)
+      val(command,parameter) = readChessCommand(board)
       val action = dispatcher[command.uppercase()]
-      if (action == null) println("Invalid command") //TODO -> USE RESULT STUFF
+      if (action == null) println(InvalidCommand) //TODO Print do result
       else action(parameter)
    }
 }
-private fun numberOfGameOpen():GameId{
-   println("Choose the game to open first")
-   print("> ")
-   return GameId(readln().trim().toInt())
-}
 
-private fun readChessCommand(board:Board,gameId: GameId):Pair<String,String?>{
+private fun readChessCommand(board:Board):Pair<String,String?>{
+   val game = getGameId(board)
    val teamTurn = teamTurn(board.getMoveList())
-   print("<g${gameId.gameId}:$teamTurn> ")
+   print("$game:$teamTurn> ")
    val input = readln()
    val command = input.substringBefore(delimiter = ' ')
    val argument = input.substringAfter(delimiter = ' ', missingDelimiterValue = "").trim()
