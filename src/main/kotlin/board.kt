@@ -1,3 +1,5 @@
+
+
 /**
  * Representation of the columns in a board of chess
  */
@@ -6,19 +8,6 @@ enum class Columns{CA,CB,CC,CD,CE,CF,CG,CH}
  * Representation of the line in a board of chess
  */
 enum class Lines{L1,L2,L3,L4,L5,L6,L7,L8}
-
-/**
- * All the the seven different pieces, for each team, that game of chess have
- */
-enum class TypeOfPieces{ R,N,B,Q,K,P }
-
-/**
- * Represent the piece itself
- * @property team which team the piece is
- * @property typeOfPiece the type of the piece
- * @property representation the way is gonna be presented to the user
- */
-data class Pieces(val team: Team, val typeOfPiece: TypeOfPieces, val representation:Char)
 
 /**
  * The two teams that are playable
@@ -43,20 +32,20 @@ data class PlayMade(val team:Team, val play:Move)
  * Initial game board format
  */
 const val INITIAL_BOARD =
-      "rnbqkbnr" +
-      "pppppppp" +
-      "        " +
-      "        " +
-      "        " +
-      "        " +
-      "PPPPPPPP" +
-      "RNBQKBNR"
+   "rnbqkbnr" +
+           "pppppppp" +
+           "        " +
+           "        " +
+           "        " +
+           "        " +
+           "PPPPPPPP" +
+           "RNBQKBNR"
 
 const val GAME_ID = "g1"
 
 
 class Board: BoardInterface {
-   private val board = mutableMapOf<Positions, Pieces>()
+   private val board = mutableMapOf<Positions, Piece>()
    private val movesList = mutableMapOf<Int, PlayMade>()
    val gameId = GAME_ID //TODO -> ARRANJAR DEPOIS MANEIRA MELHOR PARA A DB
    private var numberOfPlays = 0
@@ -71,7 +60,7 @@ class Board: BoardInterface {
             val key = INITIAL_BOARD[k++]
             val whichTeam = if(key.isLowerCase()) Team.BLACK else Team.WHITE
             if (key != ' ') {
-               board[Positions(Lines.values()[i], Columns.values()[j])] = Pieces(whichTeam, TypeOfPieces.valueOf(key.uppercase()), key)
+               board[Positions(Lines.values()[i], Columns.values()[j])] = Piece(whichTeam, TypeOfPieces.valueOf(key.uppercase()), key)
             }
          }
       }
@@ -95,18 +84,15 @@ class Board: BoardInterface {
 
       val verification = movePieceVerity(piece, oldPosition, newPosition,this)
       if (verification == ValidMovement) {
+         if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(getPiece(oldPosition)?.team)
+         //está mal
+         if(move.length() > 5 && move.move[0] == 'p'.uppercaseChar() && move.move[6]== '=') piece.toPromotion(move.move[7])
+
          board[newPosition] = piece
          board.remove(oldPosition)
          movesList[numberOfPlays++] = PlayMade(piece.team, move)
-
-         if (board[newPosition]?.typeOfPiece == TypeOfPieces.K ){
-            endGame(getPiece(oldPosition)?.team)
-            return this
-         }
-
-      } else println(handleResult(verification))
-
-      draw(this)
+      }
+      else println(handleResult(verification))
       return this
    }
    /**
@@ -123,7 +109,7 @@ class Board: BoardInterface {
     * @param positions position where the piece should be
     * @return the piece itself
     */
-   override fun getPiece(positions: Positions): Pieces? {
+   override fun getPiece(positions: Positions): Piece? {
       return board[positions]
    }
    /**
@@ -169,9 +155,9 @@ class Board: BoardInterface {
       val oldLine = (move.move[2].toInt() - '0'.code) - 1
       val oldColumn = "C" + move.move[1].uppercaseChar()
       val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
-      val piece = board[oldPosition] ?: return InvalidCommand
-      return if(teamTurn == piece.team) ValidCommand
-         else InvalidCommand
+      val piece = board[oldPosition] ?: return InvalidMovement
+      return if(teamTurn == piece.team) ValidMovement
+      else InvalidMovement
    }
 
    /**

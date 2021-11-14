@@ -15,6 +15,7 @@ data class Move(val move: String){
     init {
         require(isAValidCommandMove(move))
     }
+    fun length() = move.length
 }
 
 /**

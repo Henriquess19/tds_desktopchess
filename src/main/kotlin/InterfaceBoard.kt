@@ -23,7 +23,7 @@ interface BoardInterface {
     * @param positions position where the piece should be
     * @return the piece itself
     */
-   fun getPiece(positions: Positions):Pieces?
+   fun getPiece(positions: Positions):Piece?
    /**
     * Return all the play made
     * @return list of all plays made
