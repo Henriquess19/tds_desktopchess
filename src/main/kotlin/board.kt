@@ -65,12 +65,12 @@ class Board: BoardInterface {
          }
       }
    }
+
    /**
     * Make the piece move, if its valid
     * @param move the move to be made
     * @return [Board] the game updated with the move
     */
-
    override fun makeMove(move: Move, teamTurn: Team): Board {
       val oldLine = (move.move[2].toInt() - '0'.code) - 1
       val newline = move.move[4].toString().toInt() - 1
@@ -84,13 +84,12 @@ class Board: BoardInterface {
 
       val verification = movePieceVerity(piece, oldPosition, newPosition,this)
       if (verification == ValidMovement) {
-         if (board[newPosition] == Pieces.k || board[newPosition] == Pieces.K) EndGameCond //TODO -> If kings dies, the other team wins, maybe add to moveverity and add result END
-
+         if (board[newPosition] == Pieces.k || board[newPosition] == Pieces.K) endGame(teamTurn)
          board[newPosition] = piece
          board.remove(oldPosition)
          movesList[numberOfPlays++] = PlayMade(piece.team, move)
       }else{
-         println(verification)//TODO() PRINT DO ERRO
+         println(handleResult(verification))
       }
       return this
    }
@@ -151,5 +150,9 @@ class Board: BoardInterface {
       val piece = board[oldPosition] ?: return InvalidCommand
       return if(teamTurn == piece.team) ValidCommand
          else InvalidCommand
+   }
+
+   private fun endGame(team: Team){
+      TODO()
    }
 }

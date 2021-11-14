@@ -1,8 +1,6 @@
 import kotlin.system.exitProcess
 
 typealias Command = (String?) -> Unit
-//Como se fosse a nossa database da rasca
-var listOfGames= mutableMapOf<Int, Board>()
 
 fun chessCommands(board: Board):Map<String,Command>{
    return mapOf(
@@ -17,10 +15,12 @@ fun chessCommands(board: Board):Map<String,Command>{
 
 private fun open(board: Board) {
     //TODO -> Create conditions for DB later
+    //TODO -> Call board.gameId
     //Call board.gameId
     if (board.getMoveList().isEmpty()) {
         Board()
-        println("${board.gameId} opened..")
+        println("${board.gameId} opened..\n")
+        draw(board)
     }
     else {
        getboardstate(board.getMoveList(),Team.BLACK)
@@ -32,20 +32,22 @@ private fun join(board: Board) {
    //TODO -> Call board.gameId
    //Call board.gameId
    if (board.getMoveList().isEmpty()) {
-      println(InvalidGame) //TODO() Print do result
+      println(handleResult(InvalidGame))
    }
    else {
       getboardstate(board.getMoveList(),Team.BLACK)
+      println("${board.gameId} joined..\n")
+      draw(board)
    }
 }
 
 private fun play(board: Board,move:String?) {
 
     if (move != null ){
-       val playCommand = board.turnToplay(Move(move),teamTurn(board.getMoveList()))
+       val playCommand = board.turnToplay(Move(move),teamTurn(board.getMoveList(),null))
        if(playCommand == ValidCommand) {
                //val movePrepared = prepareTheMove(board, move)
-               board.makeMove(Move(move), teamTurn(board.getMoveList()))
+               board.makeMove(Move(move), teamTurn(board.getMoveList(),null))
                draw(board)
        }else{
           println(handleResult(playCommand))
@@ -54,12 +56,6 @@ private fun play(board: Board,move:String?) {
        println(handleResult(InvalidCommand))
     }
 }
-/*
-fun prepareTheMove(board: Board,move: String):String {
-    val piece= Pieces.valueOf()
-}
-
- */
 
 private fun refresh(board: Board) {
    //TODO() UPDATE MOVES & JOGO CONFORME DB
@@ -87,17 +83,17 @@ private fun exit() {
 private fun getboardstate(moves:MutableList<PlayMade>,team:Team){
       val board= Board()
       moves.forEach{
-         board.makeMove(it.play, teamTurn(moves))
+         board.makeMove(it.play, teamTurn(moves,null))
       }
-      //TODO() -> SET NEXT PLAYER BE 'TEAM'
+      teamTurn(moves,team)
 }
 
 fun getGameId(board: Board):String{
    return board.gameId
 }
 
-fun teamTurn(moves: MutableList<PlayMade>):Team{
-   return if (moves.isEmpty() || moves.size%2 == 0) Team.WHITE
-   else Team.BLACK
+fun teamTurn(moves: MutableList<PlayMade>,team: Team?):Team{
+   return team ?: if (moves.isEmpty() || moves.size%2 == 0) Team.WHITE
+         else Team.BLACK
 }
 

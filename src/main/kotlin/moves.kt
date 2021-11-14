@@ -24,9 +24,3 @@ fun String.toMove() = Move(this)
  * @return  true if [move] can be used as an move identifier, false otherwise
  */
 private fun isAValidCommandMove(move:String) = move.isNotEmpty() && (move.length in (SMALLEST_MOVE_CMD .. BIGGEST_MOVE_CMD))
-
-data class GameId(val gameId: Int){
-    init {
-        require(gameId > 0)
-    }
-}

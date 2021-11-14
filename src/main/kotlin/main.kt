@@ -15,14 +15,14 @@ fun main(){
 
       val(command,parameter) = readChessCommand(board)
       val action = dispatcher[command.uppercase()]
-      if (action == null) println(handleResult(Encounter))
+      if (action == null) println(handleResult(InvalidCommand))
       else action(parameter)
    }
 }
 
 private fun readChessCommand(board:Board):Pair<String,String?>{
    val game = getGameId(board)
-   val teamTurn = teamTurn(board.getMoveList())
+   val teamTurn = teamTurn(board.getMoveList(),null)
    print("$game:$teamTurn> ")
    val input = readln()
    val command = input.substringBefore(delimiter = ' ')
