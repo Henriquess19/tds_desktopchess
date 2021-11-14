@@ -15,6 +15,11 @@ data class Move(val move: String){
     init {
         require(isAValidCommandMove(move))
     }
+
+    /**
+     * The size of the string
+     * @return the integer correspondent to the string size
+     */
     fun length() = move.length
 }
 

@@ -48,9 +48,8 @@ private fun join(board: Board) {
 private fun play(board: Board,move:String?) {
     if(OPEN_GAME){
         if (move != null ){
-            val playSide= board.turnToPlay(Move(stringPrepared(move)),teamTurn(board.getMoveList(),null))
+            val playSide= board.pieceTeamCheck(Move(stringPrepared(move)),teamTurn(board.getMoveList(),null))
             if(playSide == ValidMovement) {
-                //val movePrepared = prepareTheMove(board, move)
                 board.makeMove(Move(stringPrepared(move)),teamTurn(board.getMoveList(),null))
                 draw(board)
             }else{

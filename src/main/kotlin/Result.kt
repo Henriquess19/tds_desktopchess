@@ -34,6 +34,9 @@ object InvalidMovement : Result
  * Result produced when the is encounter the end game position (one of the kings is in check)
  */
 object EndGameCond : Result
+/**
+ * Result produced when the game is closed
+ */
 object ClosedGame : Result
 
 /**

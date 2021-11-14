@@ -84,15 +84,16 @@ class Board: BoardInterface {
 
       val verification = movePieceVerity(piece, oldPosition, newPosition,this)
       if (verification == ValidMovement) {
-         if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(getPiece(oldPosition)?.team)
+
+         //if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(getPiece(oldPosition)?.team) isto está errado não cumpre a regra de uma peça um propósito
          //está mal
          if(move.length() > 5 && move.move[0] == 'p'.uppercaseChar() && move.move[6]== '=') piece.toPromotion(move.move[7])
-
+         if(containsPiece(oldPosition))
          board[newPosition] = piece
          board.remove(oldPosition)
          movesList[numberOfPlays++] = PlayMade(piece.team, move)
       }
-      else println(handleResult(verification))
+      //else println(handleResult(verification)) isto está errado não cumpre a regra de uma peça um propósito
       return this
    }
    /**
@@ -123,8 +124,6 @@ class Board: BoardInterface {
       }
       return list
    }
-
-
    /**
     * Overwrites the function string to transform the board in something readble
     * @return the board in form of a string
@@ -150,8 +149,7 @@ class Board: BoardInterface {
     * @param teamTurn which team is making the move
     * @return [Result] if is a valid or a invalid movement
     */
-
-   override fun turnToPlay(move: Move, teamTurn: Team): Result {
+   override fun pieceTeamCheck(move: Move, teamTurn: Team): Result {
       val oldLine = (move.move[2].toInt() - '0'.code) - 1
       val oldColumn = "C" + move.move[1].uppercaseChar()
       val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
@@ -159,12 +157,15 @@ class Board: BoardInterface {
       return if(teamTurn == piece.team) ValidMovement
       else InvalidMovement
    }
-
-   /**
-    *
-    */
-   private fun endGame(team: Team?){
-      println("${team}:${handleResult(EndGameCond)}")
-      OPEN_GAME = false
-   }
 }
+/*
+/**
+ * Show the user that the game ended and close the game
+ * @param team who won
+ */
+private fun endGame(team: Team?){
+   println("${team}:${handleResult(EndGameCond)}")
+   OPEN_GAME = false
+}
+
+ */

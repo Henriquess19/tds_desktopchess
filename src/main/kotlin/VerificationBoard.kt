@@ -10,8 +10,8 @@ fun movePieceVerity(piece: Piece, initialPosition: Positions, wantedPosition: Po
     val ocupied = board.containsPiece(wantedPosition)
 
     if (ocupied) {
-        val ocupiedcolor = board.getPiece(wantedPosition)?.team
-        if (ocupiedcolor == piece.team) {
+        val ocupiedColor = board.getPiece(wantedPosition)?.team
+        if (ocupiedColor == piece.team) {
             return SameTeam
         }
     }
@@ -39,26 +39,26 @@ fun movePieceVerity(piece: Piece, initialPosition: Positions, wantedPosition: Po
  * @return  returns according to the result interface
  */
 private fun moveVerityRook(
-    initialposition: Positions,
-    wantedposition: Positions,
+    initialPosition: Positions,
+    wantedPosition: Positions,
     board: Board
 ): Result {
     //walk on the collumn
-    if (initialposition.line == wantedposition.line) {
-        val highercolumn = Math.max(initialposition.column.ordinal, wantedposition.column.ordinal)
-        val lowercolumn = Math.min(initialposition.column.ordinal, wantedposition.column.ordinal)
+    if (initialPosition.line == wantedPosition.line) {
+        val higherColumn = Math.max(initialPosition.column.ordinal, wantedPosition.column.ordinal)
+        val lowerColumn = Math.min(initialPosition.column.ordinal, wantedPosition.column.ordinal)
 
-        for (i in highercolumn - 1 downTo lowercolumn + 1) {
-            if (board.containsPiece(Positions(wantedposition.line, Columns.values()[i])))
+        for (i in higherColumn - 1 downTo lowerColumn + 1) {
+            if (board.containsPiece(Positions(wantedPosition.line, Columns.values()[i])))
                 return Encounter
         }
     }//walk on the line
-    else if (initialposition.column == wantedposition.column) {
-        val higherline = Math.max(initialposition.line.ordinal, wantedposition.line.ordinal)
-        val lowerline = Math.min(initialposition.line.ordinal, wantedposition.line.ordinal)
+    else if (initialPosition.column == wantedPosition.column) {
+        val higherLine = Math.max(initialPosition.line.ordinal, wantedPosition.line.ordinal)
+        val lowerLine = Math.min(initialPosition.line.ordinal, wantedPosition.line.ordinal)
 
-        for (i in higherline - 1 downTo lowerline + 1) {
-            if (board.containsPiece(Positions( Lines.values()[i], wantedposition.column)))
+        for (i in higherLine - 1 downTo lowerLine + 1) {
+            if (board.containsPiece(Positions( Lines.values()[i], wantedPosition.column)))
                 return Encounter
         }
     }
@@ -74,43 +74,43 @@ private fun moveVerityRook(
  * @return  returns according to the result interface
  */
 private fun moveVerityPawn(
-    pieceteam: Team,
-    initialposition: Positions,
-    wantedposition: Positions,
+    pieceTeam: Team,
+    initialPosition: Positions,
+    wantedPosition: Positions,
     ocupied: Boolean,
     board: Board
 ): Result {
 
     //Initial pawn position
-    if (pieceteam == Team.WHITE &&
-        initialposition.line == Lines.L2 &&
-        (wantedposition.line == Lines.L3 ||
-                wantedposition.line == Lines.L4) &&
-        initialposition.column == wantedposition.column) {
-        return if (!ocupied && !(board.containsPiece(Positions(Lines.L3, initialposition.column)))) ValidMovement
+    if (pieceTeam == Team.WHITE &&
+        initialPosition.line == Lines.L2 &&
+        (wantedPosition.line == Lines.L3 ||
+                wantedPosition.line == Lines.L4) &&
+        initialPosition.column == wantedPosition.column) {
+        return if (!ocupied && !(board.containsPiece(Positions(Lines.L3, initialPosition.column)))) ValidMovement
         else InvalidMovement
     }
 
-    if (pieceteam == Team.BLACK &&
-        initialposition.line == Lines.L7 &&
-        (wantedposition.line == Lines.L6 ||
-                wantedposition.line == Lines.L5) &&
-        initialposition.column == wantedposition.column) {
-        return if(!ocupied && !(board.containsPiece(Positions(Lines.L6, initialposition.column))))ValidMovement
+    if (pieceTeam == Team.BLACK &&
+        initialPosition.line == Lines.L7 &&
+        (wantedPosition.line == Lines.L6 ||
+                wantedPosition.line == Lines.L5) &&
+        initialPosition.column == wantedPosition.column) {
+        return if(!ocupied && !(board.containsPiece(Positions(Lines.L6, initialPosition.column))))ValidMovement
         else InvalidMovement
     }
 
     //Move infront
-    if (initialposition.column == wantedposition.column) {
-        val blackOrWhite= if(pieceteam==Team.WHITE) - 1 else 1
-        if(initialposition.line.ordinal == wantedposition.line.ordinal + blackOrWhite && !ocupied)
+    if (initialPosition.column == wantedPosition.column) {
+        val blackOrWhite= if(pieceTeam==Team.WHITE) - 1 else 1
+        if(initialPosition.line.ordinal == wantedPosition.line.ordinal + blackOrWhite && !ocupied)
             return ValidMovement
     }
     //Move diagonal
-    if (initialposition.column.ordinal == wantedposition.column.ordinal - 1
-        || initialposition.column.ordinal == wantedposition.column.ordinal + 1){
-        val blackOrWhite= if(pieceteam == Team.WHITE) -1 else 1
-        if (ocupied &&(initialposition.line.ordinal == wantedposition.line.ordinal + blackOrWhite ))
+    if (initialPosition.column.ordinal == wantedPosition.column.ordinal - 1
+        || initialPosition.column.ordinal == wantedPosition.column.ordinal + 1){
+        val blackOrWhite= if(pieceTeam == Team.WHITE) -1 else 1
+        if (ocupied &&(initialPosition.line.ordinal == wantedPosition.line.ordinal + blackOrWhite ))
             return ValidMovement
     }
     return InvalidMovement
@@ -124,31 +124,31 @@ private fun moveVerityPawn(
  */
 
 private fun moveVerityBishop(
-    initialposition: Positions,
-    wantedposition: Positions,
+    initialPosition: Positions,
+    wantedPosition: Positions,
     board: Board
 ): Result {
 
-    if (initialposition.column.ordinal == wantedposition.column.ordinal
-        || initialposition.line.ordinal == wantedposition.line.ordinal
+    if (initialPosition.column.ordinal == wantedPosition.column.ordinal
+        || initialPosition.line.ordinal == wantedPosition.line.ordinal
     ) return InvalidMovement
 
-    var line = Lines.values()[initialposition.line.ordinal]
-    var column = Columns.values()[initialposition.column.ordinal]
+    var line = Lines.values()[initialPosition.line.ordinal]
+    var column = Columns.values()[initialPosition.column.ordinal]
 
-    if (initialposition.column.ordinal > wantedposition.column.ordinal) {
+    if (initialPosition.column.ordinal > wantedPosition.column.ordinal) {
 
         // Diagonal left_x
-        column = Columns.values()[initialposition.column.ordinal-1]
+        column = Columns.values()[initialPosition.column.ordinal-1]
 
-        if (initialposition.line.ordinal > wantedposition.line.ordinal) {
+        if (initialPosition.line.ordinal > wantedPosition.line.ordinal) {
 
             // Diagonal left_down
-            if(!diagonalrighttoleftverity(initialposition,wantedposition)) return InvalidMovement
-            line = Lines.values()[initialposition.line.ordinal -1]
+            if(!diagonalRightToLeftVerity(initialPosition,wantedPosition)) return InvalidMovement
+            line = Lines.values()[initialPosition.line.ordinal -1]
 
-            while (line.ordinal >= wantedposition.line.ordinal + 1
-                && column.ordinal >= wantedposition.column.ordinal +1
+            while (line.ordinal >= wantedPosition.line.ordinal + 1
+                && column.ordinal >= wantedPosition.column.ordinal +1
             ) {
 
                 if (board.containsPiece(Positions( line, column))) return Encounter
@@ -160,11 +160,11 @@ private fun moveVerityBishop(
         } else {
 
             // Diagonal left_up
-            if (!diagonallefttorightverity(initialposition,wantedposition)) return InvalidMovement
-            line = Lines.values()[initialposition.line.ordinal + 1]
+            if (!diagonalLeftToRightVerity(initialPosition,wantedPosition)) return InvalidMovement
+            line = Lines.values()[initialPosition.line.ordinal + 1]
 
-            while (line.ordinal <= wantedposition.line.ordinal - 1
-                && column.ordinal >= wantedposition.column.ordinal + 1
+            while (line.ordinal <= wantedPosition.line.ordinal - 1
+                && column.ordinal >= wantedPosition.column.ordinal + 1
             ) {
 
                 if (board.containsPiece(Positions( line, column))) return Encounter
@@ -178,16 +178,16 @@ private fun moveVerityBishop(
     } else {
 
         // Diagonal right_x
-        column = Columns.values()[initialposition.column.ordinal + 1]
+        column = Columns.values()[initialPosition.column.ordinal + 1]
 
-        if (initialposition.line.ordinal > wantedposition.line.ordinal) {
+        if (initialPosition.line.ordinal > wantedPosition.line.ordinal) {
 
             // Diagonal right_down
-            if (!diagonallefttorightverity(initialposition,wantedposition)) return InvalidMovement
-            line = Lines.values()[initialposition.line.ordinal - 1]
+            if (!diagonalLeftToRightVerity(initialPosition,wantedPosition)) return InvalidMovement
+            line = Lines.values()[initialPosition.line.ordinal - 1]
 
-            while (line.ordinal >= wantedposition.line.ordinal + 1
-                && column.ordinal <= wantedposition.column.ordinal - 1
+            while (line.ordinal >= wantedPosition.line.ordinal + 1
+                && column.ordinal <= wantedPosition.column.ordinal - 1
             ) {
 
                 if (board.containsPiece(Positions( line, column))) return Encounter
@@ -199,11 +199,11 @@ private fun moveVerityBishop(
 
         } else {
             // Diagonal right_up
-            if(!diagonalrighttoleftverity(initialposition,wantedposition)) return InvalidMovement
-            line = Lines.values()[initialposition.line.ordinal + 1]
+            if(!diagonalRightToLeftVerity(initialPosition,wantedPosition)) return InvalidMovement
+            line = Lines.values()[initialPosition.line.ordinal + 1]
 
-            while (line.ordinal <= wantedposition.line.ordinal - 1
-                && column.ordinal <= wantedposition.column.ordinal - 1
+            while (line.ordinal <= wantedPosition.line.ordinal - 1
+                && column.ordinal <= wantedPosition.column.ordinal - 1
             ) {
 
                 if (board.containsPiece(Positions( line, column))) return Encounter
@@ -222,18 +222,18 @@ private fun moveVerityBishop(
  * @return  returns according to the result interface
  */
 private fun moveVerityKing(
-    initialposition: Positions,
-    wantedposition: Positions,
+    initialPosition: Positions,
+    wantedPosition: Positions,
 ): Result {
 
-    if (wantedposition.column.ordinal != initialposition.column.ordinal
-        && wantedposition.column.ordinal != initialposition.column.ordinal - 1
-        && wantedposition.column.ordinal != initialposition.column.ordinal + 1
+    if (wantedPosition.column.ordinal != initialPosition.column.ordinal
+        && wantedPosition.column.ordinal != initialPosition.column.ordinal - 1
+        && wantedPosition.column.ordinal != initialPosition.column.ordinal + 1
     ) return InvalidMovement
 
-    if (wantedposition.line.ordinal != initialposition.line.ordinal
-        && wantedposition.line.ordinal != initialposition.line.ordinal - 1
-        && wantedposition.line.ordinal != initialposition.line.ordinal + 1
+    if (wantedPosition.line.ordinal != initialPosition.line.ordinal
+        && wantedPosition.line.ordinal != initialPosition.line.ordinal - 1
+        && wantedPosition.line.ordinal != initialPosition.line.ordinal + 1
     ) return InvalidMovement
 
     return ValidMovement
@@ -245,31 +245,31 @@ private fun moveVerityKing(
  * @return  returns according to the result interface
  */
 private fun moveVerityKnight(
-    initialposition: Positions,
-    wantedposition: Positions,
+    initialPosition: Positions,
+    wantedPosition: Positions,
 ): Result {
     //Up movement
-    if (initialposition.line.ordinal == wantedposition.line.ordinal - 2) {
-        if (initialposition.column.ordinal == wantedposition.column.ordinal + 1) return ValidMovement // Valid movement; left
-        if (initialposition.column.ordinal == wantedposition.column.ordinal - 1) return ValidMovement // Valid movement; right
+    if (initialPosition.line.ordinal == wantedPosition.line.ordinal - 2) {
+        if (initialPosition.column.ordinal == wantedPosition.column.ordinal + 1) return ValidMovement // Valid movement; left
+        if (initialPosition.column.ordinal == wantedPosition.column.ordinal - 1) return ValidMovement // Valid movement; right
     }
 
     //Down movement
-    if (initialposition.line.ordinal == wantedposition.line.ordinal + 2) {
-        if (initialposition.column.ordinal == wantedposition.column.ordinal + 1) return ValidMovement // Valid movement; left
-        if (initialposition.column.ordinal == wantedposition.column.ordinal - 1) return ValidMovement // Valid movement; right
+    if (initialPosition.line.ordinal == wantedPosition.line.ordinal + 2) {
+        if (initialPosition.column.ordinal == wantedPosition.column.ordinal + 1) return ValidMovement // Valid movement; left
+        if (initialPosition.column.ordinal == wantedPosition.column.ordinal - 1) return ValidMovement // Valid movement; right
     }
 
     //Left movement
-    if (initialposition.column.ordinal == wantedposition.column.ordinal + 2) {
-        if (initialposition.line.ordinal == wantedposition.line.ordinal - 1) return ValidMovement // Valid movement; up
-        if (initialposition.line.ordinal == wantedposition.line.ordinal + 1) return ValidMovement // Valid movement; down
+    if (initialPosition.column.ordinal == wantedPosition.column.ordinal + 2) {
+        if (initialPosition.line.ordinal == wantedPosition.line.ordinal - 1) return ValidMovement // Valid movement; up
+        if (initialPosition.line.ordinal == wantedPosition.line.ordinal + 1) return ValidMovement // Valid movement; down
     }
 
     //Right movement
-    if (initialposition.column.ordinal == wantedposition.column.ordinal - 2) {
-        if (initialposition.line.ordinal == wantedposition.line.ordinal - 1) return ValidMovement // Valid movement; up
-        if (initialposition.line.ordinal == wantedposition.line.ordinal + 1) return ValidMovement // Valid movement; down
+    if (initialPosition.column.ordinal == wantedPosition.column.ordinal - 2) {
+        if (initialPosition.line.ordinal == wantedPosition.line.ordinal - 1) return ValidMovement // Valid movement; up
+        if (initialPosition.line.ordinal == wantedPosition.line.ordinal + 1) return ValidMovement // Valid movement; down
     }
     return InvalidMovement
 }
@@ -280,12 +280,12 @@ private fun moveVerityKnight(
  * @return  returns according to the result interface
  */
 private fun moveVerityQueen(
-    initialposition: Positions,
-    wantedposition: Positions,
+    initialPosition: Positions,
+    wantedPosition: Positions,
     board:Board
 ): Result {
-    return if (moveVerityRook(initialposition, wantedposition,board) == ValidMovement
-        || moveVerityBishop(initialposition, wantedposition, board) == ValidMovement)
+    return if (moveVerityRook(initialPosition, wantedPosition,board) == ValidMovement
+        || moveVerityBishop(initialPosition, wantedPosition, board) == ValidMovement)
         ValidMovement
     else InvalidMovement
 }
@@ -295,10 +295,10 @@ private fun moveVerityQueen(
  * @param   wantedPosition where the piece is to be moved
  * @return  if its a valid movement returns true else returns false
  */
-private fun diagonallefttorightverity (initialposition: Positions,wantedposition: Positions): Boolean {
-    val initialdif = initialposition.line.ordinal - initialposition.column.ordinal
-    val finaldif = wantedposition.line.ordinal - wantedposition.column.ordinal
-    return initialdif == finaldif + 2 * (wantedposition.column.ordinal - initialposition.column.ordinal)
+private fun diagonalLeftToRightVerity (initialPosition: Positions, wantedPosition: Positions): Boolean {
+    val initialDif = initialPosition.line.ordinal - initialPosition.column.ordinal
+    val finalDif = wantedPosition.line.ordinal - wantedPosition.column.ordinal
+    return initialDif == finalDif + 2 * (wantedPosition.column.ordinal - initialPosition.column.ordinal)
 }
 /**
  * A nice formula to calculate the distance to the diagonal left move
@@ -306,10 +306,10 @@ private fun diagonallefttorightverity (initialposition: Positions,wantedposition
  * @param   wantedPosition where the piece is to be moved
  * @return  if its a valid movement returns true else returns false
  */
-private fun diagonalrighttoleftverity (initialposition: Positions,wantedposition: Positions): Boolean {
-    val initialdif = initialposition.line.ordinal - initialposition.column.ordinal
-    val finaldif = wantedposition.line.ordinal - wantedposition.column.ordinal
-    return initialdif == finaldif
+private fun diagonalRightToLeftVerity (initialPosition: Positions, wantedPosition: Positions): Boolean {
+    val initialDif = initialPosition.line.ordinal - initialPosition.column.ordinal
+    val finalDif = wantedPosition.line.ordinal - wantedPosition.column.ordinal
+    return initialDif == finalDif
 }
 
 

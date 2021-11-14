@@ -36,5 +36,5 @@ interface BoardInterface {
     * @param teamTurn which team is making the move
     * @return [Result] if is a valid or a invalid movement
     */
-   fun turnToPlay(move: Move, teamTurn: Team): Result
+   fun pieceTeamCheck(move: Move, teamTurn: Team): Result
 }

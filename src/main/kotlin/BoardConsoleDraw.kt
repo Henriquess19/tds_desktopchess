@@ -22,3 +22,11 @@ fun draw(board: Board) {
     }
     println("   -----------------\n")
 }
+/**
+ * Show the user that the game ended and close the game
+ * @param team who won
+ */
+fun endGame(team: Team?){
+    println("${team}:${handleResult(EndGameCond)}")
+    OPEN_GAME = false
+}
