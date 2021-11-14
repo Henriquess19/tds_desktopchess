@@ -15,7 +15,7 @@ fun main(){
 
       val(command,parameter) = readChessCommand(board)
       val action = dispatcher[command.uppercase()]
-      if (action == null) println(InvalidCommand) //TODO Print do result
+      if (action == null) println(handleResult(Encounter))
       else action(parameter)
    }
 }

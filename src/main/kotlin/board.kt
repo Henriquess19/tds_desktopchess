@@ -146,6 +146,7 @@ class Board: BoardInterface {
    override fun turnToplay(move: Move, teamTurn: Team): Result {
       val oldLine = (move.move[2].toInt() - '0'.code) - 1
       val oldColumn = "C" + move.move[1].uppercaseChar()
+      if (oldLine !in Lines.L1.ordinal..Lines.L8.ordinal || !Columns.values().contains(Columns.valueOf(oldColumn))) return InvalidCommand
       val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
       val piece = board[oldPosition] ?: return InvalidCommand
       return if(teamTurn == piece.team) ValidCommand

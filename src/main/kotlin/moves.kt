@@ -18,7 +18,6 @@ data class Move(val move: String){
  */
 fun String.toMove() = Move(this)
 
-//fun String.toMoveOrNull() = if (isAValidCommandMove(this)) Move(this) else null
 /**
  * Checks whether the given string is a valid move identifier.
  * @param   move  the string to be checked

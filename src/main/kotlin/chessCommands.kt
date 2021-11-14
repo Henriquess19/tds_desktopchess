@@ -42,15 +42,17 @@ private fun join(board: Board) {
 private fun play(board: Board,move:String?) {
 
     if (move != null ){
-       if(board.turnToplay(Move(move),teamTurn(board.getMoveList())) == ValidCommand) {
+       val playCommand = board.turnToplay(Move(move),teamTurn(board.getMoveList()))
+       if(playCommand == ValidCommand) {
                //val movePrepared = prepareTheMove(board, move)
                board.makeMove(Move(move), teamTurn(board.getMoveList()))
                draw(board)
-           }
-   }
-    else{
-        println(InvalidCommand) //TODO() PRINT DO RESULT
-   }
+       }else{
+          println(handleResult(playCommand))
+       }
+   }else {
+       println(handleResult(InvalidCommand))
+    }
 }
 /*
 fun prepareTheMove(board: Board,move: String):String {

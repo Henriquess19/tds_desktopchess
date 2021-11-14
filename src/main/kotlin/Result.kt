@@ -1,6 +1,3 @@
-/*enum class Result {
-    ENCOUNTER, SAME_TEAM, VALID, INVALID
-}*/
 
 sealed interface Result
 object Encounter : Result
@@ -11,3 +8,11 @@ object EndGameCond : Result
 object ValidCommand: Result
 object InvalidCommand : Result
 object InvalidGame : Result
+
+
+fun handleResult(result: Result):String = when(result){
+   Encounter -> "Piece in the way"
+   InvalidMovement -> "Invalid Movement.."
+   InvalidCommand -> "Invalid Command.."
+   else -> "nada"
+}
