@@ -10,8 +10,8 @@ class RookTests {
     fun `successful rook upwards movement`() {
         val sut = Board()
         sut
-            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
                     "pppppppp"+
@@ -28,8 +28,8 @@ class RookTests {
     fun `successful rook downwards movement`() {
         val sut = Board()
         sut
-            .makeMove("pa7a5".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("ra8a6".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("pa7a5".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("ra8a6".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             " nbqkbnr"+
               " ppppppp"+
@@ -46,9 +46,9 @@ class RookTests {
     fun `successful rook rightwards movement`() {
         val sut = Board()
         sut
-            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Ra3h3".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ra3h3".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
               "pppppppp"+
@@ -65,9 +65,9 @@ class RookTests {
     fun `successful rook leftwards movement`() {
         val sut = Board()
         sut
-            .makeMove("Ph2h4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Rh1h3".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Rh3a3".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Ph2h4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Rh1h3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Rh3a3".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
               "pppppppp"+
@@ -84,10 +84,10 @@ class RookTests {
     fun `successful rook upwards eating movement`() {
         val sut = Board()
         sut
-            .makeMove("pb7b5".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("pb5a4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Ra1a4".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("pb7b5".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pb5a4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ra1a4".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
               "p pppppp"+
@@ -104,10 +104,10 @@ class RookTests {
     fun `successful rook downwards eating movement`() {
         val sut = Board()
         sut
-            .makeMove("Pb2b4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("pa7a5".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Pb4a5".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("ra8a5".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Pb2b4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pa7a5".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pb4a5".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("ra8a5".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             " nbqkbnr"+
               " ppppppp"+
@@ -124,12 +124,12 @@ class RookTests {
     fun `successful rook rightwards eating movement`() {
         val sut = Board()
         sut
-            .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("ra1a3".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("ph5h4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("ph4h3".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Ra3h3".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("ra1a3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("ph5h4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("ph4h3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ra3h3".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
               "ppppppp "+
@@ -146,12 +146,12 @@ class RookTests {
     fun `successful rook leftwards eating movement`() {
         val sut = Board()
         sut
-            .makeMove("Ph2h4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("pa7a5".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Rh1h3".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("pa5a4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("pa4a3".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Rh3a3".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Ph2h4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pa7a5".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Rh1h3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pa5a4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pa4a3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Rh3a3".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
               " ppppppp"+
@@ -168,7 +168,7 @@ class RookTests {
     fun `ilegal rook upwards movement`() {
         val sut = Board()
         sut
-            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
               "pppppppp"+
@@ -185,7 +185,7 @@ class RookTests {
     fun `ilegal rook downwards movement`() {
         val sut = Board()
         sut
-            .makeMove("ra8a6".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("ra8a6".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
               "pppppppp"+
@@ -202,7 +202,7 @@ class RookTests {
     fun `ilegal rook rightwards movement`() {
         val sut = Board()
         sut
-            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
               "pppppppp"+
@@ -219,7 +219,7 @@ class RookTests {
     fun `ilegal rook leftwards movement`() {
         val sut = Board()
         sut
-            .makeMove("Ra8a7".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Ra8a7".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
               "pppppppp"+

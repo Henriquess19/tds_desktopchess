@@ -12,8 +12,8 @@ class BishopTests {
     fun `successful whitebishop right diagonal move`() {
         val sut = Board()
         sut
-            .makeMove("Pd2d3".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Bc1h6".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Pd2d3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Bc1h6".toMove(), teamTurn(sut.getMoveList(),null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -31,8 +31,8 @@ class BishopTests {
     fun `successful whitebishop left diagonal move`() {
         val sut = Board()
         sut
-            .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Bf1a6".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Bf1a6".toMove(), teamTurn(sut.getMoveList(),null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -50,7 +50,7 @@ class BishopTests {
     fun `ilegal whitebishop move`() {
         val sut = Board()
         sut
-            .makeMove("Bc1a6".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Bc1a6".toMove(), teamTurn(sut.getMoveList(),null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -68,9 +68,9 @@ class BishopTests {
     fun `eating a piece with whitebishop`() {
         val sut = Board()
         sut
-            .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Bf1a6".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Ba6b7".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Bf1a6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ba6b7".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rnbqkbnr"+
               "pBpppppp"+
@@ -87,9 +87,9 @@ class BishopTests {
     fun `whitebishop move encounter`() {
         val sut = Board()
         sut
-            .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Bf1a5".toMove(), teamTurn(sut.getMoveList()))  //Ilegal move
+            .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Bf1a5".toMove(), teamTurn(sut.getMoveList(),null))  //Ilegal move
 
 
         assertEquals(
@@ -108,8 +108,8 @@ class BishopTests {
     fun `successful blackbishop right diagonal move`() {
         val sut = Board()
         sut
-            .makeMove("pd7d6".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("bc8h3".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("pd7d6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("bc8h3".toMove(), teamTurn(sut.getMoveList(),null))
 
         assertEquals(
             "rn qkbnr"+
@@ -127,8 +127,8 @@ class BishopTests {
     fun `successful blackbishop left diagonal move`() {
         val sut = Board()
         sut
-            .makeMove("pe7e6".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("bf8a3".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("pe7e6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("bf8a3".toMove(), teamTurn(sut.getMoveList(),null))
 
         assertEquals(
             "rnbqk nr"+
@@ -146,7 +146,7 @@ class BishopTests {
     fun `ilegal blackbishop move`() {
         val sut = Board()
         sut
-            .makeMove("bc8a3".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("bc8a3".toMove(), teamTurn(sut.getMoveList(),null))
 
         assertEquals(
                   "rnbqkbnr"+
@@ -163,9 +163,9 @@ class BishopTests {
     fun `eating a piece with blackbishop`() {
         val sut = Board()
         sut
-            .makeMove("pb7b6".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("bc8a6".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("ba6e2".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("pb7b6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("bc8a6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("ba6e2".toMove(), teamTurn(sut.getMoveList(),null))
         assertEquals(
             "rn qkbnr"+
               "p pppppp"+
@@ -182,9 +182,9 @@ class BishopTests {
     fun `blackbishop move encounter`() {
         val sut = Board()
         sut
-            .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("pe7e6".toMove(), teamTurn(sut.getMoveList()))
-            .makeMove("Bc8h5".toMove(), teamTurn(sut.getMoveList()))
+            .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pe7e6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Bc8h5".toMove(), teamTurn(sut.getMoveList(),null))
 
 
         assertEquals(

@@ -12,8 +12,8 @@ class KingTests {
    fun `king movement upward`() {
       val sut = Board()
       sut
-         .makeMove("Pe2e4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Ke1e2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pe2e4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Ke1e2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -31,8 +31,8 @@ class KingTests {
    fun `king movement downward`() {
       val sut = Board()
       sut
-         .makeMove("pe7e5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("ke8e7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pe7e5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("ke8e7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbq bnr"+
@@ -50,9 +50,9 @@ class KingTests {
    fun `king movement rightward`() {
       val sut = Board()
       sut
-         .makeMove("pe7e5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("bf8d6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("ke8f8".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pe7e5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("bf8d6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("ke8f8".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbq knr"+
@@ -70,9 +70,9 @@ class KingTests {
    fun `king movement leftward`() {
       val sut = Board()
       sut
-         .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qd8d6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("ke8d8".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qd8d6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("ke8d8".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbk bnr"+
@@ -90,8 +90,8 @@ class KingTests {
    fun `king movement downdiagonal leftward`() {
       val sut = Board()
       sut
-         .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("ke8d7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("ke8d7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbq bnr"+
@@ -109,8 +109,8 @@ class KingTests {
    fun `king movement downdiagonal rightward`() {
       val sut = Board()
       sut
-         .makeMove("pf7f5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("ke8f7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pf7f5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("ke8f7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbq bnr"+
@@ -128,8 +128,8 @@ class KingTests {
    fun `king movement updiagonal leftward`() {
       val sut = Board()
       sut
-         .makeMove("Pd2d3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Ke1d2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pd2d3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Ke1d2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -147,8 +147,8 @@ class KingTests {
    fun `king movement updiagonal rightward`() {
       val sut = Board()
       sut
-         .makeMove("Pf2f3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Ke1f2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pf2f3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Ke1f2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -166,7 +166,7 @@ class KingTests {
    fun `king ilegal movement upward`() {
       val sut = Board()
       sut
-         .makeMove("Ke1e2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Ke1e2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -184,7 +184,7 @@ class KingTests {
    fun `king ilegal movement downward`() {
       val sut = Board()
       sut
-         .makeMove("ke8e7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("ke8e7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -202,7 +202,7 @@ class KingTests {
    fun `king ilegal movement rightward`() {
       val sut = Board()
       sut
-         .makeMove("Ke1f1".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Ke1f1".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -220,7 +220,7 @@ class KingTests {
    fun `king ilegal movement leftward`() {
       val sut = Board()
       sut
-         .makeMove("ke8d8".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("ke8d8".toMove(), teamTurn(sut.getMoveList(),null))
       assertEquals(
          "rnbqkbnr"+
            "pppppppp"+
@@ -237,7 +237,7 @@ class KingTests {
    fun `king ilegal movement downdiagonal leftward`() {
       val sut = Board()
       sut
-         .makeMove("ke8d7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("ke8d7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -255,7 +255,7 @@ class KingTests {
    fun `king ilegal movement downdiagonal rightward`() {
       val sut = Board()
       sut
-         .makeMove("ke8f7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("ke8f7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -273,7 +273,7 @@ class KingTests {
    fun `king ilegal movement updiagonal leftward`() {
       val sut = Board()
       sut
-         .makeMove("Ke1d2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Ke1d2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -291,7 +291,7 @@ class KingTests {
    fun `king ilegal movement updiagonal rightward`() {
       val sut = Board()
       sut
-         .makeMove("Ke1d2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Ke1d2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -309,11 +309,11 @@ class KingTests {
    fun `king eating movement updiagonal rightward`() {
       val sut = Board()
       sut
-         .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("rh8h6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("rh6f6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("rf6f2".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Ke1f2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("rh8h6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("rh6f6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("rf6f2".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Ke1f2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbn "+
@@ -331,11 +331,11 @@ class KingTests {
    fun `king eating movement updiagonal leftward`() {
       val sut = Board()
       sut
-         .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("rh8h6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("rh6d6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("rd6d2".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Ke1d2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("rh8h6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("rh6d6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("rd6d2".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Ke1d2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbn "+
@@ -353,11 +353,11 @@ class KingTests {
    fun `king eating movement upward`() {
       val sut = Board()
       sut
-         .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("rh8h6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("rh6e6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("re6e2".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Ke1e2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("rh8h6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("rh6e6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("re6e2".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Ke1e2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbn "+
@@ -375,11 +375,11 @@ class KingTests {
    fun `king eating movement downward`() {
       val sut = Board()
       sut
-         .makeMove("Ph2h4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Rh1h3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Rh3e3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Re3e7".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("ke8e7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Ph2h4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Rh1h3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Rh3e3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Re3e7".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("ke8e7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbq bnr"+
@@ -397,11 +397,11 @@ class KingTests {
    fun `king eating movement rightdiagonal downward`() {
       val sut = Board()
       sut
-         .makeMove("Ph2h4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Rh1h3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Rh3f3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Rf3f7".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("ke8f7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Ph2h4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Rh1h3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Rh3f3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Rf3f7".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("ke8f7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbq bnr"+
@@ -419,11 +419,11 @@ class KingTests {
    fun `king eating movement leftdiagonal downward`() {
       val sut = Board()
       sut
-         .makeMove("Ph2h4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Rh1h3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Rh3d3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Rd3d7".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("ke8d7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Ph2h4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Rh1h3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Rh3d3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Rd3d7".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("ke8d7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbq bnr"+

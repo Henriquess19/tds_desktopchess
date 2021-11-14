@@ -11,8 +11,8 @@ class QueenTests {
    fun `legal queen downward move `() {
       val sut = Board()
       sut
-         .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qd8d6".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qd8d6".toMove(), teamTurn(sut.getMoveList(),null))
 
 
       assertEquals(
@@ -31,8 +31,8 @@ class QueenTests {
    fun `legal queen upward move `() {
       val sut = Board()
       sut
-         .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd1d3".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd1d3".toMove(), teamTurn(sut.getMoveList(),null))
 
 
       assertEquals(
@@ -51,9 +51,9 @@ class QueenTests {
    fun `legal queen rightward move `() {
       val sut = Board()
       sut
-         .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd1d3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd3h3".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd1d3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd3h3".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -71,9 +71,9 @@ class QueenTests {
    fun `legal queen leftward move `() {
       val sut = Board()
       sut
-         .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd1d3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd3a3".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd1d3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd3a3".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -91,9 +91,9 @@ class QueenTests {
    fun `legal queen upleftdiagonal move `() {
       val sut = Board()
       sut
-         .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd1d3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd3a6".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd1d3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd3a6".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -111,9 +111,9 @@ class QueenTests {
    fun `legal queen uprightdiagonal move `() {
       val sut = Board()
       sut
-         .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd1d3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd3g6".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pd2d4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd1d3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd3g6".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -132,9 +132,9 @@ class QueenTests {
       val sut = Board()
       sut
       sut
-         .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qd8d6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qd6g3".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qd8d6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qd6g3".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnb kbnr"+
@@ -152,9 +152,9 @@ class QueenTests {
    fun `legal queen downleftdiagonal move `() {
       val sut = Board()
       sut
-         .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qd8d6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qd6a3".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pd7d5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qd8d6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qd6a3".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnb kbnr"+
@@ -172,7 +172,7 @@ class QueenTests {
    fun `ilegal queen downward move `() {
       val sut = Board()
       sut
-         .makeMove("qd8d6".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("qd8d6".toMove(), teamTurn(sut.getMoveList(),null))
 
 
       assertEquals(
@@ -191,7 +191,7 @@ class QueenTests {
    fun `ilegal queen upward move `() {
       val sut = Board()
       sut
-         .makeMove("qd1d3".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("qd1d3".toMove(), teamTurn(sut.getMoveList(),null))
 
 
       assertEquals(
@@ -210,7 +210,7 @@ class QueenTests {
    fun `ilegal queen rightward move `() {
       val sut = Board()
       sut
-         .makeMove("qd8e8".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("qd8e8".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -228,7 +228,7 @@ class QueenTests {
    fun `ilegal queen leftward move `() {
       val sut = Board()
       sut
-         .makeMove("qd8e8".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("qd8e8".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -246,7 +246,7 @@ class QueenTests {
    fun `ilegal queen upleftdiagonal move `() {
       val sut = Board()
       sut
-         .makeMove("Qd1c2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Qd1c2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -264,7 +264,7 @@ class QueenTests {
    fun `ilegal queen uprightdiagonal move `() {
       val sut = Board()
       sut
-         .makeMove("Qd1e2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Qd1e2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -282,7 +282,7 @@ class QueenTests {
    fun `ilegal queen downrightdiagonal move `() {
       val sut = Board()
       sut
-         .makeMove("qd8e7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("qd8e7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -300,7 +300,7 @@ class QueenTests {
    fun `ilegal queen downleftdiagonal move `() {
       val sut = Board()
       sut
-         .makeMove("qd8c7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("qd8c7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -319,9 +319,9 @@ class QueenTests {
       val sut = Board()
 
       sut
-         .makeMove("pc7c6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qd8a5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qa5a2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pc7c6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qd8a5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qa5a2".toMove(), teamTurn(sut.getMoveList(),null))
       assertEquals(
          "rnb kbnr"+
            "pp ppppp"+
@@ -338,9 +338,9 @@ class QueenTests {
    fun `queen upward eat move `() {
       val sut = Board()
       sut
-         .makeMove("pe2e3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd1h5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qh5h7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pe2e3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd1h5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qh5h7".toMove(), teamTurn(sut.getMoveList(),null))
 
 
       assertEquals(
@@ -359,10 +359,10 @@ class QueenTests {
    fun `queen rightward eat move `() {
       val sut = Board()
       sut
-         .makeMove("pc7c6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qd8a5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qa5a2".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qa2b2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pc7c6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qd8a5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qa5a2".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qa2b2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnb kbnr"+
@@ -380,10 +380,10 @@ class QueenTests {
    fun `queen leftward eat move `() {
       val sut = Board()
       sut
-         .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd1h5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qh5h7".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qh7g7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd1h5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qh5h7".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qh7g7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -401,9 +401,9 @@ class QueenTests {
    fun `queen upleftdiagonal eat move `() {
       val sut = Board()
       sut
-         .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd1h5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qh5f7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd1h5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qh5f7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -421,9 +421,9 @@ class QueenTests {
    fun `queen uprightdiagonal eat move `() {
       val sut = Board()
       sut
-         .makeMove("Pc2c3".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qd1a4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("Qa4d7".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("Pc2c3".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qd1a4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("Qa4d7".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnbqkbnr"+
@@ -441,9 +441,9 @@ class QueenTests {
    fun `queen downrightdiagonal eat move `() {
       val sut = Board()
       sut
-         .makeMove("pc7c6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qd8a5".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qa5d2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pc7c6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qd8a5".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qa5d2".toMove(), teamTurn(sut.getMoveList(),null))
 
 
       assertEquals(
@@ -462,9 +462,9 @@ class QueenTests {
    fun `queen downleftdiagonal eat move `() {
       val sut = Board()
       sut
-         .makeMove("pe7e6".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qd8h4".toMove(), teamTurn(sut.getMoveList()))
-         .makeMove("qh4f2".toMove(), teamTurn(sut.getMoveList()))
+         .makeMove("pe7e6".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qd8h4".toMove(), teamTurn(sut.getMoveList(),null))
+         .makeMove("qh4f2".toMove(), teamTurn(sut.getMoveList(),null))
 
       assertEquals(
          "rnb kbnr"+
