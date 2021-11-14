@@ -86,10 +86,9 @@ private fun moveVerityPawn(
         initialposition.line == Lines.L2 &&
         (wantedposition.line == Lines.L3 ||
                 wantedposition.line == Lines.L4) &&
-        initialposition.column == wantedposition.column && !ocupied) {
-        if (!(board.containsPiece(Positions(Lines.L3, initialposition.column)))
-                || board.containsPiece(Positions(Lines.L4, initialposition.column)))
-            return ValidMovement
+        initialposition.column == wantedposition.column) {
+        return if (!ocupied && !(board.containsPiece(Positions(Lines.L3, initialposition.column)))) ValidMovement
+            else InvalidMovement
     }
 
     if (pieceteam == Team.BLACK &&
@@ -97,9 +96,8 @@ private fun moveVerityPawn(
         (wantedposition.line == Lines.L6 ||
                 wantedposition.line == Lines.L5) &&
         initialposition.column == wantedposition.column) {
-        if(!(board.containsPiece(Positions(Lines.L6, initialposition.column))
-                || board.containsPiece(Positions( Lines.L5, initialposition.column))))
-            return ValidMovement
+        return if(!ocupied && !(board.containsPiece(Positions(Lines.L6, initialposition.column))))ValidMovement
+            else InvalidMovement
     }
 
     //Move infront
