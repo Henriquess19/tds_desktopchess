@@ -4,7 +4,7 @@ import teamTurn
 import toMove
 import kotlin.test.assertEquals
 
-class InvalidMoves {
+class InvalidCommandMoves {
     @Test(expected = IllegalArgumentException::class)
     fun `move empty`() {
         val sut = Board()
