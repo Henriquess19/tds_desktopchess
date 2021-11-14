@@ -16,7 +16,7 @@ enum class TypeOfPieces{ R,N,B,Q,K,P }
  * Represent the piece itself
  * @property team which team the piece is
  * @property typeOfPiece the type of the piece
- * @property representation
+ * @property representation the way is gonna be presented to the user
  */
 data class Pieces(val team: Team, val typeOfPiece: TypeOfPieces, val representation:Char)
 
@@ -153,6 +153,13 @@ class Board: BoardInterface {
       return strboard
    }
 
+   /**
+    * Based on the move made, and which team turn is, can see if the piece is their ones
+    * @param move the move being made
+    * @param teamTurn which team is making the move
+    * @return [Result] if is a valid or a invalid movement
+    */
+
    override fun turnToPlay(move: Move, teamTurn: Team): Result {
       val oldLine = (move.move[2].toInt() - '0'.code) - 1
       val oldColumn = "C" + move.move[1].uppercaseChar()
@@ -161,6 +168,10 @@ class Board: BoardInterface {
       return if(teamTurn == piece.team) ValidCommand
          else InvalidCommand
    }
+
+   /**
+    *
+    */
    private fun endGame(team: Team?){
       TODO()
    }

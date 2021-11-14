@@ -1,4 +1,10 @@
+/**
+ * The biggest command size possible
+ */
 private const val BIGGEST_MOVE_CMD = 7
+/**
+ * The smallest command size possible
+ */
 private const val SMALLEST_MOVE_CMD = 2
 
 /**

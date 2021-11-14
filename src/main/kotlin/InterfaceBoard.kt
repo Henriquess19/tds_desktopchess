@@ -30,5 +30,11 @@ interface BoardInterface {
     */
    fun getMoveList():MutableList<PlayMade>
 
+   /**
+    * Based on the move made, and which team turn is, can see if the piece is their ones
+    * @param move the move being made
+    * @param teamTurn which team is making the move
+    * @return [Result] if is a valid or a invalid movement
+    */
    fun turnToPlay(move: Move, teamTurn: Team): Result
 }
