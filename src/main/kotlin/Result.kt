@@ -34,6 +34,7 @@ object InvalidMovement : Result
  * Result produced when the is encounter the end game position (one of the kings is in check)
  */
 object EndGameCond : Result
+object ClosedGame : Result
 
 /**
  * Base on the result given, produce a string to warn the user what went wrong
@@ -47,5 +48,6 @@ fun handleResult(result: Result):String = when(result){
    InvalidGame -> "Game not found..\n"
    InvalidMovement -> "Invalid Movement..\n"
    EndGameCond ->"You won!!\n"
+   ClosedGame -> "Game is not opened yet..\n"
    else -> ""
 }

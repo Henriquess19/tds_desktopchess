@@ -95,12 +95,17 @@ class Board: BoardInterface {
 
       val verification = movePieceVerity(piece, oldPosition, newPosition,this)
       if (verification == ValidMovement) {
-         if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(getPiece(oldPosition)?.team)
-
          board[newPosition] = piece
          board.remove(oldPosition)
          movesList[numberOfPlays++] = PlayMade(piece.team, move)
-      }else println(handleResult(verification))
+
+         if (board[newPosition]?.typeOfPiece == TypeOfPieces.K ){
+            endGame(getPiece(oldPosition)?.team)
+            return this
+         }
+
+      } else println(handleResult(verification))
+
       draw(this)
       return this
    }
@@ -173,6 +178,7 @@ class Board: BoardInterface {
     *
     */
    private fun endGame(team: Team?){
-      TODO()
+      println("${team}:${handleResult(EndGameCond)}")
+      OPEN_GAME = false
    }
 }

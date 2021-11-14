@@ -2,6 +2,8 @@ import kotlin.system.exitProcess
 
 typealias Command = (String?) -> Unit
 
+private var OPEN_GAME = false
+
 fun chessCommands(board: Board):Map<String,Command>{
    return mapOf(
       "OPEN" to {open(board)},
@@ -20,6 +22,7 @@ private fun open(board: Board) {
     if (board.getMoveList().isEmpty()) {
         Board()
         println("${board.gameId} opened..\n")
+        OPEN_GAME = true
         draw(board)
     }
     else {
@@ -37,42 +40,55 @@ private fun join(board: Board) {
    else {
       getboardstate(board.getMoveList(),Team.BLACK)
       println("${board.gameId} joined..\n")
+      OPEN_GAME = true
       draw(board)
    }
 }
 
 private fun play(board: Board,move:String?) {
 
-    if (move != null ){
-       val playCommand = board.turnToPlay(Move(move),teamTurn(board.getMoveList(),null))
-       if(playCommand == ValidCommand) {
-               //val movePrepared = prepareTheMove(board, move)
-               board.makeMove(Move(move),teamTurn(board.getMoveList(),null))
-               draw(board)
-       }else{
-          println(handleResult(playCommand))
-       }
-   }else {
-       println(handleResult(InvalidCommand))
-    }
+   if (OPEN_GAME){
+       if (move != null ){
+          val playCommand = board.turnToPlay(Move(move),teamTurn(board.getMoveList(),null))
+          if(playCommand == ValidCommand) {
+                  //val movePrepared = prepareTheMove(board, move)
+                  board.makeMove(Move(move),teamTurn(board.getMoveList(),null))
+                  draw(board)
+          }else{
+             println(handleResult(playCommand))
+          }
+      }else{
+          println(handleResult(InvalidCommand))
+      }
+   }else{
+      println(handleResult(ClosedGame))
+   }
 }
 
 private fun refresh(board: Board) {
-   //TODO() UPDATE MOVES & JOGO CONFORME DB
-   draw(board)
+   if (OPEN_GAME) {
+      //TODO() UPDATE MOVES & JOGO CONFORME DB
+      draw(board)
+   }else{
+      println(handleResult(ClosedGame))
+   }
 }
 
 fun moves(board: Board) {
-   var idx = 0
-    val list = board.getMoveList()
-   println("----------MOVES-----------")
-   while(idx != list.size-1) {
-       val play = list[idx]
-           println(" Play Nº${idx + 1}: ${play.team} -> ${play.play}")
-           idx++
+   if (OPEN_GAME) {
+      var idx = 0
+      val list = board.getMoveList()
+      println("----------MOVES-----------")
+      while (idx != list.size - 1) {
+         val play = list[idx]
+         println(" Play Nº${idx + 1}: ${play.team} -> ${play.play}")
+         idx++
 
+      }
+      println("--------------------------")
+   }else{
+      println(handleResult(ClosedGame))
    }
-   println("--------------------------")
 }
 
 private fun exit() {
