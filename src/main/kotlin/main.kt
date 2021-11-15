@@ -1,36 +1,39 @@
+
+
+import domain.Board
+import isel.leic.tds.mongodb.createMongoClient
+import storage.DbMode
+import storage.MongoDbChess
+import storage.getDBConnectionInfo
+import ui.console.readChessCommand
+
 fun main(){
-    /*
+
+    val dbConnection = getDBConnectionInfo()
     val driver =
-        if (checkEnvironment() == DbMode.REMOTE)
-            createMongoClient(System.getenv(ENV_DB_CONNECTION))
+        if (dbConnection.mode == DbMode.REMOTE)
+            createMongoClient(dbConnection.connectionString)
         else createMongoClient()
 
-    val board: Board = MongoDbChess(driver.getDatabase(System.getenv(ENV_DB_NAME)))
-    */
-   val board = Board()
-   //TODO -> ARRANJAR MELHOR MANEIRA DE COMEÇAR
-   val dispatcher = chessCommands(board)
+   try {
+       val chess: ChessCommands = MongoDbChess(driver.getDatabase(dbConnection.dbName))
+       val dispatcher = chessCommands(chess)
 
-   while (true){
-
-      val(command,parameter) = readChessCommand(board)
-      val action = dispatcher[command.uppercase()]
-      if (action == null) println(handleResult(InvalidCommand))
-      else action(parameter)
+      while (true){
+         val(command,parameter) = readChessCommand(board)
+         val action = dispatcher[command.uppercase()]
+         if (action == null) println(handleResult(InvalidCommand))
+         else{
+            val result = action(parameter)
+            TODO("when(result)")
+         }
+      }
+   }
+   finally {
+      println("Closing driver ...")
+      driver.close()
    }
 }
-
-private fun readChessCommand(board:Board):Pair<String,String?>{
-   val game = getGameId(board)
-   val teamTurn = teamTurn(board.getMoveList(),null)
-   print("$game:$teamTurn> ")
-   val input = readln()
-   val command = input.substringBefore(delimiter = ' ')
-   val argument = input.substringAfter(delimiter = ' ', missingDelimiterValue = "").trim()
-   return Pair(command.trim(), argument.ifBlank { null })
-}
-
-private fun readln() = readLine()!!
 
 
 /*

@@ -1,4 +1,4 @@
-
+package domain
 
 /**
  * Representation of the columns in a board of chess
@@ -96,6 +96,7 @@ class Board: BoardInterface {
       //else println(handleResult(verification)) isto está errado não cumpre a regra de uma peça um propósito
       return this
    }
+
    /**
     * Verify if the position contains a piece
     * @param positions position where the piece should be
@@ -104,6 +105,7 @@ class Board: BoardInterface {
    override fun containsPiece(positions: Positions): Boolean {
       return board.containsKey(positions)
    }
+
    /**
     * Gets the piece specified
     * @param line line where the piece should be
@@ -113,6 +115,7 @@ class Board: BoardInterface {
    override fun getPiece(positions: Positions): Piece? {
       return board[positions]
    }
+
    /**
     * Return all the play made
     * @return list of all plays made

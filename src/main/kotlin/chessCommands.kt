@@ -4,9 +4,11 @@ typealias Command = (String?) -> Unit
 
 var OPEN_GAME = false
 
+//TODO() APLICAR O NINETEENCOMMANDS.KT AQUI
+
 fun chessCommands(board: Board):Map<String,Command>{
     return mapOf(
-        "OPEN" to {open(board)},
+        "OPEN" to {open(board,it)},
         "JOIN" to {join(board)},
         "PLAY" to {play(board,it)},
         "REFRESH" to {refresh(board)},
@@ -14,12 +16,9 @@ fun chessCommands(board: Board):Map<String,Command>{
         "EXIT" to {exit()}
     )
 }
-
-private fun open(board: Board) {
-    //TODO -> Create conditions for DB later
-    //TODO -> Call board.gameId
-    //Call board.gameId
-    if (board.getMoveList().isEmpty()) {
+private fun open(board: Board,id:String?){
+    //TODO
+    if (id !in /* CollectionIds*/ ) {
         Board()
         println("${board.gameId} opened..\n")
         OPEN_GAME = true

@@ -1,3 +1,5 @@
+package domain
+
 /**
  * The biggest command size possible
  */
