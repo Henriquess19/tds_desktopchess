@@ -1,6 +1,7 @@
-
-
 import domain.Board
+import domain.ExitResult
+import domain.ValueResult
+import domain.buildchessCommands
 import isel.leic.tds.mongodb.createMongoClient
 import storage.DbMode
 import storage.MongoDbChess
@@ -24,7 +25,7 @@ fun main(){
       while (true){
          val(command,parameter) = readChessCommand(chess)
          val action = dispatcher[command.uppercase()]
-         if (action == null) println("InvalidCommand")
+         if (action == null) println("Invalid Command")
          else{
             val result = action(parameter)
             when (result){

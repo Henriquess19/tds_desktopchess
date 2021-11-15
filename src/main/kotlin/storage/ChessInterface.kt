@@ -1,6 +1,12 @@
+package storage
+
 import domain.Board
 
-interface ChessCommandsInterface{
+/**
+ *  The Chess contract
+ */
+
+interface ChessInterface{
 
    fun open(board: Board, id:String):Iterable<String>
 

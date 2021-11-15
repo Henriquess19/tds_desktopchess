@@ -1,31 +1,36 @@
-import domain.Board
-import domain.PlayMade
-import domain.Team
-import kotlin.system.exitProcess
+package domain
 
-typealias Command = (String?) -> Unit
+import domain.Board
+import storage.ChessInterface
 
 var OPEN_GAME = false
 
-//TODO() APLICAR O NINETEENCOMMANDS.KT AQUI
-
 fun interface ChessCommands{
-    fun execute(parameter: String?):Result
+    /**
+     * Executes this command passing it the given parameter
+     * @param parameter the commands parameter, or null, if no parameter has been passed
+     */
+    fun execute(parameter: String?): Result
+
+    /**
+     * Overload of invoke operator, for convenience.
+     */
+    operator fun invoke(parameter: String? = null) = execute(parameter)
 }
 
 fun buildchessCommands(board: Board):Map<String,ChessCommands>{
     return mapOf(
-        "OPEN" to {open(board,it)},
-        "JOIN" to {join(board)},
-        "PLAY" to {play(board,it)},
-        "REFRESH" to {refresh(board)},
-        "MOVES" to {moves(board)},
+        "OPEN" to Open(board,it),
+        "JOIN" to Join(board),
+        "PLAY" to Play(board,it),
+        "REFRESH" to Refresh(board),
+        "MOVES" to Moves(),
         "EXIT" to Exit(),
     )
 }
 
 
-private class open(board: Board, id:String?):ChessCommands{
+private class Open(private val board: Board,private val id:String?):ChessCommands{
 
     /** TODO(VER COMO TRATAR A FUNCAO) **/
     override fun execute(parameter: String?): Result {
@@ -34,13 +39,13 @@ private class open(board: Board, id:String?):ChessCommands{
             Board()
             OPEN_GAME = true
         }else{
-            getboardstate(board.getMoveList(), Team.BLACK)
+            getboardstate(board.getMoveList(), Team.WHITE)
         }
         return ValueResult(OpenedGame)
     }
 }
 
-private class join(board: Board):ChessCommands {
+private class Join(private val board: Board):ChessCommands {
     //TODO -> Create conditions for DB later ?: throw error
 
     /** TODO(VER COMO TRATAR A FUNCAO) **/
@@ -51,51 +56,48 @@ private class join(board: Board):ChessCommands {
         else {
             /** TODO() GET ID IN DB **/
             getboardstate(board.getMoveList(),Team.BLACK)
-            println("${board.gameId} joined..\n")
             OPEN_GAME = true
-            draw(board)
         }
         return ValueResult(OpenedGame)
     }
 
 }
 
-private class play(board: Board,move:String?):ChessCommands {
+private class Play(private val board: Board,private val move:String?):ChessCommands {
     /** TODO(VER COMO TRATAR A FUNCAO) **/
-    override fun execute(parameter: String?): Result {
+    override fun execute(parameter: String?)= ValueResult(
         if(OPEN_GAME){
             if (move != null ){
                 val playSide= board.pieceTeamCheck(Move(stringPrepared(move)),teamTurn(board.getMoveList(),null))
                 if(playSide == ValueResult(ValidMovement)) {
-                    board.makeMove(Move(stringPrepared(move)),teamTurn(board.getMoveList(),null))
-                    draw(board)
-                    return ValueResult(ValidMovement)
+                    board.makeMove(Move(stringPrepared(move)),teamTurn(board.getMoveList(),null)).second
                 }else{
-                    return ValueResult(InvalidMovement)
+                    InvalidMovement
                 }
             }else{
-                return ValueResult(InvalidCommand)
+                 InvalidCommand
             }
+        }else {
+            ClosedGame
         }
-        return ValueResult(ClosedGame)
-    }
+    )
 }
 
-private class refresh(board: Board) :ChessCommands{
+private class Refresh(private val board: Board) :ChessCommands{
     //TODO() UPDATE MOVES & JOGO CONFORME DB
     override fun execute(parameter: String?): Result {
-        draw(board)
+        return ValueResult(UpdatedGame)
         TODO("Not yet implemented")
     }
 
 }
 
-private class moves() :ChessCommands{
+private class Moves: ChessCommands{
     override fun execute(parameter: String?): Result {
         return if (OPEN_GAME) {
             ValueResult("OpenedGame")
         }else{
-           ValueResult("ClosedGame")
+            ValueResult("ClosedGame")
         }
     }
 }

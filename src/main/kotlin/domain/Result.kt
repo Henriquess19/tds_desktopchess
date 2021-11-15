@@ -1,11 +1,8 @@
-import ChessCommands
-
+package domain
 
 sealed class Result
 
 object ExitResult : Result()
-
-class ValueResult<T>(val data: T) : Result()
 
 object GameNotExists
 
@@ -15,6 +12,10 @@ object OpenedGame
 
 object ClosedGame
 
+object UpdatedGame
+
+object EndGameCond
+
 object SameTeam
 
 object Encounter
@@ -22,3 +23,6 @@ object Encounter
 object ValidMovement
 
 object InvalidMovement
+
+
+class ValueResult<T>(val data: T) : Result()

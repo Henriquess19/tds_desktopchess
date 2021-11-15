@@ -1,10 +1,8 @@
 package domain
 
 import BoardInterface
-import InvalidMovement
-import ValidMovement
-import ValueResult
 import movePieceVerity
+import ui.console.endGame
 
 /**
  * Representation of the columns in a board of chess
@@ -77,8 +75,8 @@ class Board: BoardInterface {
     * @return [Board] the game updated with the move
     */
 
-   override fun makeMove(move: Move, team: Team): Board {
-      val oldLine = (move.move[2].toInt() - '0'.code) - 1
+   override fun makeMove(move: Move, team: Team): Pair<Board,ValueResult<*>> {
+      val oldLine = move.move[2].toString().toInt() - 1
       val newline = move.move[4].toString().toInt() - 1
       val oldColumn = "C" + move.move[1].uppercaseChar()
       val newColumn = "C" + move.move[3].uppercaseChar()
@@ -86,21 +84,27 @@ class Board: BoardInterface {
       val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
       val newPosition = Positions(Lines.values()[newline], Columns.valueOf(newColumn))
 
-      val piece = board[oldPosition] ?: throw Throwable("Piece not founded in the initialposition.")
+      val piece = board[oldPosition] ?: return Pair(this,ValueResult(InvalidMovement))  /** TODO(view) **/
 
       val verification = movePieceVerity(piece, oldPosition, newPosition,this)
       if (verification.equals(ValidMovement)) {
 
-         //if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(getPiece(oldPosition)?.team) isto está errado não cumpre a regra de uma peça um propósito
-         //está mal
-         if(move.length() > 5 && move.move[0] == 'p'.uppercaseChar() && move.move[6]== '=') piece.toPromotion(move.move[7])
-         if(containsPiece(oldPosition))
+         if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(getPiece(oldPosition)?.team) /** TODO(Wrong placement for function calling) **/
+
+         if(move.length() > 5 && move.move[0] == 'p'.uppercaseChar() && move.move[5]== '='){
+            if (move.move[6].uppercaseChar() != 'K'){
+               piece.toPromotion(move.move[6])
+            }else{
+               return Pair(this,ValueResult(InvalidCommand))  /** TODO(view) **/
+            }
+         }
+
          board[newPosition] = piece
          board.remove(oldPosition)
          movesList[numberOfPlays++] = PlayMade(piece.team, move)
       }
-      //else println(handleResult(verification)) isto está errado não cumpre a regra de uma peça um propósito
-      return this
+      else return Pair(this,ValueResult(verification)) /** TODO(view) **/
+      return Pair(this,ValueResult(ValidMovement))
    }
 
    /**
@@ -158,7 +162,7 @@ class Board: BoardInterface {
     * @param teamTurn which team is making the move
     * @return [Result] if is a valid or a invalid movement
     */
-   override fun pieceTeamCheck(move: Move, teamTurn: Team): ValueResult<*> {
+   override fun pieceTeamCheck(move: Move, teamTurn: Team): ValueResult<*>{
       val oldLine = (move.move[2].toInt() - '0'.code) - 1
       val oldColumn = "C" + move.move[1].uppercaseChar()
       val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
@@ -167,14 +171,3 @@ class Board: BoardInterface {
       else ValueResult(InvalidMovement)
    }
 }
-/*
-/**
- * Show the user that the game ended and close the game
- * @param team who won
- */
-private fun endGame(team: Team?){
-   println("${team}:${handleResult(EndGameCond)}")
-   OPEN_GAME = false
-}
-
- */

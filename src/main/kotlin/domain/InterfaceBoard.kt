@@ -12,7 +12,7 @@ interface BoardInterface {
     * @param move the move that its suppose to be made
     * @return [Board] the board change after the movement
     */
-   fun makeMove(move: Move, team: Team): Board
+   fun makeMove(move: Move, team: Team): Pair<Board,ValueResult<*>>
    /**
     * Verificate if the position contains a piece
     * @param positions position where the piece should be
@@ -38,5 +38,5 @@ interface BoardInterface {
     * @param teamTurn which team is making the move
     * @return [Result] if is a valid or a invalid movement
     */
-   fun pieceTeamCheck(move: Move, teamTurn: Team): Result
+   fun pieceTeamCheck(move: Move, teamTurn: Team): ValueResult<*>
 }

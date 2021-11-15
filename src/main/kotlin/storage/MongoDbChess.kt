@@ -1,11 +1,10 @@
 package storage
 
-import ChessCommands
 import domain.Board
 import com.mongodb.client.MongoDatabase
 import isel.leic.tds.mongodb.getRootCollectionsIds
 
-class MongoDbChess(private val db:MongoDatabase): ChessCommands {
+class MongoDbChess(private val db:MongoDatabase): Board(){
 
    override fun open(board: Board, id:String): Iterable<String> {
       return db.getRootCollectionsIds()
