@@ -1,5 +1,7 @@
 import com.mongodb.client.MongoCollection
+import domain.*
 import org.bson.Document
+import kotlin.Result
 
 /**
  *The board contract
@@ -10,7 +12,7 @@ interface BoardInterface {
     * @param move the move that its suppose to be made
     * @return [Board] the board change after the movement
     */
-   fun makeMove(move: Move, team: Team):Board
+   fun makeMove(move: Move, team: Team): Board
    /**
     * Verificate if the position contains a piece
     * @param positions position where the piece should be
@@ -23,7 +25,7 @@ interface BoardInterface {
     * @param positions position where the piece should be
     * @return the piece itself
     */
-   fun getPiece(positions: Positions):Piece?
+   fun getPiece(positions: Positions): Piece?
    /**
     * Return all the play made
     * @return list of all plays made

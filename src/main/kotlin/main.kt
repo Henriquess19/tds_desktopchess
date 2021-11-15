@@ -5,6 +5,7 @@ import isel.leic.tds.mongodb.createMongoClient
 import storage.DbMode
 import storage.MongoDbChess
 import storage.getDBConnectionInfo
+import ui.console.getViews
 import ui.console.readChessCommand
 
 fun main(){
@@ -16,16 +17,20 @@ fun main(){
         else createMongoClient()
 
    try {
-       val chess: ChessCommands = MongoDbChess(driver.getDatabase(dbConnection.dbName))
-       val dispatcher = chessCommands(chess)
+       val chess: Board = MongoDbChess(driver.getDatabase(dbConnection.dbName)) //TODO()
+       val dispatcher = buildchessCommands(chess)
+       val views = getViews()
 
       while (true){
-         val(command,parameter) = readChessCommand(board)
+         val(command,parameter) = readChessCommand(chess)
          val action = dispatcher[command.uppercase()]
-         if (action == null) println(handleResult(InvalidCommand))
+         if (action == null) println("InvalidCommand")
          else{
             val result = action(parameter)
-            TODO("when(result)")
+            when (result){
+               is ExitResult -> break
+               is ValueResult<*> -> views[command]?.invoke(result.data)
+            }
          }
       }
    }

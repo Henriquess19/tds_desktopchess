@@ -1,6 +1,7 @@
 package storage
-import Board
+
 import ChessCommands
+import domain.Board
 import com.mongodb.client.MongoDatabase
 import isel.leic.tds.mongodb.getRootCollectionsIds
 

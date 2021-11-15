@@ -1,3 +1,5 @@
+package domain
+
 /**
  * All the the seven different pieces, for each team, that game of chess have
  */

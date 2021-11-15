@@ -1,6 +1,6 @@
 package ui.console
 
-import Board
+import domain.Board
 import getGameId
 import teamTurn
 

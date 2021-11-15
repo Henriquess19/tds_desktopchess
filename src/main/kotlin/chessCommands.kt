@@ -1,3 +1,6 @@
+import domain.Board
+import domain.PlayMade
+import domain.Team
 import kotlin.system.exitProcess
 
 typealias Command = (String?) -> Unit
@@ -6,90 +9,103 @@ var OPEN_GAME = false
 
 //TODO() APLICAR O NINETEENCOMMANDS.KT AQUI
 
-fun chessCommands(board: Board):Map<String,Command>{
+fun interface ChessCommands{
+    fun execute(parameter: String?):Result
+}
+
+fun buildchessCommands(board: Board):Map<String,ChessCommands>{
     return mapOf(
         "OPEN" to {open(board,it)},
         "JOIN" to {join(board)},
         "PLAY" to {play(board,it)},
         "REFRESH" to {refresh(board)},
         "MOVES" to {moves(board)},
-        "EXIT" to {exit()}
+        "EXIT" to Exit(),
     )
 }
-private fun open(board: Board,id:String?){
-    //TODO
-    if (id !in /* CollectionIds*/ ) {
-        Board()
-        println("${board.gameId} opened..\n")
-        OPEN_GAME = true
-        draw(board)
-    }
-    else {
-        getboardstate(board.getMoveList(),Team.BLACK)
-    }
-}
 
-private fun join(board: Board) {
-    //TODO -> Create conditions for DB later ?: throw error
-    //TODO -> Call board.gameId
-    //Call board.gameId
-    if (board.getMoveList().isEmpty()) {
-        println(handleResult(InvalidGame))
-    }
-    else {
-        getboardstate(board.getMoveList(),Team.BLACK)
-        println("${board.gameId} joined..\n")
-        OPEN_GAME = true
-        draw(board)
-    }
-}
 
-private fun play(board: Board,move:String?) {
-    if(OPEN_GAME){
-        if (move != null ){
-            val playSide= board.pieceTeamCheck(Move(stringPrepared(move)),teamTurn(board.getMoveList(),null))
-            if(playSide == ValidMovement) {
-                board.makeMove(Move(stringPrepared(move)),teamTurn(board.getMoveList(),null))
-                draw(board)
-            }else{
-                println(handleResult(playSide) + "That´s not your piece")
-            }
+private class open(board: Board, id:String?):ChessCommands{
+
+    /** TODO(VER COMO TRATAR A FUNCAO) **/
+    override fun execute(parameter: String?): Result {
+        val debbugg = 1
+        if(debbugg==1 /** TODO() VERIFY ID IN DB **/){
+            Board()
+            OPEN_GAME = true
         }else{
-            println(handleResult(InvalidCommand) + "Try to write something")
+            getboardstate(board.getMoveList(), Team.BLACK)
         }
-    }else{
-        println(handleResult(ClosedGame))
+        return ValueResult(OpenedGame)
     }
 }
 
-private fun refresh(board: Board) {
+private class join(board: Board):ChessCommands {
+    //TODO -> Create conditions for DB later ?: throw error
+
+    /** TODO(VER COMO TRATAR A FUNCAO) **/
+    override fun execute(parameter: String?): Result {
+        if (board.getMoveList().isEmpty()) {
+            return ValueResult(GameNotExists)
+        }
+        else {
+            /** TODO() GET ID IN DB **/
+            getboardstate(board.getMoveList(),Team.BLACK)
+            println("${board.gameId} joined..\n")
+            OPEN_GAME = true
+            draw(board)
+        }
+        return ValueResult(OpenedGame)
+    }
+
+}
+
+private class play(board: Board,move:String?):ChessCommands {
+    /** TODO(VER COMO TRATAR A FUNCAO) **/
+    override fun execute(parameter: String?): Result {
+        if(OPEN_GAME){
+            if (move != null ){
+                val playSide= board.pieceTeamCheck(Move(stringPrepared(move)),teamTurn(board.getMoveList(),null))
+                if(playSide == ValueResult(ValidMovement)) {
+                    board.makeMove(Move(stringPrepared(move)),teamTurn(board.getMoveList(),null))
+                    draw(board)
+                    return ValueResult(ValidMovement)
+                }else{
+                    return ValueResult(InvalidMovement)
+                }
+            }else{
+                return ValueResult(InvalidCommand)
+            }
+        }
+        return ValueResult(ClosedGame)
+    }
+}
+
+private class refresh(board: Board) :ChessCommands{
     //TODO() UPDATE MOVES & JOGO CONFORME DB
-    draw(board)
+    override fun execute(parameter: String?): Result {
+        draw(board)
+        TODO("Not yet implemented")
+    }
+
 }
 
-fun moves(board: Board) {
-    if (OPEN_GAME) {
-        var idx = 0
-        val list = board.getMoveList()
-        println("----------MOVES-----------")
-        while (idx != list.size - 1 && list.isNotEmpty()) {
-            val play = list[idx]
-            println(" Play Nº${idx + 1}: ${play.team} -> ${play.play}")
-            idx++
-
+private class moves() :ChessCommands{
+    override fun execute(parameter: String?): Result {
+        return if (OPEN_GAME) {
+            ValueResult("OpenedGame")
+        }else{
+           ValueResult("ClosedGame")
         }
-        println("--------------------------")
-    }else{
-        println(handleResult(ClosedGame))
     }
 }
 
-private fun exit() {
-    exitProcess(0)
+private class Exit:ChessCommands {
+    override fun execute(parameter: String?) = ExitResult
     //TODO -> With DB implementation, make secure exit
 }
 
-private fun getboardstate(moves:MutableList<PlayMade>,team:Team){
+private fun getboardstate(moves:MutableList<PlayMade>, team:Team){
     val board= Board()
     moves.forEach{
         board.makeMove(it.play, teamTurn(moves,null))

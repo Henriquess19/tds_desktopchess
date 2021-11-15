@@ -1,5 +1,11 @@
 package domain
 
+import BoardInterface
+import InvalidMovement
+import ValidMovement
+import ValueResult
+import movePieceVerity
+
 /**
  * Representation of the columns in a board of chess
  */
@@ -83,7 +89,7 @@ class Board: BoardInterface {
       val piece = board[oldPosition] ?: throw Throwable("Piece not founded in the initialposition.")
 
       val verification = movePieceVerity(piece, oldPosition, newPosition,this)
-      if (verification == ValidMovement) {
+      if (verification.equals(ValidMovement)) {
 
          //if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(getPiece(oldPosition)?.team) isto está errado não cumpre a regra de uma peça um propósito
          //está mal
@@ -152,13 +158,13 @@ class Board: BoardInterface {
     * @param teamTurn which team is making the move
     * @return [Result] if is a valid or a invalid movement
     */
-   override fun pieceTeamCheck(move: Move, teamTurn: Team): Result {
+   override fun pieceTeamCheck(move: Move, teamTurn: Team): ValueResult<*> {
       val oldLine = (move.move[2].toInt() - '0'.code) - 1
       val oldColumn = "C" + move.move[1].uppercaseChar()
       val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
-      val piece = board[oldPosition] ?: return InvalidMovement
-      return if(teamTurn == piece.team) ValidMovement
-      else InvalidMovement
+      val piece = board[oldPosition] ?: return ValueResult(InvalidMovement)
+      return if(teamTurn == piece.team) ValueResult(ValidMovement)
+      else ValueResult(InvalidMovement)
    }
 }
 /*

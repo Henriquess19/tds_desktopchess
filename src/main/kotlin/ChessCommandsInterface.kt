@@ -1,7 +1,8 @@
+import domain.Board
 
-interface ChessCommands{
+interface ChessCommandsInterface{
 
-   fun open(board: Board,id:String):Iterable<String>
+   fun open(board: Board, id:String):Iterable<String>
 
    fun join(board: Board,id:String)
 
