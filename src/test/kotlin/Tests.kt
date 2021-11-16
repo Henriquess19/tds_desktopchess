@@ -1,7 +1,7 @@
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BoardTests {
+class BoardStateTests {
     @Test
     fun `Initial position Board`() {
         val sut = Board()

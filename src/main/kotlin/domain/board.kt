@@ -1,7 +1,9 @@
 package domain
 
-import BoardInterface
+import BoardState
+import com.mongodb.client.MongoCollection
 import movePieceVerity
+import storage.MongoDbChess
 import ui.console.endGame
 
 /**
@@ -45,13 +47,9 @@ const val INITIAL_BOARD =
            "PPPPPPPP" +
            "RNBQKBNR"
 
-const val GAME_ID = "g1"
-
-
-class Board: BoardInterface {
+open class BoardState: BoardState {
    private val board = mutableMapOf<Positions, Piece>()
-   private val movesList = mutableMapOf<Int, PlayMade>()
-   val gameId = GAME_ID //TODO -> ARRANJAR DEPOIS MANEIRA MELHOR PARA A DB
+    var movesList = mutableListOf<PlayMade>()
    private var numberOfPlays = 0
 
    /**
@@ -72,10 +70,10 @@ class Board: BoardInterface {
    /**
     * Make the piece move, if its valid
     * @param move the move to be made
-    * @return [Board] the game updated with the move
+    * @return [BoardState] the game updated with the move
     */
 
-   override fun makeMove(move: Move, team: Team): Pair<Board,ValueResult<*>> {
+   override fun makeMove(move: Move, team: Team): Pair<domain.BoardState,ValueResult<*>> {
       val oldLine = move.move[2].toString().toInt() - 1
       val newline = move.move[4].toString().toInt() - 1
       val oldColumn = "C" + move.move[1].uppercaseChar()
@@ -84,26 +82,26 @@ class Board: BoardInterface {
       val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
       val newPosition = Positions(Lines.values()[newline], Columns.valueOf(newColumn))
 
-      val piece = board[oldPosition] ?: return Pair(this,ValueResult(InvalidMovement))  /** TODO(view) **/
+      val piece = board[oldPosition] ?: return Pair(this,ValueResult(InvalidMovement))
 
       val verification = movePieceVerity(piece, oldPosition, newPosition,this)
       if (verification.equals(ValidMovement)) {
 
-         if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(getPiece(oldPosition)?.team) /** TODO(Wrong placement for function calling) **/
+         if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(this,getPiece(oldPosition)?.team) /** TODO(Wrong placement for function calling) **/
 
          if(move.length() > 5 && move.move[0] == 'p'.uppercaseChar() && move.move[5]== '='){
             if (move.move[6].uppercaseChar() != 'K'){
                piece.toPromotion(move.move[6])
             }else{
-               return Pair(this,ValueResult(InvalidCommand))  /** TODO(view) **/
+               return Pair(this,ValueResult(InvalidCommand))
             }
          }
 
          board[newPosition] = piece
          board.remove(oldPosition)
          movesList[numberOfPlays++] = PlayMade(piece.team, move)
-      }
-      else return Pair(this,ValueResult(verification)) /** TODO(view) **/
+      }else return Pair(this,ValueResult(verification))
+
       return Pair(this,ValueResult(ValidMovement))
    }
 
@@ -126,17 +124,6 @@ class Board: BoardInterface {
       return board[positions]
    }
 
-   /**
-    * Return all the play made
-    * @return list of all plays made
-    */
-   override fun getMoveList() : MutableList<PlayMade> {
-      val list = mutableListOf<PlayMade>()
-      movesList.forEach {
-         list+= it.value
-      }
-      return list
-   }
    /**
     * Overwrites the function string to transform the board in something readble
     * @return the board in form of a string
@@ -169,5 +156,51 @@ class Board: BoardInterface {
       val piece = board[oldPosition] ?: return ValueResult(InvalidMovement)
       return if(teamTurn == piece.team) ValueResult(ValidMovement)
       else ValueResult(InvalidMovement)
+   }
+}
+
+
+
+
+
+data class Board(val localboard: domain.BoardState, val dbboard:MongoDbChess){
+   private var GAMEID: String? = null;
+
+   fun playMove(move: Move, team: Team):ValueResult<*>{
+      val play = localboard.makeMove(move, team)
+      if(play.second==ValueResult(ValidMovement)) {
+         dbboard.updateGame(GAMEID!!,play.first.movesList)
+         return play.second
+      }else{
+         return ValueResult(InvalidCommand)
+      }
+   }
+
+   fun moveList(): MutableList<PlayMade>{
+      return localboard.movesList
+   }
+
+   fun dbmoveList(id:String): MutableList<PlayMade> {
+      val list = mutableListOf<PlayMade>()
+      dbboard.findgamebyId(id).forEach {list += it}
+      return list
+   }
+
+   fun updatedMovesList(id:String){
+      localboard.movesList = dbmoveList(id)
+   }
+
+   fun pieceTeam(move: Move, teamTurn: Team):ValueResult<*>{
+      return localboard.pieceTeamCheck(move, teamTurn)
+   }
+
+   fun updateMoves(){
+      dbboard.updateGame(GAMEID!!, dbmoveList(GAMEID!!))
+   }
+
+   fun openGame(id:String):Boolean{
+      GAMEID = id
+      updatedMovesList(GAMEID!!)
+      return GAMEID in dbboard.gamesIDList()
    }
 }

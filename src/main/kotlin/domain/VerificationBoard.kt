@@ -1,35 +1,36 @@
 import domain.*
+import domain.BoardState
 
 /**
  *Verify if the position where we wanna go have a team mate there, if not call another functions to see if the move is valid
  * @param   piece the piece to verify the move
  * @param   initialPosition original position of the piece
  * @param   wantedPosition where the piece is to be moved
- * @param   board current state of the board
+ * @param   boardState current state of the board
  * @return  if its a valid movement returns true else returns false
  */
-fun movePieceVerity(piece: Piece, initialPosition: Positions, wantedPosition: Positions, board: Board): ValueResult<*> {
-    val ocupied = board.containsPiece(wantedPosition)
+fun movePieceVerity(piece: Piece, initialPosition: Positions, wantedPosition: Positions, boardState: BoardState): ValueResult<*> {
+    val ocupied = boardState.containsPiece(wantedPosition)
 
     if (ocupied) {
-        val ocupiedColor = board.getPiece(wantedPosition)?.team
+        val ocupiedColor = boardState.getPiece(wantedPosition)?.team
         if (ocupiedColor == piece.team) {
             return ValueResult(SameTeam)
         }
     }
     return when (piece.typeOfPiece) {
         //Rooks
-        TypeOfPieces.R -> moveVerityRook(initialPosition, wantedPosition,board)
+        TypeOfPieces.R -> moveVerityRook(initialPosition, wantedPosition,boardState)
         //Pawns
-        TypeOfPieces.P -> moveVerityPawn(piece.team, initialPosition, wantedPosition, ocupied,board)
+        TypeOfPieces.P -> moveVerityPawn(piece.team, initialPosition, wantedPosition, ocupied,boardState)
         //Bishops
-        TypeOfPieces.B -> moveVerityBishop(initialPosition, wantedPosition,board)
+        TypeOfPieces.B -> moveVerityBishop(initialPosition, wantedPosition,boardState)
         //Kings
         TypeOfPieces.K -> moveVerityKing(initialPosition, wantedPosition)
         //Knights
         TypeOfPieces.N  -> moveVerityKnight(initialPosition, wantedPosition)
         //Queens (they have the movement from a knight plus bishop, so if one of the is true, she can move)
-        else -> moveVerityQueen(initialPosition, wantedPosition,board)
+        else -> moveVerityQueen(initialPosition, wantedPosition,boardState)
     }
 }
 
@@ -37,13 +38,13 @@ fun movePieceVerity(piece: Piece, initialPosition: Positions, wantedPosition: Po
  * Verify if the movement of the rook its possible
  * @param   initialPosition original position of the rook
  * @param   wantedPosition where the rook is to be moved
- * @param   board current state of the board
+ * @param   boardState current state of the board
  * @return  returns according to the result interface
  */
 private fun moveVerityRook(
-    initialPosition: Positions,
-    wantedPosition: Positions,
-    board: Board
+   initialPosition: Positions,
+   wantedPosition: Positions,
+   boardState: BoardState
 ): ValueResult<*> {
     //walk on the collumn
     if (initialPosition.line == wantedPosition.line) {
@@ -51,7 +52,7 @@ private fun moveVerityRook(
         val lowerColumn = Math.min(initialPosition.column.ordinal, wantedPosition.column.ordinal)
 
         for (i in higherColumn - 1 downTo lowerColumn + 1) {
-            if (board.containsPiece(Positions(wantedPosition.line, Columns.values()[i])))
+            if (boardState.containsPiece(Positions(wantedPosition.line, Columns.values()[i])))
                 return ValueResult(Encounter)
         }
     }//walk on the line
@@ -60,7 +61,7 @@ private fun moveVerityRook(
         val lowerLine = Math.min(initialPosition.line.ordinal, wantedPosition.line.ordinal)
 
         for (i in higherLine - 1 downTo lowerLine + 1) {
-            if (board.containsPiece(Positions( Lines.values()[i], wantedPosition.column)))
+            if (boardState.containsPiece(Positions( Lines.values()[i], wantedPosition.column)))
                 return ValueResult(Encounter)
         }
     }
@@ -72,15 +73,15 @@ private fun moveVerityRook(
  * Verify if the movement of the pawn its possible
  * @param   initialPosition original position of the pawn
  * @param   wantedPosition where the pawn is to be moved
- * @param   board current state of the board
+ * @param   boardState current state of the board
  * @return  returns according to the result interface
  */
 private fun moveVerityPawn(
-    pieceTeam: Team,
-    initialPosition: Positions,
-    wantedPosition: Positions,
-    ocupied: Boolean,
-    board: Board
+   pieceTeam: Team,
+   initialPosition: Positions,
+   wantedPosition: Positions,
+   ocupied: Boolean,
+   boardState: BoardState
 ): ValueResult<*> {
 
     //Initial pawn position
@@ -89,7 +90,7 @@ private fun moveVerityPawn(
         (wantedPosition.line == Lines.L3 ||
                 wantedPosition.line == Lines.L4) &&
         initialPosition.column == wantedPosition.column) {
-        return if (!ocupied && !(board.containsPiece(Positions(Lines.L3, initialPosition.column)))) ValueResult(ValidMovement)
+        return if (!ocupied && !(boardState.containsPiece(Positions(Lines.L3, initialPosition.column)))) ValueResult(ValidMovement)
         else ValueResult(InvalidMovement)
     }
 
@@ -98,7 +99,7 @@ private fun moveVerityPawn(
         (wantedPosition.line == Lines.L6 ||
                 wantedPosition.line == Lines.L5) &&
         initialPosition.column == wantedPosition.column) {
-        return if(!ocupied && !(board.containsPiece(Positions(Lines.L6, initialPosition.column))))ValueResult(ValidMovement)
+        return if(!ocupied && !(boardState.containsPiece(Positions(Lines.L6, initialPosition.column))))ValueResult(ValidMovement)
         else ValueResult(InvalidMovement)
     }
 
@@ -121,14 +122,14 @@ private fun moveVerityPawn(
  * Verify if the movement of the bishop its possible
  * @param   initialPosition original position of the bishop
  * @param   wantedPosition where the bishop is to be moved
- * @param   board current state of the board
+ * @param   boardState current state of the board
  * @return  returns according to the result interface
  */
 
 private fun moveVerityBishop(
-    initialPosition: Positions,
-    wantedPosition: Positions,
-    board: Board
+   initialPosition: Positions,
+   wantedPosition: Positions,
+   boardState: BoardState
 ): ValueResult<*> {
 
     if (initialPosition.column.ordinal == wantedPosition.column.ordinal
@@ -153,7 +154,7 @@ private fun moveVerityBishop(
                 && column.ordinal >= wantedPosition.column.ordinal +1
             ) {
 
-                if (board.containsPiece(Positions( line, column))) return ValueResult(Encounter)
+                if (boardState.containsPiece(Positions( line, column))) return ValueResult(Encounter)
 
                 line = Lines.values()[line.ordinal- 1]
                 column = Columns.values()[column.ordinal - 1]
@@ -169,7 +170,7 @@ private fun moveVerityBishop(
                 && column.ordinal >= wantedPosition.column.ordinal + 1
             ) {
 
-                if (board.containsPiece(Positions( line, column))) return ValueResult(Encounter)
+                if (boardState.containsPiece(Positions( line, column))) return ValueResult(Encounter)
 
                 line = Lines.values()[line.ordinal + 1]
                 column = Columns.values()[column.ordinal - 1]
@@ -192,7 +193,7 @@ private fun moveVerityBishop(
                 && column.ordinal <= wantedPosition.column.ordinal - 1
             ) {
 
-                if (board.containsPiece(Positions( line, column))) return ValueResult(Encounter)
+                if (boardState.containsPiece(Positions( line, column))) return ValueResult(Encounter)
 
                 line = Lines.values()[line.ordinal - 1]
                 column = Columns.values()[column.ordinal + 1]
@@ -208,7 +209,7 @@ private fun moveVerityBishop(
                 && column.ordinal <= wantedPosition.column.ordinal - 1
             ) {
 
-                if (board.containsPiece(Positions( line, column))) return ValueResult(Encounter)
+                if (boardState.containsPiece(Positions( line, column))) return ValueResult(Encounter)
 
                 line = Lines.values()[line.ordinal + 1]
                 column = Columns.values()[column.ordinal + 1]
@@ -282,12 +283,12 @@ private fun moveVerityKnight(
  * @return  returns according to the result interface
  */
 private fun moveVerityQueen(
-    initialPosition: Positions,
-    wantedPosition: Positions,
-    board: Board
+   initialPosition: Positions,
+   wantedPosition: Positions,
+   boardState: BoardState
 ): ValueResult<*> {
-    return if (moveVerityRook(initialPosition, wantedPosition,board).equals(ValidMovement)
-        || moveVerityBishop(initialPosition, wantedPosition, board).equals(ValidMovement) )
+    return if (moveVerityRook(initialPosition, wantedPosition,boardState).equals(ValidMovement)
+        || moveVerityBishop(initialPosition, wantedPosition, boardState).equals(ValidMovement) )
         ValueResult(ValidMovement)
     else ValueResult(InvalidMovement)
 }

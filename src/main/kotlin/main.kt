@@ -1,8 +1,6 @@
-import domain.Board
-import domain.ExitResult
-import domain.ValueResult
-import domain.buildchessCommands
+import domain.*
 import isel.leic.tds.mongodb.createMongoClient
+import storage.BoardDB
 import storage.DbMode
 import storage.MongoDbChess
 import storage.getDBConnectionInfo
@@ -18,7 +16,7 @@ fun main(){
         else createMongoClient()
 
    try {
-       val chess: Board = MongoDbChess(driver.getDatabase(dbConnection.dbName)) //TODO()
+       val chess: BoardDB = MongoDbChess(driver.getDatabase(dbConnection.dbName)) //TODO()
        val dispatcher = buildchessCommands(chess)
        val views = getViews()
 
@@ -40,20 +38,3 @@ fun main(){
       driver.close()
    }
 }
-
-
-/*
-private const val ENV_DB_NAME = "MONGO_DB_NAME"
-private const val ENV_DB_CONNECTION = "MONGO_DB_CONNECTION"
-
-private enum class DbMode { LOCAL, REMOTE }
-
-private fun checkEnvironment(): DbMode {
-    requireNotNull(System.getenv(ENV_DB_NAME)) {
-        "You must specify the environment variable $ENV_DB_NAME"
-    }
-
-    return if (System.getenv(ENV_DB_CONNECTION) != null) DbMode.REMOTE
-    else DbMode.LOCAL
-}
-*/

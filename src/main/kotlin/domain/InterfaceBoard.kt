@@ -1,18 +1,18 @@
 import com.mongodb.client.MongoCollection
 import domain.*
-import org.bson.Document
+import domain.BoardState
 import kotlin.Result
 
 /**
  *The board contract
  */
-interface BoardInterface {
+interface BoardState {
    /**
     * Move a piece on the board, if it is a valid movement
     * @param move the move that its suppose to be made
-    * @return [Board] the board change after the movement
+    * @return [BoardState] the board change after the movement
     */
-   fun makeMove(move: Move, team: Team): Pair<Board,ValueResult<*>>
+   fun makeMove(move: Move, team: Team): Pair<BoardState,ValueResult<*>>
    /**
     * Verificate if the position contains a piece
     * @param positions position where the piece should be
@@ -26,11 +26,6 @@ interface BoardInterface {
     * @return the piece itself
     */
    fun getPiece(positions: Positions): Piece?
-   /**
-    * Return all the play made
-    * @return list of all plays made
-    */
-   fun getMoveList():MutableList<PlayMade>
 
    /**
     * Based on the move made, and which team turn is, can see if the piece is their ones

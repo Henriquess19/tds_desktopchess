@@ -1,32 +1,24 @@
 package storage
 
-import domain.Board
+import domain.PlayMade
+
 import com.mongodb.client.MongoDatabase
+import isel.leic.tds.mongodb.createDocument
+import isel.leic.tds.mongodb.getCollectionWithId
 import isel.leic.tds.mongodb.getRootCollectionsIds
 
-class MongoDbChess(private val db:MongoDatabase): Board(){
+class MongoDbChess(private val db:MongoDatabase): BoardDB {
 
-   override fun open(board: Board, id:String): Iterable<String> {
+   override fun gamesIDList(): Iterable<String> {
       return db.getRootCollectionsIds()
    }
 
-   override fun join(board: Board, id: String) {
-      TODO("Not yet implemented")
+   override fun findgamebyId(id: String):List<PlayMade> {
+     return db.getCollectionWithId<List<PlayMade>>(id)
    }
 
-   override fun play(board: Board, move: String?) {
-      TODO("Not yet implemented")
-   }
 
-   override fun refresh(board: Board) {
-      TODO("Not yet implemented")
-   }
-
-   override fun moves(board: Board) {
-      TODO("Not yet implemented")
-   }
-
-   override fun exit() {
-      TODO("Not yet implemented")
+   override fun updateGame(id: String, moveslist: MutableList<PlayMade>): Boolean {
+      return db.createDocument(id, moveslist)
    }
 }

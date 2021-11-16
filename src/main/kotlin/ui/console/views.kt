@@ -1,6 +1,5 @@
 package ui.console
 
-import com.mongodb.client.model.changestream.UpdateDescription
 import domain.*
 
 
@@ -21,7 +20,7 @@ fun gameView(input: Any?) {
    val success = input as OpenedGame
       if (success == OpenedGame) {
          println( "Game opened..")
-         draw(board)
+         draw(boardState)
       }
       else println("Something went wrong..")
 }
@@ -29,7 +28,7 @@ fun gameView(input: Any?) {
 fun playView(input: Any?) {
    println(
       when(input) {
-         ValidMovement -> draw(board)
+         ValidMovement -> draw(boardState)
          InvalidMovement -> "Movement Invalid.."
          InvalidCommand -> "Command Invalid.. "
          ClosedGame -> "Game not opened.."
@@ -41,16 +40,16 @@ fun playView(input: Any?) {
 fun refreshView(input: Any?) {
       if (input == UpdatedGame) {
          println( "Game updated..")
-         draw(board)
+         draw(boardState)
       }
       else  println("Something went wrong..")
 }
 
-fun movesView(input: Any?,board: Board) {
+fun movesView(input: Any?, board: Board) {
    val openedgame = input as OpenedGame
    if (input==openedgame) {
       var idx = 0
-      val list = board.getMoveList()
+      val list = board.moveList()
       println("----------MOVES-----------")
       while (idx != list.size - 1 && list.isNotEmpty()) {
          val play = list[idx]
@@ -65,9 +64,9 @@ fun movesView(input: Any?,board: Board) {
 }
 
 /**
- * Fun the receives the [Board] and draw the information
+ * Fun the receives the [BoardState] and draw the information
  */
-fun draw(board: Board) {
+fun draw(board: BoardState) {
    val boards= board.toString()
    println("    a b c d e f g h ")
    println("   -----------------")
@@ -93,8 +92,9 @@ fun draw(board: Board) {
  * @param team who won
  */
 
-fun endGame(team: Team?){
-   println("${team}:${ValueResult(EndGameCond)}")
+fun endGame(board:BoardState,team: Team?){
+   draw(board)
+   println("\n${team}:${ValueResult(EndGameCond)}")
    OPEN_GAME = false
 }
 

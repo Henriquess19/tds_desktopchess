@@ -3,6 +3,7 @@ package isel.leic.tds.mongodb
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
+import domain.PlayMade
 import org.litote.kmongo.KMongo
 
 /**
@@ -21,7 +22,7 @@ fun createMongoClient(connectionString: String? = null): MongoClient =
  * @param   id    the collection identifier
  * @return  the corresponding [MongoCollection<T>] instance
  */
-inline fun <reified T : Any> MongoDatabase.getCollectionWithId(id: String): MongoCollection<T> =
+inline fun <reified T : Any> MongoDatabase.getCollectionWithId(id: String): List<PlayMade> =
     this.getCollection(id, T::class.java)
 
 /**
