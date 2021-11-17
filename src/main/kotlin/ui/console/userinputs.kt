@@ -1,13 +1,14 @@
 package ui.console
 
-import domain.BoardState
-import getGameId
-import teamTurn
+import domain.Board
+
+import domain.teamTurn
 
 
-fun readChessCommand(boardState:BoardState):Pair<String,String?>{
-   val game = getGameId(boardState)
-   val teamTurn = teamTurn(boardState.getMoveList(),null)
+
+fun readChessCommand(board: Board):Pair<String,String?>{
+   val game = board.GAMEID
+   val teamTurn = teamTurn(board.moveList(),null)
    print("$game:$teamTurn> ")
    val input = readln()
    val command = input.substringBefore(delimiter = ' ')

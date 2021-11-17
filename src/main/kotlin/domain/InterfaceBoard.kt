@@ -1,4 +1,3 @@
-import com.mongodb.client.MongoCollection
 import domain.*
 import domain.BoardState
 import kotlin.Result
@@ -6,7 +5,7 @@ import kotlin.Result
 /**
  *The board contract
  */
-interface BoardState {
+interface BoardStateInterface {
    /**
     * Move a piece on the board, if it is a valid movement
     * @param move the move that its suppose to be made
@@ -34,4 +33,6 @@ interface BoardState {
     * @return [Result] if is a valid or a invalid movement
     */
    fun pieceTeamCheck(move: Move, teamTurn: Team): ValueResult<*>
+
+   fun refreshmovesList(moves: MovesList):MovesList
 }

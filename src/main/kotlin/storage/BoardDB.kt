@@ -1,6 +1,6 @@
 package storage
 
-import domain.PlayMade
+import domain.MovesList
 
 /**
  *  The boardDB contract
@@ -9,7 +9,11 @@ import domain.PlayMade
 interface BoardDB {
    fun gamesIDList(): Iterable<String>
 
-   fun findgamebyId(id: String): List<PlayMade>
+   fun findgamebyId(moveslist: MovesList):MovesList
 
-   fun updateGame(id: String, moveslist: MutableList<PlayMade>):Boolean
+   fun updateGame(moveslist: MovesList):Boolean
+
+   fun createID(id: String)
+
+   fun createGame(moveslist: MovesList):Boolean
 }

@@ -287,8 +287,8 @@ private fun moveVerityQueen(
    wantedPosition: Positions,
    boardState: BoardState
 ): ValueResult<*> {
-    return if (moveVerityRook(initialPosition, wantedPosition,boardState).equals(ValidMovement)
-        || moveVerityBishop(initialPosition, wantedPosition, boardState).equals(ValidMovement) )
+    return if (moveVerityRook(initialPosition, wantedPosition,boardState).data == ValidMovement
+        || moveVerityBishop(initialPosition, wantedPosition, boardState).data == ValidMovement )
         ValueResult(ValidMovement)
     else ValueResult(InvalidMovement)
 }

@@ -1,10 +1,9 @@
-package isel.leic.tds.mongodb
+package storage.mongodb
 
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
-import domain.PlayMade
-import org.litote.kmongo.KMongo
+import org.litote.kmongo.*
 
 /**
  * Creates an instance of the mongo db client driver. The instance must be closed when no longer needed.
@@ -22,12 +21,14 @@ fun createMongoClient(connectionString: String? = null): MongoClient =
  * @param   id    the collection identifier
  * @return  the corresponding [MongoCollection<T>] instance
  */
-inline fun <reified T : Any> MongoDatabase.getCollectionWithId(id: String): List<PlayMade> =
+inline fun <reified T : Any> MongoDatabase.getCollectionWithId(id: String): MongoCollection<T> =
     this.getCollection(id, T::class.java)
 
 /**
  * Extension function of [MongoDatabase] that creates a document with [document] contents and adds it to the collection
  * identified by [parentCollectionId]. The generic parameter <T> is the type of the document to be created.
+ * If the [document] contains a [_id] property of type String, it will be used as a document identifier, otherwise one
+ * will be automatically generated.
  *
  * @param   parentCollectionId  the identifier of the collection where the document will be created
  * @param   document            the object bearing the document data
@@ -59,3 +60,22 @@ fun <T> MongoCollection<T>.createDocument(document: T): Boolean = this.insertOne
  * @return  the documents in the collection
  */
 fun <T> MongoCollection<T>.getAll(): Iterable<T> = this.find()
+
+/**
+ * Extension function of [MongoCollection<T>] that returns the document, in this collection, identified by [id].
+ * The generic parameter <T> is the type of the documents contained in the collection.
+ *
+ * @return  the document or null if no document identified by [id] exists
+ */
+fun <T> MongoCollection<T>.getDocument(id: String): T? = this.findOneById(id)
+
+/**
+ * Extension function of [MongoCollection<T>] that updates the given [document] in this collection. The document instance
+ * must contain a [_id] of type [String], containing the document's identifier.
+ * The generic parameter <T> is the type of the documents contained in the collection.
+ *
+ * @param   document            the object bearing the document data
+ * @return  a boolean value indicating if the update was successful (true), or not (false)
+ */
+inline fun <reified T : Any> MongoCollection<T>.updateDocument(document: T): Boolean =
+    this.replaceOne(document).wasAcknowledged()

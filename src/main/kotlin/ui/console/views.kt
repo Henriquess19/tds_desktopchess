@@ -2,10 +2,11 @@ package ui.console
 
 import domain.*
 
+typealias View = (input:Any?) -> Unit
 
-typealias View = (input: Any?) -> Unit
+private var moveListToDraw:MovesList = MovesList(null, mutableListOf())
 
-fun getViews(boardState: BoardState):Map<String,View>{
+fun getViews(): Map<String,View> {
    return mapOf(
       "OPEN" to ::gameView,
       "JOIN" to ::gameView,
@@ -16,51 +17,55 @@ fun getViews(boardState: BoardState):Map<String,View>{
    )
 }
 
-fun gameView(input: Any?) {
-   val success = input as OpenedGame
-      if (success == OpenedGame) {
+fun gameView(input:Any?) {
+      if (input == OpenedGame) {
          println( "Game opened..")
-         draw(boardState)
       }
       else println("Something went wrong..")
 }
 
-fun playView(input: Any?) {
+fun playView(input:Any?) {
    println(
       when(input) {
-         ValidMovement -> draw(boardState)
          NeedPromotion -> "Indicate your promotion.."
          InvalidMovement -> "Movement Invalid.."
-         InvalidCommand -> "Command Invalid.. "
+         InvalidCommand-> "Command Invalid.. "
          ClosedGame -> "Game not opened.."
          else -> "Something went wrong.."
       }
    )
 }
 
-fun refreshView(input: Any?) {
+fun refreshView(input:Any?) {
       if (input == UpdatedGame) {
          println( "Game updated..")
-         draw(boardState)
       }
-      else  println("Something went wrong..")
+      else println("Something went wrong..")
 }
 
-fun movesView(input: Any?, board: Board) {
-   val openedgame = input as OpenedGame
-   if (input==openedgame) {
+fun movesView(input: Any?) {     /** TODO **/
+   if (input == MovesGame) {
       var idx = 0
-      val list = board.moveList()
+     val list = moveListToDraw
       println("----------MOVES-----------")
-      while (idx != list.size - 1 && list.isNotEmpty()) {
-         val play = list[idx]
-         println(" Play Nº${idx + 1}: ${play.team} -> ${play.play}")
+     while (idx != list.content.size - 1 && list.content.isNotEmpty()) {
+         val play = list.content[idx]
+         println("\tNº${idx + 1}: ${play.team} -> ${play.play.move}")
          idx++
 
       }
       println("--------------------------")
    }else{
       println("Something went wrong..")
+   }
+}
+
+
+fun gameDraw(result:ValueResult<*>,board: Board){
+   val possibleResultsDraw = arrayOf(ValidMovement,OpenedGame,UpdatedGame)
+   if (result.data in possibleResultsDraw ){
+      draw(board.localboard)
+      updatemovedraw(board)
    }
 }
 
@@ -88,6 +93,10 @@ fun draw(board: BoardState) {
    println("   -----------------\n")
 }
 
+fun updatemovedraw(board: Board){
+   moveListToDraw = board.moveList()
+}
+
 /**
  * Show the user that the game ended and close the game
  * @param team who won
@@ -95,7 +104,7 @@ fun draw(board: BoardState) {
 
 fun endGame(board:BoardState,team: Team?){
    draw(board)
-   println("\n${team}:${ValueResult(EndGameCond)}")
+   println("\n${team}:You won!")
    OPEN_GAME = false
 }
 

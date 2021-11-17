@@ -2,19 +2,19 @@ package domain
 
 sealed class Result
 
-object ExitResult : Result()
+object ExitResult:Result()
 
 object GameNotExists
 
 object InvalidCommand
+
+object MovesGame
 
 object OpenedGame
 
 object ClosedGame
 
 object UpdatedGame
-
-object EndGameCond
 
 object SameTeam
 
