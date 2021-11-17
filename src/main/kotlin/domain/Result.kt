@@ -24,5 +24,7 @@ object ValidMovement
 
 object InvalidMovement
 
+object NeedPromotion
+
 
 class ValueResult<T>(val data: T) : Result()
