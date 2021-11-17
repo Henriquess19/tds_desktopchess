@@ -16,12 +16,12 @@ fun main(){
         else createMongoClient()
 
    try {
-       val chess: BoardDB = MongoDbChess(driver.getDatabase(dbConnection.dbName)) //TODO()
+       val chess= Board(BoardState(),MongoDbChess(driver.getDatabase(dbConnection.dbName)))
        val dispatcher = buildchessCommands(chess)
        val views = getViews()
 
       while (true){
-         val(command,parameter) = readChessCommand(chess)
+         val(command,parameter) = readChessCommand(chess.localboard)
          val action = dispatcher[command.uppercase()]
          if (action == null) println("Invalid Command")
          else{

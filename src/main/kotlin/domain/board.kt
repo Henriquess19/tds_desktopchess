@@ -89,11 +89,14 @@ open class BoardState: BoardState {
 
          if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(this,getPiece(oldPosition)?.team) /** TODO(Wrong placement for function calling) **/
 
-         if(move.length() > 5 && move.move[0] == 'p'.uppercaseChar() && move.move[5]== '='){
-            if (move.move[6].uppercaseChar() != 'K'){
-               piece.toPromotion(move.move[6])
-            }else{
-               return Pair(this,ValueResult(InvalidCommand))
+         if (piece.typeOfPiece == TypeOfPieces.P
+               && verifypromocion(newPosition,piece.team) == ValueResult(ValidMovement)){
+            if(move.length() > 5 && move.move[5]== '='){
+               if (move.move[6].uppercaseChar() != 'K'){
+                  piece.toPromotion(move.move[6])
+               }else{
+                  return Pair(this,ValueResult(NeedPromotion))
+               }
             }
          }
 
@@ -156,6 +159,14 @@ open class BoardState: BoardState {
       val piece = board[oldPosition] ?: return ValueResult(InvalidMovement)
       return if(teamTurn == piece.team) ValueResult(ValidMovement)
       else ValueResult(InvalidMovement)
+   }
+
+
+   fun verifypromocion(location: Positions,team: Team):ValueResult<*>{
+      return if (team==Team.WHITE && location.line==Lines.L8
+         || team==Team.BLACK && location.line==Lines.L1){
+         ValueResult(ValidMovement)
+      } else ValueResult(InvalidMovement)
    }
 }
 

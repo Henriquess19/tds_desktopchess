@@ -5,7 +5,7 @@ import domain.*
 
 typealias View = (input: Any?) -> Unit
 
-fun getViews():Map<String,View>{
+fun getViews(boardState: BoardState):Map<String,View>{
    return mapOf(
       "OPEN" to ::gameView,
       "JOIN" to ::gameView,
@@ -29,6 +29,7 @@ fun playView(input: Any?) {
    println(
       when(input) {
          ValidMovement -> draw(boardState)
+         NeedPromotion -> "Indicate your promotion.."
          InvalidMovement -> "Movement Invalid.."
          InvalidCommand -> "Command Invalid.. "
          ClosedGame -> "Game not opened.."
