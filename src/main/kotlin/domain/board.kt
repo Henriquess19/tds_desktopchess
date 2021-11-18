@@ -51,6 +51,7 @@ const val INITIAL_BOARD =
 
 data class BoardState(val moves: MovesList) : BoardStateInterface {
    private val board = mutableMapOf<Positions, Piece>()
+   var movesList = moves
 
    /**
     * Init the board putting the pieces on corresponding initial positions
