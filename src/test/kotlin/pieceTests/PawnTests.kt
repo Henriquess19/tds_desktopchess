@@ -1,18 +1,15 @@
 package pieceTests
 
-import Board
-import draw
-import teamTurn
-import toMove
+import domain.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PawnTests {
     @Test
     fun `legal pawn 1 block upward move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pa2a3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pa2a3".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -28,9 +25,9 @@ class PawnTests {
 
     @Test
     fun `legal pawn 2 block upward move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pa2a4".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -46,9 +43,9 @@ class PawnTests {
 
     @Test
     fun `legal pawn 1 block downward move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("pa7a6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pa7a6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -64,9 +61,9 @@ class PawnTests {
 
     @Test
     fun `legal pawn 2 block downward move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("pa7a5".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pa7a5".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -82,13 +79,13 @@ class PawnTests {
 
     @Test
     fun `Pawn upleftdiagonal eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("rh8h6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("rh6a6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("ra6a3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Pb2a3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("ph7h5".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("rh8h6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("rh6a6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("ra6a3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Pb2a3".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbn "+
@@ -104,14 +101,14 @@ class PawnTests {
 
     @Test
     fun `Pawn uprightdiagonal eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("rh8h6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("rh6a6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("ra6a3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("ra3b3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Pa2b3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("ph7h5".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("rh8h6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("rh6a6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("ra6a3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("ra3b3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Pa2b3".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbn "+
@@ -127,13 +124,13 @@ class PawnTests {
 
     @Test
     fun `Pawn downrightdiagonal eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ra3h3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Rh3h6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("pg7h6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pa2a4".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ra1a3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ra3h3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Rh3h6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("pg7h6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -149,14 +146,14 @@ class PawnTests {
 
     @Test
     fun `Pawn downleftdiagonal eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ra3h3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Rh3h6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Rh6g6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("ph7g6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pa2a4".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ra1a3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ra3h3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Rh3h6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Rh6g6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("ph7g6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -172,13 +169,13 @@ class PawnTests {
 
     @Test
     fun `Ilegal pawn 1 block upward move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList(),Team.BLACK))
-            .makeMove("rh8h6".toMove(), teamTurn(sut.getMoveList(),Team.BLACK))
-            .makeMove("rh6a6".toMove(), teamTurn(sut.getMoveList(),Team.BLACK))
-            .makeMove("ra6a3".toMove(), teamTurn(sut.getMoveList(),Team.BLACK))
-            .makeMove("Pa2a3".toMove(), teamTurn(sut.getMoveList(),Team.WHITE))
+            .makeMove("ph7h5".toMove(), teamTurn(sut.movesList,Team.BLACK)).first
+            .makeMove("rh8h6".toMove(), teamTurn(sut.movesList,Team.BLACK)).first
+            .makeMove("rh6a6".toMove(), teamTurn(sut.movesList,Team.BLACK)).first
+            .makeMove("ra6a3".toMove(), teamTurn(sut.movesList,Team.BLACK)).first
+            .makeMove("Pa2a3".toMove(), teamTurn(sut.movesList,Team.WHITE))
 
         assertEquals(
             "rnbqkbn "+
@@ -194,14 +191,14 @@ class PawnTests {
 
     @Test
     fun `Ilegal pawn 2 block upward move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList(),Team.BLACK))
-            .makeMove("rh8h6".toMove(), teamTurn(sut.getMoveList(),Team.BLACK))
-            .makeMove("rh6a6".toMove(), teamTurn(sut.getMoveList(),Team.BLACK))
-            .makeMove("ra6a4".toMove(), teamTurn(sut.getMoveList(),Team.BLACK))
-            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList(),Team.WHITE))
-        draw(sut)
+            .makeMove("ph7h5".toMove(), teamTurn(sut.movesList,Team.BLACK)).first
+            .makeMove("rh8h6".toMove(), teamTurn(sut.movesList,Team.BLACK)).first
+            .makeMove("rh6a6".toMove(), teamTurn(sut.movesList,Team.BLACK)).first
+            .makeMove("ra6a4".toMove(), teamTurn(sut.movesList,Team.BLACK)).first
+            .makeMove("Pa2a4".toMove(), teamTurn(sut.movesList,Team.WHITE))
+
         assertEquals(
             "rnbqkbn "+
                     "ppppppp "+
@@ -216,13 +213,13 @@ class PawnTests {
 
     @Test
     fun `Ilegal pawn 1 block downward move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList(),Team.WHITE))
-            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList(),Team.WHITE))
-            .makeMove("Ra3h3".toMove(), teamTurn(sut.getMoveList(),Team.WHITE))
-            .makeMove("Rh3h6".toMove(), teamTurn(sut.getMoveList(),Team.WHITE))
-            .makeMove("ph7h6".toMove(), teamTurn(sut.getMoveList(),Team.BLACK))
+            .makeMove("Pa2a4".toMove(), teamTurn(sut.movesList,Team.WHITE)).first
+            .makeMove("Ra1a3".toMove(), teamTurn(sut.movesList,Team.WHITE)).first
+            .makeMove("Ra3h3".toMove(), teamTurn(sut.movesList,Team.WHITE)).first
+            .makeMove("Rh3h6".toMove(), teamTurn(sut.movesList,Team.WHITE)).first
+            .makeMove("ph7h6".toMove(), teamTurn(sut.movesList,Team.BLACK))
 
         assertEquals(
             "rnbqkbnr"+
@@ -238,13 +235,13 @@ class PawnTests {
 
     @Test
     fun `Ilegal pawn 2 block downward move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pa2a4".toMove(), teamTurn(sut.getMoveList(),Team.WHITE))
-            .makeMove("Ra1a3".toMove(), teamTurn(sut.getMoveList(),Team.WHITE))
-            .makeMove("Ra3h3".toMove(), teamTurn(sut.getMoveList(),Team.WHITE))
-            .makeMove("Rh3h5".toMove(), teamTurn(sut.getMoveList(),Team.WHITE))
-            .makeMove("ph7h5".toMove(), teamTurn(sut.getMoveList(),Team.BLACK))
+            .makeMove("Pa2a4".toMove(), teamTurn(sut.movesList,Team.WHITE)).first
+            .makeMove("Ra1a3".toMove(), teamTurn(sut.movesList,Team.WHITE)).first
+            .makeMove("Ra3h3".toMove(), teamTurn(sut.movesList,Team.WHITE)).first
+            .makeMove("Rh3h5".toMove(), teamTurn(sut.movesList,Team.WHITE)).first
+            .makeMove("ph7h5".toMove(), teamTurn(sut.movesList,Team.BLACK))
 
         assertEquals(
             "rnbqkbnr"+
@@ -260,9 +257,9 @@ class PawnTests {
 
     @Test
     fun `Ilegal pawn uprightdiagonal move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pa2b3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pa2b3".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -278,9 +275,9 @@ class PawnTests {
 
     @Test
     fun `Ilegal pawn upleftdiagonal move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pb2a3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pb2a3".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -296,9 +293,9 @@ class PawnTests {
 
     @Test
     fun `Ilegal pawn downleftdiagonal move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("pb7a6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pb7a6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -314,9 +311,9 @@ class PawnTests {
 
     @Test
     fun `Ilegal pawn downrightdiagonal move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("pa7b6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pa7b6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+

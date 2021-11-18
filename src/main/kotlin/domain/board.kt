@@ -51,7 +51,6 @@ const val INITIAL_BOARD =
 
 data class BoardState(val moves: MovesList) : BoardStateInterface {
    private val board = mutableMapOf<Positions, Piece>()
-   var movesList = moves
 
    /**
     * Init the board putting the pieces on corresponding initial positions
@@ -88,7 +87,7 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
       val verification = movePieceVerity(piece, oldPosition, newPosition,this)
       if (verification.data == ValidMovement) {
 
-         if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(this,getPiece(oldPosition)?.team) /** TODO(Wrong placement for function calling) **/
+         if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(getPiece(oldPosition)?.team) /** TODO(Wrong placement for function calling) **/
 
          if (piece.typeOfPiece == TypeOfPieces.P
                && verifypromocion(newPosition,piece.team).data == ValidMovement){

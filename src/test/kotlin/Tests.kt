@@ -1,10 +1,12 @@
+
+import domain.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BoardStateTests {
     @Test
     fun `Initial position Board`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         assertEquals(
             "rnbqkbnr" +
                     "pppppppp" +
@@ -12,16 +14,16 @@ class BoardStateTests {
                     "PPPPPPPP" +
                     "RNBQKBNR", sut.toString()
         )
-        draw(sut)
     }
+
 
     @Test
     fun `MakeMove in Board`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pe2e4".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Pe7e5".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Nb1c3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pe2e4".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Pe7e5".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Nb1c3".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -33,7 +35,6 @@ class BoardStateTests {
                     "PPPP PPP"+
                     "R BQKBNR",sut.toString()
         )
-        draw(sut)
     }
 
     //TODO -> TESTES DAS STRINGS DE MOVE NAO COMPLETAS

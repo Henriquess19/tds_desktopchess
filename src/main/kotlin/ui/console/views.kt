@@ -43,7 +43,7 @@ fun refreshView(input:Any?) {
       else println("Something went wrong..")
 }
 
-fun movesView(input: Any?) {     /** TODO **/
+fun movesView(input: Any?) {
    if (input == MovesGame) {
       var idx = 0
      val list = moveListToDraw
@@ -62,7 +62,7 @@ fun movesView(input: Any?) {     /** TODO **/
 
 
 fun gameDraw(result:ValueResult<*>,board: Board){
-   val possibleResultsDraw = arrayOf(ValidMovement,OpenedGame,UpdatedGame)
+   val possibleResultsDraw = arrayOf(ValidMovement,OpenedGame,UpdatedGame,EndedGame)
    if (result.data in possibleResultsDraw ){
       draw(board.localboard)
       updatemovedraw(board)
@@ -102,8 +102,7 @@ fun updatemovedraw(board: Board){
  * @param team who won
  */
 
-fun endGame(board:BoardState,team: Team?){
-   draw(board)
+fun endGame(team: Team?){
    println("\n${team}:You won!")
    OPEN_GAME = false
 }

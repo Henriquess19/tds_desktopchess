@@ -1,4 +1,5 @@
 package storage
+import com.mongodb.MongoException
 import storage.mongodb.*
 import domain.PlayMade
 
@@ -9,32 +10,44 @@ import domain.MovesList
 class MongoDbChess(private val db:MongoDatabase): BoardDB {
 
    override fun gamesIDList(): Iterable<String> {
-      return db.getRootCollectionsIds()
+      try{
+         return db.getRootCollectionsIds()
+      }catch (failure:MongoException){
+         throw ChessDBAccessException(failure)
+      }
    }
 
    override fun findgamebyId(moveslist: MovesList):MovesList {
-     return db.getCollectionWithId<MovesList>(moveslist._id!!.toString()).getAll().filter { it._id== moveslist._id }.first()
+      try {
+         return db.getCollectionWithId<MovesList>(moveslist._id!!.toString()).getAll()
+            .filter { it._id == moveslist._id }.first()
+      }catch (failure:MongoException){
+         throw ChessDBAccessException(failure)
+      }
    }
 
    override fun updateGame(moveslist: MovesList): Boolean {
-      if (moveslist._id==null) throw Throwable("Something went bad...")
-      return db.getCollectionWithId<MovesList>(moveslist._id!!).updateDocument(moveslist)
+      try {
+         if (moveslist._id == null) throw Throwable("Something went bad...")
+         return db.getCollectionWithId<MovesList>(moveslist._id!!).updateDocument(moveslist)
+      }catch (failure:MongoException){
+         throw ChessDBAccessException(failure)
+      }
    }
 
-
-
    override fun createID(id: String){
-      return db.createCollection(id)
+      try {
+         return db.createCollection(id)
+      }catch (failure:MongoException){
+         throw ChessDBAccessException(failure)
+      }
    }
 
    override fun createGame(moveslist: MovesList):Boolean{
-      return db.getCollectionWithId<MovesList>(moveslist._id!!).createDocument(moveslist)
-   }
-
-   fun listToDB(moveslist: MutableList<PlayMade>){
-      val li :MutableList<PlayMade> = mutableListOf()
-      moveslist.forEach {
-         li += it
+      try {
+         return db.getCollectionWithId<MovesList>(moveslist._id!!).createDocument(moveslist)
+      }catch (failure:MongoException){
+         throw ChessDBAccessException(failure)
       }
    }
 }

@@ -2,10 +2,13 @@ package storage
 
 import domain.MovesList
 
+typealias Exception = java.lang.Exception
+
+class ChessDBAccessException(failure:Exception): Exception(failure)
+
 /**
  *  The boardDB contract
  */
-
 interface BoardDB {
    fun gamesIDList(): Iterable<String>
 

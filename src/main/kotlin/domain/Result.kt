@@ -26,5 +26,6 @@ object InvalidMovement
 
 object NeedPromotion
 
+object EndedGame
 
 class ValueResult<T>(val data: T) : Result()

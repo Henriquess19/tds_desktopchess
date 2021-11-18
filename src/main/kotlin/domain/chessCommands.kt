@@ -1,8 +1,8 @@
 package domain
 
-import java.lang.Error
 
 var OPEN_GAME = false
+var TEAM_TURN = Team.WHITE
 
 fun interface ChessCommands{
     /**
@@ -33,13 +33,13 @@ private class Open(private val board: Board):ChessCommands{
 
     override fun execute(parameter: String?): ValueResult<*> {
         if (parameter!= null){
-            OPEN_GAME = true
             if(parameter in board.dbboard.gamesIDList()){
                 board.openGame(parameter)
                 getboardstate(board, Team.WHITE)
             }else{
                 board.createGame(parameter)
             }
+            OPEN_GAME = true
           return ValueResult(OpenedGame)
         }
         return ValueResult(InvalidCommand)
@@ -67,9 +67,9 @@ private class Play(private val board: Board):ChessCommands {
     override fun execute(parameter: String?):ValueResult<*> {
         return if (OPEN_GAME) {
             if (parameter != null) {
-                val playSide = board.pieceTeam(Move(stringPrepared(parameter)), teamTurn(board.moveList(), null))
+                val playSide = board.pieceTeam(Move(stringPrepared(parameter)), teamTurn(null))
                 if (playSide.data == ValidMovement) {
-                     board.playMove(Move(stringPrepared(parameter)), teamTurn(board.moveList(), null))
+                     board.playMove(Move(stringPrepared(parameter)), teamTurn(null))
                 } else {
                     ValueResult(InvalidMovement)
                 }
@@ -85,36 +85,33 @@ private class Play(private val board: Board):ChessCommands {
 private class Refresh(private val board: Board):ChessCommands{
     override fun execute(parameter: String?): ValueResult<*> {
         board.updateMoves()
-        val otherplayermove = board.playMove(Move(board.moveList().content.last().play.move), teamTurn(board.moveList(),null))
+        val otherplayermove = board.playMove(Move(board.moveList().content.last().play.move), teamTurn(null))
         return if (otherplayermove.data == ValidMovement) ValueResult(UpdatedGame)
             else ValueResult(InvalidCommand)
     }
 }
 
 private class Moves(): ChessCommands{
-    override fun execute(parameter: String?): ValueResult<*> {
-        return if (OPEN_GAME) {
-            ValueResult(MovesGame)
-        }else{
-            ValueResult(ClosedGame)
-        }
-    }
+    override fun execute(parameter: String?)= ValueResult(MovesGame)
 }
 
 private class Exit:ChessCommands {
     override fun execute(parameter: String?) = ValueResult(ExitResult)
-    //TODO -> With DB implementation, make secure exit
 }
 
 private fun getboardstate(board: Board, team:Team){
-    val new=BoardState(MovesList(board.GAMEID, mutableListOf()))
-    board.moveList().content.forEach{ new.makeMove(it.play, teamTurn(board.moveList(),it.team))}
-    board.localboard = new
-    teamTurn(board.moveList(),team)
+    val newBoard=BoardState(MovesList(board.GAMEID, mutableListOf()))
+    board.moveList().content.forEach{ newBoard.makeMove(it.play, teamTurn(it.team))}
+    board.localboard = newBoard
+    teamTurn(team)
 }
-private fun stringPrepared(move:String) =  if (move.length == 4) "P$move" else move
 
-fun teamTurn(moves: MovesList,team: Team?):Team{
-    return team ?: if (moves.content.isEmpty() || moves.content.size%2 == 0) Team.WHITE
+fun teamTurn(team: Team?):Team{
+    TEAM_TURN = team ?: if (TEAM_TURN == Team.BLACK) Team.WHITE
     else Team.BLACK
+    return TEAM_TURN
+}
+
+fun nextTeam(): Team {
+    return TEAM_TURN
 }

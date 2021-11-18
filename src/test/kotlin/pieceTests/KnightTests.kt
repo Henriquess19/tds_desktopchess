@@ -1,17 +1,15 @@
 package pieceTests
 
-import Board
-import teamTurn
-import toMove
+import domain.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class KnightTests {
     @Test
     fun `legal knight bigup smallright move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Ng1h3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ng1h3".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -27,9 +25,9 @@ class KnightTests {
 
     @Test
     fun `legal knight bigup smallleft move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Ng1f3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ng1f3".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -45,9 +43,9 @@ class KnightTests {
 
     @Test
     fun `legal knight bigdown smallleft move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("nb8a6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("nb8a6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "r bqkbnr" +
@@ -62,9 +60,9 @@ class KnightTests {
     }
     @Test
     fun `legal knight bigdown smallright move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("nb8c6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("nb8c6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "r bqkbnr" +
@@ -80,10 +78,10 @@ class KnightTests {
 
     @Test
     fun `legal knight bigright smallup move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pd2d3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Nb1d2".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pd2d3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Nb1d2".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -99,10 +97,10 @@ class KnightTests {
 
     @Test
     fun `legal knight bigright smalldown move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("pd7d6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nb8d7".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pd7d6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nb8d7".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "r bqkbnr" +
@@ -118,10 +116,10 @@ class KnightTests {
 
     @Test
     fun `legal knight bigleft smallup move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pe2e3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ng1e2".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pe2e3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ng1e2".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -137,10 +135,10 @@ class KnightTests {
 
     @Test
     fun `legal knight bigleft smalldown move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("pe7e6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("ng8e7".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pe7e6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("ng8e7".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkb r" +
@@ -156,10 +154,10 @@ class KnightTests {
 
     @Test
     fun `ilegal knight bigup smallright move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Ph2h3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ng1h3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ph2h3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ng1h3".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -175,10 +173,10 @@ class KnightTests {
 
     @Test
     fun `ilegal knight bigup smallleft move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pf2f3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ng1f3".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Pf2f3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ng1f3".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -194,10 +192,10 @@ class KnightTests {
 
     @Test
     fun `ilegal knight bigdown smallleft move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("pa7a6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nb8a6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pa7a6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nb8a6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -212,10 +210,10 @@ class KnightTests {
     }
     @Test
     fun `ilegal knight bigdown smallright move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("pc7c6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nb8c6".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("pc7c6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nb8c6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -231,9 +229,9 @@ class KnightTests {
 
     @Test
     fun `ilegal knight bigright smallup move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Nb1d2".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Nb1d2".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -249,9 +247,9 @@ class KnightTests {
 
     @Test
     fun `ilegal knight bigright smalldown move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("nb8d7".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("nb8d7".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -267,9 +265,9 @@ class KnightTests {
 
     @Test
     fun `ilegal knight bigleft smallup move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Ng1e2".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ng1e2".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -285,9 +283,9 @@ class KnightTests {
 
     @Test
     fun `ilegal knight bigleft smalldown move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("ng8e7".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("ng8e7".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -303,11 +301,11 @@ class KnightTests {
 
     @Test
     fun `knight bigup smallright eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Ng1h3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Nh3g5".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ng5h7".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ng1h3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Nh3g5".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ng5h7".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
               "rnbqkbnr" +
@@ -323,11 +321,11 @@ class KnightTests {
 
     @Test
     fun `knight bigup smallleft eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Ng1h3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Nh3g5".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ng5f7".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ng1h3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Nh3g5".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ng5f7".toMove(), teamTurn(sut.movesList,null))
         assertEquals(
             "rnbqkbnr" +
               "pppppNpp" +
@@ -343,11 +341,11 @@ class KnightTests {
 
     @Test
     fun `knight bigdown smallleft eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("nb8a6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("na6b4".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nb4a2".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("nb8a6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("na6b4".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nb4a2".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "r bqkbnr" +
@@ -362,11 +360,11 @@ class KnightTests {
     }
     @Test
     fun `knight bigdown smallright eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("nb8a6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("na6b4".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nb4c2".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("nb8a6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("na6b4".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nb4c2".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "r bqkbnr" +
@@ -382,12 +380,12 @@ class KnightTests {
 
     @Test
     fun `knight bigright smallup eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Ng1h3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Nh3g5".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ng5e6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ne6g7".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ng1h3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Nh3g5".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ng5e6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ne6g7".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -403,12 +401,12 @@ class KnightTests {
 
     @Test
     fun `knight bigright smalldown eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("nb8c6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nc6b4".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nb4d3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nd3f2".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("nb8c6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nc6b4".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nb4d3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nd3f2".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "r bqkbnr" +
@@ -424,12 +422,12 @@ class KnightTests {
 
     @Test
     fun `knight bigleft smallup eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Ng1h3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Nh3g5".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ng5e6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("Ne6c7".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("Ng1h3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Nh3g5".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ng5e6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Ne6c7".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr" +
@@ -445,12 +443,12 @@ class KnightTests {
 
     @Test
     fun `knight bigleft smalldown eat move`() {
-        val sut = Board()
+        val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("nb8c6".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nc6b4".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nb4d3".toMove(), teamTurn(sut.getMoveList(),null))
-            .makeMove("nd3b2".toMove(), teamTurn(sut.getMoveList(),null))
+            .makeMove("nb8c6".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nc6b4".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nb4d3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("nd3b2".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "r bqkbnr" +

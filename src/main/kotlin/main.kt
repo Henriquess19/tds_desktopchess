@@ -27,7 +27,6 @@ fun main(){
          if (action == null) println("Invalid Command")
          else{
             val result = action(parameter)
-
             when (result.data){
                is ExitResult -> break
                else -> views[command.uppercase()]?.invoke(result.data)
