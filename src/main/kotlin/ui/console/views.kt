@@ -27,6 +27,7 @@ fun gameView(input:Any?) {
 fun playView(input:Any?) {
    println(
       when(input) {
+         ValidMovement -> ""
          NeedPromotion -> "Indicate your promotion.."
          InvalidMovement -> "Movement Invalid.."
          InvalidCommand-> "Command Invalid.. "
@@ -48,7 +49,7 @@ fun movesView(input: Any?) {
       var idx = 0
      val list = moveListToDraw
       println("----------MOVES-----------")
-     while (idx != list.content.size - 1 && list.content.isNotEmpty()) {
+     while (idx != list.content.size  && list.content.isNotEmpty()) {
          val play = list.content[idx]
          println("\tNº${idx + 1}: ${play.team} -> ${play.play.move}")
          idx++

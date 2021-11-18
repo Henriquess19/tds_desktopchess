@@ -87,7 +87,6 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
 
       val verification = movePieceVerity(piece, oldPosition, newPosition,this)
       if (verification.data == ValidMovement) {
-
          if (board[newPosition]?.typeOfPiece == TypeOfPieces.K )  endGame(getPiece(oldPosition)?.team) /** TODO(Wrong placement for function calling) **/
 
          if (piece.typeOfPiece == TypeOfPieces.P
@@ -104,9 +103,8 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
          board[newPosition] = piece
          board.remove(oldPosition)
          movesList.content.add(PlayMade(piece.team, move))
+         return Pair(this,ValueResult(ValidMovement))
       }else return Pair(this,ValueResult(verification))
-
-      return Pair(this,ValueResult(ValidMovement))
    }
 
    /**

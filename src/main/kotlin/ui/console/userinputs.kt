@@ -5,7 +5,7 @@ import domain.nextTeam
 
 fun readChessCommand(board: Board):Pair<String,String?>{
    val game = board.GAMEID
-   val teamTurn = nextTeam()
+   val teamTurn = nextTeam(board)
    print("$game:$teamTurn> ")
    val input = readln()
    val command = input.substringBefore(delimiter = ' ')
