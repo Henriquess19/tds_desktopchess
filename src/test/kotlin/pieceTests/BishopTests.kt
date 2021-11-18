@@ -9,8 +9,8 @@ class BishopTests {
     fun `successful whitebishop right diagonal move`() {
         val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pd2d3".toMove(), teamTurn(null)).first
-            .makeMove("Bc1h6".toMove(), teamTurn(null))
+            .makeMove("Pd2d3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Bc1h6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -28,8 +28,8 @@ class BishopTests {
     fun `successful whitebishop left diagonal move`() {
         val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pe2e3".toMove(), teamTurn(null)).first
-            .makeMove("Bf1a6".toMove(), teamTurn(null))
+            .makeMove("Pe2e3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Bf1a6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -47,7 +47,7 @@ class BishopTests {
     fun `ilegal whitebishop move`() {
         val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Bc1a6".toMove(), teamTurn(null))
+            .makeMove("Bc1a6".toMove(), teamTurn(sut.movesList,null))
 
         assertEquals(
             "rnbqkbnr"+
@@ -65,8 +65,8 @@ class BishopTests {
     fun `eating a piece with whitebishop`() {
         val sut = BoardState(MovesList(null, mutableListOf()))
         sut
-            .makeMove("Pe2e3".toMove(), teamTurn(null)).first
-            .makeMove("Bf1a6".toMove(), teamTurn(null)).first
+            .makeMove("Pe2e3".toMove(), teamTurn(sut.movesList,null)).first
+            .makeMove("Bf1a6".toMove(), teamTurn(sut.movesList,null)).first
             .makeMove("Ba6b7".toMove(), teamTurn(sut.movesList,null))
         assertEquals(
             "rnbqkbnr"+
