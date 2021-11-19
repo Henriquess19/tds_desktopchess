@@ -15,7 +15,7 @@ fun main(){
         else createMongoClient()
 
    try {
-       val chess= Board(BoardState(MovesList(null, mutableListOf())),MongoDbChess(driver.getDatabase(dbConnection.dbName)))
+       val chess= Board(BoardState(MovesList("-1", mutableListOf())),MongoDbChess(driver.getDatabase(dbConnection.dbName)))
        val dispatcher = buildCommandsHandler(chess)
 
       while (true){

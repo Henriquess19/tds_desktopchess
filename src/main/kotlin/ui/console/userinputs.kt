@@ -9,7 +9,7 @@ import domain.nextTeam
  * @return a pair bearing the command text and its parameter
  */
 fun readChessCommand(board: Board):Pair<String,String?>{
-   val game = board.GAMEID
+   val game = board.gameId
    val teamTurn = nextTeam(board)
    print("$game:$teamTurn> ")
    val input = readln()

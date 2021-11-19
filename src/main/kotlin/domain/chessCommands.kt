@@ -25,15 +25,18 @@ fun interface ChessCommands{
 class Open(private val board: Board):ChessCommands{
 
     override fun execute(parameter: String?): ValueResult<*> {
-        if (parameter!= null){
-            if(parameter in board.dbBoard.gamesIDList()){
-                board.openGame(parameter)
-                getBoardState(board, Team.WHITE)
-            }else{
-                board.createGame(parameter)
+        if (parameter!= null) {
+            if (parameter.toInt() > 0) {
+                if (parameter in board.dbBoard.gamesIDList()) {
+                    board.openGame(parameter)
+                    getBoardState(board, Team.WHITE)
+                } else {
+                    board.createGame(parameter)
+                }
+                OPEN_GAME = true
+                return ValueResult(OpenedGame)
             }
-            OPEN_GAME = true
-          return ValueResult(OpenedGame)
+            return ValueResult(InvalidCommand)
         }
         return ValueResult(InvalidCommand)
     }
@@ -113,7 +116,7 @@ class Exit:ChessCommands {
  */
 
 private fun getBoardState(board: Board, team:Team){
-    val newBoard=BoardState(MovesList(board.GAMEID, mutableListOf()))
+    val newBoard=BoardState(MovesList(board.gameId, mutableListOf()))
     board.moveList().content.forEach{ newBoard.makeMove(it.play, teamTurn(board.moveList(),it.team))}
     board.localBoard = newBoard
     teamTurn(board.moveList(),team)
@@ -124,7 +127,7 @@ private fun getBoardState(board: Board, team:Team){
  * @param team Force that team to play
  * @return [Team] to who is going to play
  */
-private fun teamTurn(moves:MovesList,team: Team?):Team{
+fun teamTurn(moves:MovesList,team: Team?):Team{
     TEAM_TURN = team ?: if (moves.content.isEmpty() || moves.content.size %2 == 0) Team.WHITE
     else Team.BLACK
     return TEAM_TURN

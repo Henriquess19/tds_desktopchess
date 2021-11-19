@@ -1,19 +1,28 @@
 package ui.console
 
 import domain.*
-
+/**
+ * A command view is merely a function that renders the command execution result.
+ */
 typealias View = (input:Any?) -> Unit
 
-private var moveListToDraw:MovesList = MovesList(null, mutableListOf())
+/**
+ * The list to be drawn
+ */
+private var moveListToDraw:MovesList = MovesList("-1", mutableListOf())
 
-
+/**
+ * Display the message if the board was open or not
+ */
 fun gameView(input:Any?) {
       if (input == OpenedGame) {
          println( "Game opened..")
       }
       else println("Something went wrong..")
 }
-
+/**
+ * Display the messages after the play was made
+ */
 fun playView(input:Any?) {
    println(
       when(input) {
@@ -27,14 +36,18 @@ fun playView(input:Any?) {
       }
    )
 }
-
+/**
+ * Display refresh messages
+ */
 fun refreshView(input:Any?) {
       if (input == UpdatedGame) {
          println( "Game updated..")
       }
       else println("Something went wrong..")
 }
-
+/**
+ * Display the list of moves
+ */
 fun movesView(input: Any?) {
    if (input == MovesGame) {
       var idx = 0
@@ -51,8 +64,11 @@ fun movesView(input: Any?) {
       println("Something went wrong..")
    }
 }
-
-
+/**
+ * Verify if is possible to draw and then call the functions to do it
+ * @param result the result of the command
+ * @param board the board it self
+ */
 fun gameDraw(result:ValueResult<*>,board: Board){
    val possibleResultsDraw = arrayOf(ValidMovement,OpenedGame,UpdatedGame,EndedGame)
    if (result.data in possibleResultsDraw ){
@@ -64,7 +80,7 @@ fun gameDraw(result:ValueResult<*>,board: Board){
 /**
  * Fun the receives the [BoardState] and draw the information
  */
-fun draw(board: BoardState) {
+private fun draw(board: BoardState) {
    val boards= board.toString()
    println("    a b c d e f g h ")
    println("   -----------------")
@@ -85,17 +101,10 @@ fun draw(board: BoardState) {
    println("   -----------------\n")
 }
 
-fun updateMoveDraw(board: Board){
+/**
+ * Update the move loist  to be drawn
+ * @param board the board itself
+ */
+private fun updateMoveDraw(board: Board){
    moveListToDraw = board.moveList()
 }
-/*
-/**
- * Show the user that the game ended and close the game
- * @param team who won
- */
-
-fun endGame(team: Team?){
-   println("\n${team}:You won!")
-   OPEN_GAME = false
-}
- */

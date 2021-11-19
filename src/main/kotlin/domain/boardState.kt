@@ -2,8 +2,6 @@ package domain
 
 import BoardStateInterface
 import movePieceVerity
-import storage.MongoDbChess
-import ui.console.draw
 
 /**
  * Representation of the columns in a board of chess
@@ -31,8 +29,12 @@ data class Positions(val line:Lines,val column:Columns)
  * @property play  The play itself
  */
 data class PlayMade(val team:Team, val play:Move)
-
-data class MovesList(var _id:String?, val content:MutableList<PlayMade>)
+/**
+ * Represents the list of moves identified by an id
+ * @property _id  The id that contains the Plays
+ * @property content  The various plays
+ */
+data class MovesList(var _id:String, val content:MutableList<PlayMade>)
 
 
 /**

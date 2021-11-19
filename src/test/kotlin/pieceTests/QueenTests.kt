@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class QueenTests {
    @Test
    fun `legal queen downward move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("pd7d5".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("qd8d6".toMove(), teamTurn(sut.movesList,null))
@@ -27,7 +27,7 @@ class QueenTests {
 
    @Test
    fun `legal queen upward move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("Pd2d4".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("Qd1d3".toMove(), teamTurn(sut.movesList,null))
@@ -47,7 +47,7 @@ class QueenTests {
 
    @Test
    fun `legal queen rightward move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("Pd2d4".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("Qd1d3".toMove(), teamTurn(sut.movesList,null)).first
@@ -67,7 +67,7 @@ class QueenTests {
 
    @Test
    fun `legal queen leftward move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("Pd2d4".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("Qd1d3".toMove(), teamTurn(sut.movesList,null)).first
@@ -87,7 +87,7 @@ class QueenTests {
 
    @Test
    fun `legal queen upleftdiagonal move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("Pd2d4".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("Qd1d3".toMove(), teamTurn(sut.movesList,null)).first
@@ -107,7 +107,7 @@ class QueenTests {
 
    @Test
    fun `legal queen uprightdiagonal move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("Pd2d4".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("Qd1d3".toMove(), teamTurn(sut.movesList,null)).first
@@ -127,7 +127,7 @@ class QueenTests {
 
    @Test
    fun `legal queen downrightdiagonal move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
       sut
          .makeMove("pd7d5".toMove(), teamTurn(sut.movesList,null)).first
@@ -148,7 +148,7 @@ class QueenTests {
 
    @Test
    fun `legal queen downleftdiagonal move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("pd7d5".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("qd8d6".toMove(), teamTurn(sut.movesList,null)).first
@@ -168,7 +168,7 @@ class QueenTests {
 
    @Test
    fun `ilegal queen downward move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("qd8d6".toMove(), teamTurn(sut.movesList,null))
 
@@ -187,7 +187,7 @@ class QueenTests {
 
    @Test
    fun `ilegal queen upward move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("qd1d3".toMove(), teamTurn(sut.movesList,null))
 
@@ -206,7 +206,7 @@ class QueenTests {
 
    @Test
    fun `ilegal queen rightward move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("qd8e8".toMove(), teamTurn(sut.movesList,null))
 
@@ -224,7 +224,7 @@ class QueenTests {
 
    @Test
    fun `ilegal queen leftward move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("qd8e8".toMove(), teamTurn(sut.movesList,null))
 
@@ -242,7 +242,7 @@ class QueenTests {
 
    @Test
    fun `ilegal queen upleftdiagonal move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("Qd1c2".toMove(), teamTurn(sut.movesList,null))
 
@@ -260,7 +260,7 @@ class QueenTests {
 
    @Test
    fun `ilegal queen uprightdiagonal move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("Qd1e2".toMove(), teamTurn(sut.movesList,null))
 
@@ -278,7 +278,7 @@ class QueenTests {
 
    @Test
    fun `ilegal queen downrightdiagonal move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("qd8e7".toMove(), teamTurn(sut.movesList,null))
 
@@ -296,7 +296,7 @@ class QueenTests {
 
    @Test
    fun `ilegal queen downleftdiagonal move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("qd8c7".toMove(), teamTurn(sut.movesList,null))
 
@@ -314,7 +314,7 @@ class QueenTests {
 
    @Test
    fun `queen downward eat move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
 
       sut
          .makeMove("pc7c6".toMove(), teamTurn(sut.movesList,null)).first
@@ -334,7 +334,7 @@ class QueenTests {
 
    @Test
    fun `queen upward eat move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("pe2e3".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("Qd1h5".toMove(), teamTurn(sut.movesList,null)).first
@@ -355,7 +355,7 @@ class QueenTests {
 
    @Test
    fun `queen rightward eat move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("pc7c6".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("qd8a5".toMove(), teamTurn(sut.movesList,null)).first
@@ -376,7 +376,7 @@ class QueenTests {
 
    @Test
    fun `queen leftward eat move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("Pe2e3".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("Qd1h5".toMove(), teamTurn(sut.movesList,null)).first
@@ -397,7 +397,7 @@ class QueenTests {
 
    @Test
    fun `queen upleftdiagonal eat move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("Pe2e3".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("Qd1h5".toMove(), teamTurn(sut.movesList,null)).first
@@ -417,7 +417,7 @@ class QueenTests {
 
    @Test
    fun `queen uprightdiagonal eat move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("Pc2c3".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("Qd1a4".toMove(), teamTurn(sut.movesList,null)).first
@@ -437,7 +437,7 @@ class QueenTests {
 
    @Test
    fun `queen downrightdiagonal eat move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("pc7c6".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("qd8a5".toMove(), teamTurn(sut.movesList,null)).first
@@ -458,7 +458,7 @@ class QueenTests {
 
    @Test
    fun `queen downleftdiagonal eat move `() {
-      val sut = BoardState(MovesList(null, mutableListOf()))
+      val sut = BoardState(MovesList("-1", mutableListOf()))
       sut
          .makeMove("pe7e6".toMove(), teamTurn(sut.movesList,null)).first
          .makeMove("qd8h4".toMove(), teamTurn(sut.movesList,null)).first

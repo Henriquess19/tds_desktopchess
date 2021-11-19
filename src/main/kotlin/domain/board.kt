@@ -9,7 +9,7 @@ import storage.MongoDbChess
  */
 data class Board(var localBoard: BoardState, val dbBoard: MongoDbChess){
 
-   var GAMEID: String? = null;
+   var gameId: String = "-1"//doest exist
 
    /**
     * Make the play, if is valid, the user want to do in the local board and update the mongo one
@@ -86,7 +86,7 @@ data class Board(var localBoard: BoardState, val dbBoard: MongoDbChess){
     * @param id the id we want to open
     */
    fun openGame(id:String){
-      GAMEID = id
+      gameId = id
       updatedMovesList(MovesList(id, mutableListOf()))
    }
    /**
@@ -94,10 +94,10 @@ data class Board(var localBoard: BoardState, val dbBoard: MongoDbChess){
     * @param id the id we want to create
     */
    fun createGame(id: String){
-      GAMEID = id
-      dbBoard.createID(GAMEID!!)
+      gameId = id
+      dbBoard.createID(gameId)
       localBoard
-      localBoard.moves._id =GAMEID!!
+      localBoard.moves._id =gameId
       createMoves()
    }
 }
