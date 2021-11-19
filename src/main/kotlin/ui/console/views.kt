@@ -6,16 +6,6 @@ typealias View = (input:Any?) -> Unit
 
 private var moveListToDraw:MovesList = MovesList(null, mutableListOf())
 
-fun getViews(): Map<String,View> {
-   return mapOf(
-      "OPEN" to ::gameView,
-      "JOIN" to ::gameView,
-      "PLAY" to ::playView,
-      "REFRESH" to ::refreshView,
-      "MOVES" to ::movesView,
-      "EXIT" to { },
-   )
-}
 
 fun gameView(input:Any?) {
       if (input == OpenedGame) {
@@ -28,6 +18,7 @@ fun playView(input:Any?) {
    println(
       when(input) {
          ValidMovement -> ""
+         EndedGame -> "You won!"
          NeedPromotion -> "Indicate your promotion.."
          InvalidMovement -> "Movement Invalid.."
          InvalidCommand-> "Command Invalid.. "
@@ -65,8 +56,8 @@ fun movesView(input: Any?) {
 fun gameDraw(result:ValueResult<*>,board: Board){
    val possibleResultsDraw = arrayOf(ValidMovement,OpenedGame,UpdatedGame,EndedGame)
    if (result.data in possibleResultsDraw ){
-      draw(board.localboard)
-      updatemovedraw(board)
+      draw(board.localBoard)
+      updateMoveDraw(board)
    }
 }
 
@@ -94,10 +85,10 @@ fun draw(board: BoardState) {
    println("   -----------------\n")
 }
 
-fun updatemovedraw(board: Board){
+fun updateMoveDraw(board: Board){
    moveListToDraw = board.moveList()
 }
-
+/*
 /**
  * Show the user that the game ended and close the game
  * @param team who won
@@ -107,4 +98,4 @@ fun endGame(team: Team?){
    println("\n${team}:You won!")
    OPEN_GAME = false
 }
-
+ */

@@ -4,6 +4,8 @@ sealed class Result
 
 object ExitResult:Result()
 
+class ValueResult<T>(val data: T) : Result()
+
 object GameNotExists
 
 object InvalidCommand
@@ -27,5 +29,3 @@ object InvalidMovement
 object NeedPromotion
 
 object EndedGame
-
-class ValueResult<T>(val data: T) : Result()

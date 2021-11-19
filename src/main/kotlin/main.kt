@@ -3,9 +3,7 @@ import storage.DbMode
 import storage.MongoDbChess
 import storage.getDBConnectionInfo
 import storage.mongodb.createMongoClient
-import ui.console.draw
 import ui.console.gameDraw
-import ui.console.getViews
 import ui.console.readChessCommand
 
 fun main(){
@@ -18,20 +16,20 @@ fun main(){
 
    try {
        val chess= Board(BoardState(MovesList(null, mutableListOf())),MongoDbChess(driver.getDatabase(dbConnection.dbName)))
-       val dispatcher = buildchessCommands(chess)
-       val views = getViews()
+       val dispatcher = buildCommandsHandler(chess)
 
       while (true){
          val(command,parameter) = readChessCommand(chess)
-         val action = dispatcher[command.uppercase()]
-         if (action == null) println("Invalid Command")
+         val handler = dispatcher[command.uppercase()]
+         if (handler == null) println("Invalid Command")
          else{
-            val result = action(parameter)
-            when (result.data){
-               is ExitResult -> break
-               else -> views[command.uppercase()]?.invoke(result.data)
-            }
-            gameDraw(ValueResult(result.data),chess)
+             val result = handler.action(parameter)
+             when (result){
+                is ExitResult -> break
+                is ValueResult<*>->handler.display(result.data)
+             }
+
+            gameDraw(result ,chess)
          }
       }
    }

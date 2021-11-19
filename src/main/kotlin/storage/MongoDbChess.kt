@@ -1,7 +1,6 @@
 package storage
 import com.mongodb.MongoException
 import storage.mongodb.*
-import domain.PlayMade
 
 import com.mongodb.client.MongoDatabase
 import domain.MovesList

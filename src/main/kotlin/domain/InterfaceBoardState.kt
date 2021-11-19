@@ -34,5 +34,4 @@ interface BoardStateInterface {
     */
    fun pieceTeamCheck(move: Move, teamTurn: Team): ValueResult<*>
 
-   fun refreshmovesList(moves: MovesList):MovesList
 }

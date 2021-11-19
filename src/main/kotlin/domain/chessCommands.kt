@@ -1,7 +1,7 @@
 package domain
 
-
 var OPEN_GAME = false
+
 var TEAM_TURN = Team.WHITE
 
 fun interface ChessCommands{
@@ -9,7 +9,7 @@ fun interface ChessCommands{
      * Executes this command passing it the given parameter
      * @param parameter the commands parameter, or null, if no parameter has been passed
      */
-    fun execute(parameter: String?): ValueResult<*>
+    fun execute(parameter: String?): Result
 
     /**
      * Overload of invoke operator, for convenience.
@@ -17,25 +17,18 @@ fun interface ChessCommands{
     operator fun invoke(parameter: String? = null) = execute(parameter)
 }
 
-fun buildchessCommands(board:Board):Map<String,ChessCommands>{
-    return mapOf(
-        "OPEN" to Open(board),
-        "JOIN" to Join(board),
-        "PLAY" to Play(board),
-        "REFRESH" to Refresh(board),
-        "MOVES" to Moves(),
-        "EXIT" to Exit(),
-    )
-}
+/**
+ * Open command that will check if game with the id passed is opened and if it open it, else will create with that id
+ * @param board the that will be worked
+ */
 
-
-private class Open(private val board: Board):ChessCommands{
+class Open(private val board: Board):ChessCommands{
 
     override fun execute(parameter: String?): ValueResult<*> {
         if (parameter!= null){
-            if(parameter in board.dbboard.gamesIDList()){
+            if(parameter in board.dbBoard.gamesIDList()){
                 board.openGame(parameter)
-                getboardstate(board, Team.WHITE)
+                getBoardState(board, Team.WHITE)
             }else{
                 board.createGame(parameter)
             }
@@ -45,16 +38,19 @@ private class Open(private val board: Board):ChessCommands{
         return ValueResult(InvalidCommand)
     }
 }
-
-private class Join(private val board: Board):ChessCommands {
+/**
+ * Join command that will permit to one people to join that game with black pieces
+ * @param board the that will be worked
+ */
+class Join(private val board: Board):ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
         if (parameter != null) {
-                if (parameter !in board.dbboard.gamesIDList()) {
+                if (parameter !in board.dbBoard.gamesIDList()) {
                 return ValueResult(GameNotExists)
             }
             else {
                 board.openGame(parameter)
-                getboardstate(board,Team.BLACK)
+                getBoardState(board,Team.BLACK)
                 OPEN_GAME = true
             }
             return ValueResult(OpenedGame)
@@ -62,12 +58,15 @@ private class Join(private val board: Board):ChessCommands {
         return ValueResult(InvalidCommand)
     }
 }
-
-private class Play(private val board: Board):ChessCommands {
+/**
+ * Play command that will execute the moved passed
+ * @param board the that will be worked
+ */
+class Play(private val board: Board):ChessCommands {
     override fun execute(parameter: String?):ValueResult<*> {
         return if (OPEN_GAME) {
             if (parameter != null) {
-                val playSide = board.pieceTeam(Move(stringPrepared(parameter)), teamTurn(board.moveList(),null))
+                val playSide = board.correctPieceTeam(Move(stringPrepared(parameter)), teamTurn(board.moveList(),null))
                 if (playSide.data == ValidMovement) {
                      board.playMove(Move(stringPrepared(parameter)), teamTurn(board.moveList(),null))
                 } else {
@@ -81,43 +80,71 @@ private class Play(private val board: Board):ChessCommands {
         }
     }
 }
-
-private class Refresh(private val board: Board):ChessCommands{
+/**
+ * Refresh command that will refresh the board to the actual state
+ * @param board the that will be worked
+ */
+class Refresh(private val board: Board):ChessCommands{
     override fun execute(parameter: String?): ValueResult<*> {
         board.updateMoves()
-        val otherplayermove = board.playMove(Move(board.moveList().content.last().play.move), teamTurn(board.moveList(),null))
-        return if (otherplayermove.data == ValidMovement) ValueResult(UpdatedGame)
+        val otherPlayerMove = board.playMove(Move(board.moveList().content.last().play.move), teamTurn(board.moveList(),null))
+        return if (otherPlayerMove.data == ValidMovement) ValueResult(UpdatedGame)
             else ValueResult(InvalidCommand)
     }
 }
-
-private class Moves(): ChessCommands{
+/**
+ * Will show the user the moves until that time
+ * @param board the that will be worked
+ */
+class Moves: ChessCommands{
     override fun execute(parameter: String?)= ValueResult(MovesGame)
 }
-
-private class Exit:ChessCommands {
+/**
+ * Will close the game if the user wants it
+ * @param board the that will be worked
+ */
+class Exit:ChessCommands {
     override fun execute(parameter: String?) = ValueResult(ExitResult)
 }
+/**
+ * Update the local board with the content on the db one
+ * @param board the that will be worked
+ * @param team who team is playing that turn
+ */
 
-private fun getboardstate(board: Board, team:Team){
+private fun getBoardState(board: Board, team:Team){
     val newBoard=BoardState(MovesList(board.GAMEID, mutableListOf()))
     board.moveList().content.forEach{ newBoard.makeMove(it.play, teamTurn(board.moveList(),it.team))}
-    board.localboard = newBoard
+    board.localBoard = newBoard
     teamTurn(board.moveList(),team)
 }
-
-fun teamTurn(moves:MovesList,team: Team?):Team{
+/**
+ * The team who is suppose to playing based on the last play made. If don't have any play, team white will start the game
+ * @param moves check who was the last one to play
+ * @param team Force that team to play
+ * @return [Team] to who is going to play
+ */
+private fun teamTurn(moves:MovesList,team: Team?):Team{
     TEAM_TURN = team ?: if (moves.content.isEmpty() || moves.content.size %2 == 0) Team.WHITE
     else Team.BLACK
     return TEAM_TURN
 }
+/**
+ * Who is suppose to play next
+ * @param board check who was the last one to play
+ * @return [Team] next team playing
+ */
 
-fun nextTeam(board:Board): Team {
+fun nextTeam(board: Board): Team {
     return if (board.moveList().content.isEmpty()) Team.WHITE
-     else switch(board.localboard.moves.content.last().team)
+     else switch(board.localBoard.moves.content.last().team)
 }
-
-fun switch(team: Team):Team{
+/**
+ * Switch the team with the other one
+ * @param team who the original team
+ * @return [Team] the other team
+ */
+private fun switch(team: Team):Team{
     return if (team == Team.WHITE) Team.BLACK
         else Team.WHITE
 }
