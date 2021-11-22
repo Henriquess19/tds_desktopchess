@@ -94,9 +94,8 @@ class Play(private val board: Board):ChessCommands {
 class Refresh(private val board: Board):ChessCommands{
     override fun execute(parameter: String?): ValueResult<*> {
         board.updateList()
-        val otherPlayerMove = board.playMove(Move(board.moveList().content.last().play.move), teamTurn(board.moveList(),null))
-        println(board.localBoard.movesList)
-        println(board.localBoard.moves)
+        val otherPlayerMove = board.playMove(Move(board.moveList().content.last().play.move), teamTurn(board.moveList(),
+            switch(board.moveList().content.last().team)))
         return if (otherPlayerMove.data == ValidMovement) ValueResult(UpdatedGame)
             else ValueResult(InvalidCommand)
     }
