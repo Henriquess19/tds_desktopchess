@@ -97,7 +97,6 @@ class Refresh(private val board: Board):ChessCommands{
         val lastMove = db.content.last()
         val otherPlayerMove = board.playMove(Move(lastMove.play.move), teamTurn(board.moveList(), lastMove.team))
         board.updateList()
-        println(board.moveList())
         return when (otherPlayerMove.data){
             ValidMovement -> ValueResult(UpdatedGame)
             EndedGame -> ValueResult(EndedGame)
@@ -149,8 +148,7 @@ fun teamTurn(moves:MovesList,team: Team?):Team{
 fun nextTeam(board: Board): Team {
 
     return if (board.moveList().content.isEmpty()) Team.WHITE
-     else{ println(board.moveList().content.last().team)
-        return switch(board.moveList().content.last().team)}
+     else switch(board.moveList().content.last().team)
 }
 /**
  * Switch the team with the other one
