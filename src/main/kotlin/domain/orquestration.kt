@@ -18,7 +18,7 @@ data class CommandsHandler(
  * @return Map that associates the strings to the command
  */
 
-fun buildCommandsHandler(board: Board ): Map<String, CommandsHandler>{
+fun buildCommandsHandler(board: Board): Map<String, CommandsHandler>{
     return mapOf(
         "OPEN" to CommandsHandler(Open(board), ::gameView),
         "JOIN" to CommandsHandler(Join(board),::gameView),

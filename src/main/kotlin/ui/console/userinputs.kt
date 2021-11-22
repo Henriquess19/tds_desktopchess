@@ -2,6 +2,7 @@ package ui.console
 
 import domain.Board
 import domain.nextTeam
+import storage.DbMode
 
 /**
  * Reads a line from the console and parses it to obtain the corresponding command.

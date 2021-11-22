@@ -158,7 +158,6 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
     }
 }
 
-
 /**
  * Verify if the promotion move is valid
  * @param piece the piece being moved

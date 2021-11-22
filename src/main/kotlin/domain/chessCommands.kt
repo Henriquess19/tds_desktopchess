@@ -96,20 +96,21 @@ class Refresh(private val board: Board):ChessCommands{
         board.updateList()
         val otherPlayerMove = board.playMove(Move(board.moveList().content.last().play.move), teamTurn(board.moveList(),
             board.moveList().content.last().team))
-        return if (otherPlayerMove.data == ValidMovement) ValueResult(UpdatedGame)
-            else ValueResult(InvalidCommand)
+        return when (otherPlayerMove.data){
+            ValidMovement -> ValueResult(UpdatedGame)
+            EndedGame -> ValueResult(EndedGame)
+            else -> ValueResult(InvalidCommand)
+        }
     }
 }
 /**
- * Will show the user the moves until that time
- * @param board the that will be worked
+ * Will show the moves made at that point
  */
 class Moves: ChessCommands{
     override fun execute(parameter: String?)= ValueResult(MovesGame)
 }
 /**
- * Will close the game if the user wants it
- * @param board the that will be worked
+ * It will close the game when called
  */
 class Exit:ChessCommands {
     override fun execute(parameter: String?) = ValueResult(ExitResult)
@@ -133,8 +134,8 @@ private fun getBoardState(board: Board, team:Team){
  * @return [Team] to who is going to play
  */
 fun teamTurn(moves:MovesList,team: Team?):Team{
-    TEAM_TURN = team ?: if (moves.content.isEmpty() || moves.content.size %2 == 0) Team.WHITE
-    else Team.BLACK
+    TEAM_TURN = team ?: if (moves.content.isEmpty()) Team.WHITE
+    else switch(moves.content.last().team)
     return TEAM_TURN
 }
 /**

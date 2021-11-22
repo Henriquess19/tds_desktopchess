@@ -42,10 +42,11 @@ fun playView(input:Any?) {
  * Display refresh messages
  */
 fun refreshView(input:Any?) {
-      if (input == UpdatedGame) {
-         println( "Game updated..")
+      when (input) {
+          UpdatedGame -> println("Game updated..")
+          EndedGame -> println("You lost")
+          else -> println("Something went wrong..")
       }
-      else println("Something went wrong..")
 }
 /**
  * Display the list of moves
