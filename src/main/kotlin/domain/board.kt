@@ -89,12 +89,15 @@ data class Board(var localBoard: BoardState, val dbBoard: MongoDbChess){
       dbBoard.createGame(localBoard.movesList)
    }
 
+   fun updateList(){
+      localBoard.movesList = dbBoard.findgamebyId(localBoard.movesList)
+   }
+
    /**
     * It will update the DB with the local moves list
     */
    fun updateMoves(){
-      val updatedMoves = dbBoard.updateGame(localBoard.movesList)
-      updatedMovesList(updatedMoves)
+      dbBoard.updateGame(localBoard.movesList)
    }
    /**
     * Open a game in the specified id
