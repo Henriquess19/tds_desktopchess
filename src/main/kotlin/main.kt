@@ -1,4 +1,5 @@
 import domain.*
+import storage.ChessDBAccessException
 import storage.DbMode
 import storage.MongoDbChess
 import storage.getDBConnectionInfo
@@ -32,6 +33,14 @@ fun main(){
             gameDraw(result ,chess)
          }
       }
+
+   }
+   catch (e: ChessDBAccessException) {
+       println(
+           "An unknown error occurred while trying to reach the database. " +
+               if (dbConnection.mode == DbMode.REMOTE) "Check your network connection."
+               else "Is your local database started?"
+       )
    }
    finally {
       println("Closing driver ...")

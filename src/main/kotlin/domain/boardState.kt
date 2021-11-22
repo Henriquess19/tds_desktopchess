@@ -35,8 +35,6 @@ data class PlayMade(val team:Team, val play:Move)
  * @property content  The various plays
  */
 data class MovesList(var _id:String, val content:MutableList<PlayMade>)
-
-
 /**
  * Initial game board format
  */
@@ -74,7 +72,6 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
      * @param move the move to be made
      * @return [BoardState] the game updated with the move
      */
-
     override fun makeMove(move: Move, team: Team): Pair<BoardState,ValueResult<*>> {
         val oldLine = move.move[2].toString().toInt() - 1
         val newline = move.move[4].toString().toInt() - 1
@@ -84,27 +81,25 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
         val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
         val newPosition = Positions(Lines.values()[newline], Columns.valueOf(newColumn))
 
-        val piece = board[oldPosition] ?: return Pair(this, ValueResult(InvalidMovement))
+        var piece = board[oldPosition] ?: return Pair(this, ValueResult(InvalidMovement))
 
         val verification = movePieceVerity(piece, oldPosition, newPosition, this)
         if (verification.data == ValidMovement) {
-            if (board[newPosition]?.typeOfPiece == TypeOfPieces.K) return Pair(this,ValueResult(EndedGame))
-
-            if (verifyPromotion(piece, newPosition, piece.team) == ValueResult(ValidMovement)) {
+            if (board[newPosition]?.typeOfPiece == TypeOfPieces.K){
+                changePiecesPlaces(oldPosition, newPosition, piece, move)
+                return Pair(this,ValueResult(EndedGame))
+            }
+            if (verifyPromotion(piece, newPosition, piece.team).data == ValidMovement) {
                 if (move.length() > 5 && move.move[5] == '=' && move.move[6].uppercaseChar() != 'K') {
-                    piece.toPromotion(move.move[6])
+                    piece =piece.toPromotion(move.move[6])
                 } else {
                     return Pair(this, ValueResult(NeedPromotion))
                 }
             }
-            board[newPosition] = piece
-            board.remove(oldPosition)
-            movesList.content.add(PlayMade(piece.team, move))
+            changePiecesPlaces(oldPosition, newPosition, piece, move)
             return Pair(this, ValueResult(ValidMovement))
-        }else return Pair(this, ValueResult(verification))
+        }else return Pair(this, ValueResult(verification.data))
     }
-
-
     /**
      * Verify if the position contains a piece
      * @param positions position where the piece should be
@@ -149,14 +144,21 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
      * @return [Result] if is a valid or a invalid movement
      */
     override fun pieceTeamCheck(move: Move, teamTurn: Team): ValueResult<*>{
-        val line = (move.move[2].toInt() - '0'.code) - 1
+        val line =  move.move[2].toString().toInt() - 1
         val column = "C" + move.move[1].uppercaseChar()
         val position = Positions(Lines.values()[line], Columns.valueOf(column))
         val piece = board[position] ?: return ValueResult(InvalidMovement)
         return if(teamTurn == piece.team) ValueResult(ValidMovement)
         else ValueResult(InvalidMovement)
     }
+    private fun changePiecesPlaces(oldPosition: Positions, newPosition: Positions, piece: Piece, move: Move){
+        board[newPosition] = piece
+        board.remove(oldPosition)
+        movesList.content.add(PlayMade(piece.team, move))
+    }
 }
+
+
 /**
  * Verify if the promotion move is valid
  * @param piece the piece being moved

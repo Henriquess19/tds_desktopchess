@@ -31,7 +31,9 @@ fun playView(input:Any?) {
          NeedPromotion -> "Indicate your promotion.."
          InvalidMovement -> "Movement Invalid.."
          InvalidCommand-> "Command Invalid.. "
+         SameTeam-> "That´s your own piece.. "
          ClosedGame -> "Game not opened.."
+         Encounter -> "Another piece is on the way.."
          else -> "Something went wrong.."
       }
    )

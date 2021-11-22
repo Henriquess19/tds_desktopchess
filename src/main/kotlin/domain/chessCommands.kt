@@ -71,7 +71,11 @@ class Play(private val board: Board):ChessCommands {
             if (parameter != null) {
                 val playSide = board.correctPieceTeam(Move(stringPrepared(parameter)), teamTurn(board.moveList(),null))
                 if (playSide.data == ValidMovement) {
-                     board.playMove(Move(stringPrepared(parameter)), teamTurn(board.moveList(),null))
+                    val play  = board.playMove(Move(stringPrepared(parameter)), teamTurn(board.moveList(),null))
+                    if(play.data == NeedPromotion){
+                        ValueResult(NeedPromotion)
+                    }
+                    else play
                 } else {
                     ValueResult(InvalidMovement)
                 }

@@ -9,7 +9,7 @@ import storage.MongoDbChess
  */
 data class Board(var localBoard: BoardState, val dbBoard: MongoDbChess){
 
-   var gameId: String = "-1"//doest exist
+   var gameId: String = "-1"//doesn't exist
 
    /**
     * Make the play, if is valid, the user want to do in the local board and update the mongo one
@@ -27,7 +27,21 @@ data class Board(var localBoard: BoardState, val dbBoard: MongoDbChess){
           }
          EndedGame -> {
             OPEN_GAME = false
+            gameId = "-1"
+
             ValueResult(EndedGame)
+         }
+         NeedPromotion ->{
+            ValueResult(NeedPromotion)
+         }
+         InvalidMovement->{
+            ValueResult(InvalidMovement)
+         }
+         SameTeam->{
+            ValueResult(SameTeam)
+         }
+         Encounter->{
+            ValueResult(Encounter)
          }
          else -> ValueResult(InvalidCommand)
 

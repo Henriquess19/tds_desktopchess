@@ -37,12 +37,17 @@ fun String.toMove() = Move(this)
  * @param   move  the string to be checked
  * @return  true if [move] can be used as an move identifier, false otherwise
  */
-private fun isAValidCommandMove(move:String) = move.isNotEmpty() && (move.length in (SMALLEST_MOVE_CMD until  BIGGEST_MOVE_CMD))
+private fun isAValidCommandMove(move:String) = move.isNotEmpty() && (move.length in (SMALLEST_MOVE_CMD ..  BIGGEST_MOVE_CMD))
 
 /**
  * If the string dont have the piece it will add a D from dummy, to function without problems
  * @param move the move to be made not completed
  * @return the string prepared
  */
-fun stringPrepared(move:String)= if (move.length == 4) "P$move" else move
+fun stringPrepared(move:String):String{
+    TypeOfPieces.values().forEach {
+            if(move[0] == it.char && move.length>4) return move
+        }
+    return "D$move"
+}
 
