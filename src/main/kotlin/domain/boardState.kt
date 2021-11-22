@@ -151,6 +151,14 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
         return if(teamTurn == piece.team) ValueResult(ValidMovement)
         else ValueResult(InvalidMovement)
     }
+
+    /**
+     * Change the piece place, and do the eating process by removing the other piece from the map
+     * @param oldPosition the initial position of the piece
+     * @param newPosition where the piece is gonna be placed
+     * @param piece the piece itself
+     * @param move the move made
+     */
     private fun changePiecesPlaces(oldPosition: Positions, newPosition: Positions, piece: Piece, move: Move){
         board[newPosition] = piece
         board.remove(oldPosition)
