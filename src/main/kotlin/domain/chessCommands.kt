@@ -93,9 +93,11 @@ class Play(private val board: Board):ChessCommands {
  */
 class Refresh(private val board: Board):ChessCommands{
     override fun execute(parameter: String?): ValueResult<*> {
+        val db = board.dbBoard.findgamebyId(board.moveList())
+        val lastMove = db.content.last()
+        val otherPlayerMove = board.playMove(Move(lastMove.play.move), teamTurn(board.moveList(), lastMove.team))
         board.updateList()
-        val otherPlayerMove = board.playMove(Move(board.moveList().content.last().play.move), teamTurn(board.moveList(),
-            board.moveList().content.last().team))
+        println(board.moveList())
         return when (otherPlayerMove.data){
             ValidMovement -> ValueResult(UpdatedGame)
             EndedGame -> ValueResult(EndedGame)
@@ -145,8 +147,10 @@ fun teamTurn(moves:MovesList,team: Team?):Team{
  */
 
 fun nextTeam(board: Board): Team {
+
     return if (board.moveList().content.isEmpty()) Team.WHITE
-     else switch(board.moveList().content.last().team)
+     else{ println(board.moveList().content.last().team)
+        return switch(board.moveList().content.last().team)}
 }
 /**
  * Switch the team with the other one
