@@ -28,7 +28,7 @@ interface BoardDB {
     * @param moveslist the list that we wanna put on DB
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   fun updateGame(moveslist: MovesList):Boolean
+   fun updateGame(moveslist: MovesList):MovesList
    /**
     * Creates a new id on DB(creates a new collection)
     * @param id the new collection that is suppose to be created

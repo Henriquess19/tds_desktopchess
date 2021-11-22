@@ -41,11 +41,13 @@ class MongoDbChess(private val db:MongoDatabase): BoardDB {
     * @param moveslist the list that we wanna put on DB
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   override fun updateGame(moveslist: MovesList): Boolean {
+   override fun updateGame(moveslist: MovesList): MovesList {
       try {
          if (moveslist._id == "-1") throw Throwable("Something went bad...")
          else
-            return db.getCollectionWithId<MovesList>(moveslist._id).updateDocument(moveslist)
+            return if(db.getCollectionWithId<MovesList>(moveslist._id).updateDocument(moveslist))
+             findgamebyId(moveslist)
+               else throw Throwable("Something went bad...")
       }catch (failure:MongoException){
          throw ChessDBAccessException(failure)
       }
