@@ -26,6 +26,7 @@ data class Board(var localBoard: BoardState, val dbBoard: MongoDbChess){
              ValueResult(ValidMovement)
           }
          EndedGame -> {
+            updateMoves()
             ValueResult(EndedGame)
          }
          NeedPromotion ->{
