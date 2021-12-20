@@ -1,4 +1,4 @@
-package ui.console
+package model.ui.console
 
 import model.domain.Board
 import model.domain.nextTeam

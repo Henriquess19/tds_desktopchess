@@ -21,6 +21,7 @@ fun Int.toColumn():Columns {
  * Representation of the line in a board of chess
  */
 enum class Lines{L1,L2,L3,L4,L5,L6,L7,L8}
+
 fun Int.toLine(): Lines {
     require(isValid(this))
     return Lines.values()[this]
@@ -95,24 +96,24 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
         val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
         val newPosition = Positions(Lines.values()[newline], Columns.valueOf(newColumn))
 
-        var piece = board[oldPosition] ?: return Pair(this, ValueResult(InvalidMovement))
+        var piece = board[oldPosition] ?: return Pair(BoardState(this.movesList), ValueResult(InvalidMovement))
 
         val verification = movePieceVerity(piece, oldPosition, newPosition, this)
         if (verification.data == ValidMovement) {
             if (board[newPosition]?.typeOfPiece == TypeOfPieces.K){
                 changePiecesPlaces(oldPosition, newPosition, piece, move)
-                return Pair(this, ValueResult(EndedGame))
+                return Pair(BoardState(this.movesList), ValueResult(EndedGame))
             }
             if (verifyPromotion(piece, newPosition, piece.team).data == ValidMovement) {
                 if (move.length() > 5 && move.move[5] == '=' && move.move[6].uppercaseChar() != 'K') {
                     piece =piece.toPromotion(move.move[6])
                 } else {
-                    return Pair(this, ValueResult(NeedPromotion))
+                    return Pair(BoardState(this.movesList), ValueResult(NeedPromotion))
                 }
             }
             changePiecesPlaces(oldPosition, newPosition, piece, move)
-            return Pair(this, ValueResult(ValidMovement))
-        }else return Pair(this, ValueResult(verification.data))
+            return Pair(BoardState(this.movesList), ValueResult(ValidMovement))
+        }else return Pair(BoardState(this.movesList), ValueResult(verification.data))
     }
     /**
      * Verify if the position contains a piece
