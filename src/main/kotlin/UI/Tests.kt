@@ -11,7 +11,7 @@ private var moveListToDraw = mutableListOf<PlayMade>(PlayMade(team= Team.WHITE,p
 @Composable
 @Preview
 fun movesView() {
-   /*var idx = 0
+   var idx = 0
    val list = moveListToDraw
    Column {
       Text("----------MOVES-----------")
@@ -22,5 +22,11 @@ fun movesView() {
             idx++
          }
       }
-   }*/
+   }
+}
+
+fun positionTostring(positions: Positions):String{
+   val line = positions.line.ordinal+1
+   val columm = positions.column.toString()[1]
+   return "$line$columm"
 }
