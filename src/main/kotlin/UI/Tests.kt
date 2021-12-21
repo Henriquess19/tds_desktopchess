@@ -28,5 +28,23 @@ fun movesView() {
 fun positionTostring(positions: Positions):String{
    val line = positions.line.ordinal+1
    val columm = positions.column.toString()[1]
-   return "$line$columm"
+   return "$columm$line"
+}
+
+private var movement = ""
+fun getmovement(piece: Piece?,positions: Positions):String?{
+   if (movement.length == 11) {
+      movement = ""
+   }
+   if(movement.isEmpty()){
+      if (piece == null) return null
+      movement += piece.team
+      movement += ","
+      movement += piece.representation
+   }
+   movement += positionTostring(positions)
+   if (movement.length == 11) {
+      return movement
+   }
+   return null
 }

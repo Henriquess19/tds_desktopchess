@@ -1,13 +1,30 @@
 package model.domain
 
+import model.storage.DbMode
 import model.storage.MongoDbChess
+import model.storage.getDBConnectionInfo
+import model.storage.mongodb.createMongoClient
 
 /**
  * The point of connection between the MongoDb and the local board
  * @param localBoard the local board
  * @param dbBoard the way to manipulate the DB
  */
-data class Board(var localBoard: BoardState, val dbBoard: MongoDbChess){
+// TESTES
+val dbConnection = getDBConnectionInfo()
+val driver =
+   if (dbConnection.mode == DbMode.REMOTE)
+      createMongoClient(dbConnection.connectionString)
+   else createMongoClient()
+
+// TODO(ALGO DO GENERO PARA TERMOS O REMEMBER)
+data class Board internal constructor(
+   var localBoard: BoardState = BoardState(MovesList("1", mutableListOf())),
+   val dbBoard: MongoDbChess = MongoDbChess(driver.getDatabase(dbConnection.dbName)),){
+
+   companion object{
+      operator fun invoke() = Board()
+   }
 
    var gameId: String = "-1"//doesn't exist
 

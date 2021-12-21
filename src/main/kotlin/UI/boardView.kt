@@ -11,8 +11,9 @@ import model.domain.*
 
 @Composable
 @Preview
-fun BoardView(board: BoardState, onTileSelected: (Piece?, coordinate: Positions) -> Unit ){
-    val boards= board.toString()
+fun BoardView(board:Board,boardState: BoardState, onTileSelected: (Piece?, coordinate: Positions) -> Unit ){
+    val boards= boardState.toString()
+    println(boards)
     val lineThickness = 8.dp
     var idx = 0
     Column(modifier = Modifier.background(Color.Black)) {
@@ -21,16 +22,16 @@ fun BoardView(board: BoardState, onTileSelected: (Piece?, coordinate: Positions)
                 repeat(BOARD_SIDE){columnIndex->
                     val charOfThePiece = boards[idx++]
                     val team = charOfThePiece.teamCheck()
-                    val tile = charOfThePiece.toPiece(charOfThePiece.teamCheck())
-                    Tile(team, piece = null ,onSelected = {
-                        onTileSelected(tile, Positions((BOARD_SIDE-1-lineIndex).toLine(), columnIndex.toColumn()))
+                    val piece = charOfThePiece.toPiece(charOfThePiece.teamCheck())
+                    Tile(team = team, piece = piece, i = lineIndex + columnIndex ,onSelected = {
+                        onTileSelected(piece, Positions((BOARD_SIDE-1-lineIndex).toLine(), columnIndex.toColumn()))
                     } )
                     if (columnIndex < BOARD_SIDE - 1)
                         Spacer(modifier = Modifier.width(lineThickness))
                 }
             }
-        if (lineIndex < BOARD_SIDE - 1)
-            Spacer(modifier = Modifier.height(lineThickness))
+            if (lineIndex < BOARD_SIDE - 1)
+                Spacer(modifier = Modifier.height(lineThickness))
         }
     }
 }
