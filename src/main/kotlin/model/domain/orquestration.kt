@@ -1,17 +1,21 @@
 package model.domain
+
+import model.ui.console.gameView
+import model.ui.console.movesView
+import model.ui.console.playView
+import model.ui.console.refreshView
+import kotlin.reflect.KFunction1
+
 /*
-import ui.console.*
-import javax.swing.text.View
-
-
  * Point where the domain and ui are combine
  * @param action the domain part, the data itself
  * @param display the representation of that data for the user
  */
 /*
+ */
 data class CommandsHandler(
     val action: ChessCommands,
-    val display: View
+    val display: KFunction1<Any?, Unit>
 )
 
 /**
@@ -27,8 +31,7 @@ fun buildCommandsHandler(board: Board): Map<String, CommandsHandler>{
         "PLAY" to CommandsHandler(Play(board),::playView),
         "REFRESH" to CommandsHandler(Refresh(board),::refreshView),
         "MOVES" to CommandsHandler(Moves(),::movesView),
-        "EXIT" to CommandsHandler(Exit(),{ }),
+        "EXIT" to CommandsHandler(Exit(),::movesView),
     )
 }
 
- */

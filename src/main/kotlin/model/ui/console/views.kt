@@ -1,4 +1,4 @@
-package ui.console
+package model.ui.console
 
 import model.domain.*
 import model.domain.MovesList
@@ -71,6 +71,7 @@ fun movesView(input: Any?) {
       println("Something went wrong..")
    }
 }
+
 /**
  * Verify if is possible to draw and then call the functions to do it
  * @param result the result of the command

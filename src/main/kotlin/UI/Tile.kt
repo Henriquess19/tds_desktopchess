@@ -25,19 +25,18 @@ fun chooseImage(team:Team, piece:Piece?):String{
 }
 
 @Composable
-
-fun Tile(move: Team?, piece:Piece?,onSelected: (Team?)-> Unit = { } ){
+fun Tile(team: Team?, piece:Piece?,onSelected: (Team?)-> Unit = { } ){
     Box(modifier = Modifier
-        .size(192.dp)
+        .size(80.dp)
         .background(MaterialTheme.colors.background)
         .clickable(true) {
-            onSelected(move)
+            onSelected(team)
         }
         .padding(32.dp)
     ){
-        move?.let {
-            val image = painterResource(chooseImage(team = it, piece = piece))
-            Image(painter = image, contentDescription = "Move")
+        team?.let {
+            //val image = painterResource(chooseImage(team = it, piece = piece))
+            //Image(painter = image, contentDescription = "Move")
         }
     }
 }
