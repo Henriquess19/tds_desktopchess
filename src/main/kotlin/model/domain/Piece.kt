@@ -15,7 +15,6 @@ fun Char.teamCheck():Team?{
     if(this == ' ') return null
     return if(this.isLowerCase()) Team.BLACK
     else Team.WHITE
-
 }
 
 
