@@ -29,9 +29,10 @@ fun App() {
       val board = remember{ mutableStateOf(Board()) }
       Row{
          BoardView(
-            board.value,BoardState(MovesList("1", mutableListOf(PlayMade(team = Team.BLACK, play = Move("sdffs"))))),
+            board.value,
             onTileSelected = { Piece: Piece?, Positions: Positions ->
                val move = getmovement(Piece,Positions)
+               println()
                if(move != null){
                   val moves=move.split(',')
                   board.value.playMove(Move(moves[1]),Team.valueOf(moves[0]))
@@ -43,7 +44,7 @@ fun App() {
                }
             }
          )
-         movesView()
+         movesView(board = board.value)
       }
    }
 }

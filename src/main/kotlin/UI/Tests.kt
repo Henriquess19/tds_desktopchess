@@ -10,14 +10,14 @@ private var moveListToDraw = mutableListOf<PlayMade>(PlayMade(team= Team.WHITE,p
 
 @Composable
 @Preview
-fun movesView() {
+fun movesView(board: Board) {
    var idx = 0
-   val list = moveListToDraw
+   val list = board.moveList()
    Column {
       Text("----------MOVES-----------")
-      while (idx != list.size && list.isNotEmpty()) {
+      while (idx != list.content.size && list.content.isNotEmpty()) {
          Column {
-            val play = list[idx]
+            val play = list.content[idx]
             Text("\tNº${idx + 1}: ${play.team} -> ${play.play.move}")
             idx++
          }

@@ -11,9 +11,8 @@ import model.domain.*
 
 @Composable
 @Preview
-fun BoardView(board:Board,boardState: BoardState, onTileSelected: (Piece?, coordinate: Positions) -> Unit ){
-    val boards= boardState.toString()
-    println(boards)
+fun BoardView(board:Board, onTileSelected: (Piece?, coordinate: Positions) -> Unit ){
+    val boards= board.localBoard.toString()
     val lineThickness = 8.dp
     var idx = 0
     Column(modifier = Modifier.background(Color.Black)) {
