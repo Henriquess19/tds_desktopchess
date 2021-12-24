@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import model.domain.*
 
 private var moveListToDraw = mutableListOf<PlayMade>(PlayMade(team= Team.WHITE,play= Move("sjkdf")),PlayMade(team= Team.BLACK,play= Move("sjkdf")))
-
+/*
 @Composable
 @Preview
 fun movesView(board: Board) {
@@ -48,3 +48,5 @@ fun getmovement(piece: Piece?,positions: Positions):String?{
    }
    return null
 }
+
+ */

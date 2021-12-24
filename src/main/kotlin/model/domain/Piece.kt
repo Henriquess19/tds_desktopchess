@@ -2,8 +2,8 @@ package model.domain
 /**
  * All the the seven different pieces, for each team, that game of chess have
  */
-enum class TypeOfPieces(val char: Char, val type:String){ R('r', "rook"),
-    N('n', "knight"),B('b', "bishop"),Q('q', "queen"),K('k', "king"),P('p', "pawn") }
+enum class TypeOfPieces(val char: Char){ R('r'),
+    N('n'),B('b'),Q('q'),K('k'),P('p') }
 
 fun Char.toPiece(team: Team?):Piece? {
     if(team == null) return null
@@ -42,7 +42,8 @@ data class Piece(val team: Team, val typeOfPiece: TypeOfPieces, val representati
      * @return [Piece] the piece it self
      */
     override fun toPromotion(piecePromotion: Char): Piece {
-        return Piece(this.team, TypeOfPieces.valueOf(piecePromotion.toString()), piecePromotion)
+        val pieceRepresentation = if(team == Team.WHITE) piecePromotion.uppercaseChar() else piecePromotion.lowercaseChar()
+        return Piece(this.team, TypeOfPieces.valueOf(piecePromotion.uppercaseChar().toString()), pieceRepresentation)
     }
 }
 

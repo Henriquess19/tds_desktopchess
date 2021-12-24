@@ -12,49 +12,50 @@ class ValueResult<T>(val data: T) : Result()
 /**
  * Result when the game don´t exists
  */
-object GameNotExists
+object GameNotExists: Result()
 /**
  * Result when the game need the moves
  */
-object MovesGame
+object MovesGame: Result()
 /**
  * Result when the game is opened
  */
-object OpenedGame
+object OpenedGame: Result()
 /**
  * Result when the game is closed
  */
-object ClosedGame
+object ClosedGame: Result()
 
 /**
  * Result when the game is updated
  */
-object UpdatedGame
+object UpdatedGame: Result()
 /**
  * Result produced when the game open is invalid.
  */
-object InvalidCommand
+object InvalidCommand: Result()
 /**
  * Result produced when the move execution is valid.
  */
-object ValidMovement
+object ValidMovement: Result()
 /**
  * Result produced when the game open is invalid.
  */
-object InvalidMovement
+object InvalidMovement: Result()
 /**
  * Result produced when the pieces from the same team
  */
-object SameTeam
+object SameTeam: Result()
 /**
  * Result produced when the move execution encounter a piece of the same team.
  */
-object Encounter
+object Encounter: Result()
 /**
  * Result produced when the piece needs promotion
  */
-object NeedPromotion
+object NeedPromotion: Result()
 /**
  * Result produced when the is encounter the end game position (one of the kings dies)
  */
-object EndedGame
+object EndedGame: Result()
+object DifferentTeamPiece:Result()

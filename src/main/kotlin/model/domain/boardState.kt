@@ -6,50 +6,15 @@ import movePieceVerity
 /**
  * Representation of the columns in a board of chess
  */
-enum class Columns{CA,CB,CC,CD,CE,CF,CG,CH}
-
-const val BOARD_SIDE = 8
-
-
-fun isValid(value: Int) = value in 0 until BOARD_SIDE
-
-fun Int.toColumn():Columns {
-    require(isValid(this))
-    return Columns.values()[this]
-}
-/**
- * Representation of the line in a board of chess
- */
-enum class Lines{L1,L2,L3,L4,L5,L6,L7,L8}
-
-fun Int.toLine(): Lines {
-    require(isValid(this))
-    return Lines.values()[this]
-}
 
 /**
  * The two teams that are playable
  */
-enum class Team{WHITE,BLACK}
+enum class Team{WHITE,BLACK;
+    val other: Team
+        get() = if(this ==WHITE) BLACK else WHITE
+}
 
-/**
- * Represents the position of the piece
- * @property lines  The line where the piece is
- * @property column  The column where the piece is
- */
-data class Positions(val line: Lines, val column: Columns)
-/**
- * Represents the play that was made
- * @property team  The team where the piece was
- * @property play  The play itself
- */
-data class PlayMade(val team: Team, val play: Move)
-/**
- * Represents the list of moves identified by an id
- * @property _id  The id that contains the Plays
- * @property content  The various plays
- */
-data class MovesList(var _id:String, val content:MutableList<PlayMade>)
 /**
  * Initial game board format
  */
@@ -63,9 +28,30 @@ const val INITIAL_BOARD =
             "PPPPPPPP" +
             "RNBQKBNR"
 
-data class BoardState(val moves: MovesList) : BoardStateInterface {
-    private val board = mutableMapOf<Positions, Piece>()
-    var movesList = moves
+/**
+ * Represents the list of moves identified by an id
+ * @property _id  The id that contains the Plays
+ * @property content  The various plays
+ */
+data class MovesList(var _id:String = "-1", val currentState:String = INITIAL_BOARD  ,var content: MutableList<PlayMade> = mutableListOf())
+
+/**
+ * Represents the play that was made
+ * @property team  The team where the piece was
+ * @property play  The play itself
+ */
+data class PlayMade(val team: Team, val play: Move)
+
+
+data class BoardState internal constructor
+    (val side: Int = BOARD_SIDE,
+     val turn: Team? = Team.WHITE,
+     private val board: MutableMap<Positions, Piece> = mutableMapOf(),
+     val movesList: MovesList = MovesList(),
+     var id: Int = -1,
+     var openBoard: Boolean
+)
+{
 
     /**
      * Init the board putting the pieces on corresponding initial positions
@@ -73,8 +59,9 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
     init {
         var k = 0
         for (i in Lines.L8.ordinal downTo Lines.L1.ordinal) {
+            val type = movesList.currentState.ifEmpty { INITIAL_BOARD }
             for (j in Columns.CA.ordinal..Columns.CH.ordinal) {
-                val key = INITIAL_BOARD[k++]
+                val key = type[k++]
                 val whichTeam = if(key.isLowerCase()) Team.BLACK else Team.WHITE
                 if (key != ' ') {
                     board[Positions(Lines.values()[i], Columns.values()[j])] = Piece(whichTeam, TypeOfPieces.valueOf(key.uppercase()), key)
@@ -87,49 +74,60 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
      * @param move the move to be made
      * @return [BoardState] the game updated with the move
      */
-    override fun makeMove(move: Move, team: Team): Pair<BoardState, ValueResult<*>> {
-        val oldLine = move.move[2].toString().toInt() - 1
-        val newline = move.move[4].toString().toInt() - 1
-        val oldColumn = "C" + move.move[1].uppercaseChar()
-        val newColumn = "C" + move.move[3].uppercaseChar()
+    fun makeMove(move: Move ,team: Team): Pair<BoardState, Result> {
+        val oldLine = move.move[2].toLine()
+        val newline = move.move[4].toLine()
+        val oldColumn = move.move[1].toColumn()
+        val newColumn = move.move[3].toColumn()
+        val oldPosition = Positions(line = oldLine, column = oldColumn)
+        val newPosition = Positions(line =newline, column = newColumn)
 
-        val oldPosition = Positions(Lines.values()[oldLine], Columns.valueOf(oldColumn))
-        val newPosition = Positions(Lines.values()[newline], Columns.valueOf(newColumn))
-
-        var piece = board[oldPosition] ?: return Pair(BoardState(this.movesList), ValueResult(InvalidMovement))
-
+        var piece = board[oldPosition] ?: return Pair(BoardState(openBoard = true), InvalidMovement)
+        if(piece.team != getTeam()) return Pair(BoardState(openBoard = true), DifferentTeamPiece)
         val verification = movePieceVerity(piece, oldPosition, newPosition, this)
-        if (verification.data == ValidMovement) {
-            if (board[newPosition]?.typeOfPiece == TypeOfPieces.K){
-                changePiecesPlaces(oldPosition, newPosition, piece, move)
-                return Pair(BoardState(this.movesList), ValueResult(EndedGame))
-            }
-            if (verifyPromotion(piece, newPosition, piece.team).data == ValidMovement) {
+        if (verification == ValidMovement) {
+            if (verifyPromotion(piece, newPosition, piece.team) == ValidMovement) {
                 if (move.length() > 5 && move.move[5] == '=' && move.move[6].uppercaseChar() != 'K') {
                     piece =piece.toPromotion(move.move[6])
                 } else {
-                    return Pair(BoardState(this.movesList), ValueResult(NeedPromotion))
+                    return Pair(BoardState(board = this.board, openBoard = true), NeedPromotion)
                 }
             }
-            changePiecesPlaces(oldPosition, newPosition, piece, move)
-            return Pair(BoardState(this.movesList), ValueResult(ValidMovement))
-        }else return Pair(BoardState(this.movesList), ValueResult(verification.data))
+            val newBoard= BoardState(
+                board = changePiecesPlaces(oldPosition, newPosition, piece),
+                turn = team.other,
+                movesList = MovesList(_id = movesList._id ,
+                    currentState = this.toString(),
+                    content = addANewMove(PlayMade(team = team, play= move))),
+                id = id,openBoard = true
+                )
+            return Pair(newBoard,checkCheckMate(position = newPosition))
+        }else return Pair(BoardState(board = this.board,openBoard = true), verification)
     }
     /**
      * Verify if the position contains a piece
      * @param positions position where the piece should be
      * @return if contains return true else false
      */
-    override fun containsPiece(positions: Positions): Boolean {
+    fun containsPiece(positions: Positions): Boolean {
         return board.containsKey(positions)
     }
-
+    private fun addANewMove(play :PlayMade):MutableList<PlayMade>{
+        val newList = movesList.content
+        newList.add(play)
+        return newList
+    }
+    fun checkCheckMate(position: Positions):Result{
+        val piece = getPiece(positions = position) ?: return ValidMovement
+        return if(piece.typeOfPiece ==TypeOfPieces.K) EndedGame
+        else ValidMovement
+    }
     /**
      * Gets the piece specified
      * @param positions position where the piece should be
      * @return the piece itself
      */
-    override fun getPiece(positions: Positions): Piece? {
+    fun getPiece(positions: Positions): Piece? {
         return board[positions]
     }
     /**
@@ -150,20 +148,16 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
         }
         return strboard
     }
+    fun getTeam():Team{
+        val content = movesList.content
+        return if(content.isEmpty()) Team.WHITE else content.last().team.other
+    }
 
-    /**
-     * Based on the move made, and which team turn is, can see if the piece is their ones
-     * @param move the move being made
-     * @param teamTurn which team is making the move
-     * @return [Result] if is a valid or a invalid movement
-     */
-    override fun pieceTeamCheck(move: Move, teamTurn: Team): ValueResult<*> {
-        val line =  move.move[2].toString().toInt() - 1
-        val column = "C" + move.move[1].uppercaseChar()
-        val position = Positions(Lines.values()[line], Columns.valueOf(column))
-        val piece = board[position] ?: return ValueResult(InvalidMovement)
-        return if(teamTurn == piece.team) ValueResult(ValidMovement)
-        else ValueResult(InvalidMovement)
+    fun getPiece(move:String):Piece?{
+        val oldColumn = move[0].toColumn()
+        val oldLine = move[1].toLine()
+        val position = Positions(line = oldLine, column = oldColumn)
+        return getPiece(positions = position)
     }
 
     /**
@@ -173,26 +167,25 @@ data class BoardState(val moves: MovesList) : BoardStateInterface {
      * @param piece the piece itself
      * @param move the move made
      */
-    private fun changePiecesPlaces(oldPosition: Positions, newPosition: Positions, piece: Piece, move: Move){
-        board[newPosition] = piece
-        board.remove(oldPosition)
-        movesList.content.add(PlayMade(piece.team, move))
+    private fun changePiecesPlaces(oldPosition: Positions, newPosition: Positions, piece: Piece): MutableMap<Positions, Piece>{
+        val newBoard:MutableMap<Positions, Piece> =  board
+        newBoard[newPosition] = piece
+        newBoard.remove(oldPosition)
+        return newBoard
     }
 }
-
-
 /**
  * Verify if the promotion move is valid
  * @param piece the piece being moved
  * @param location the location where the piece is promoted(L1, L8)
  * @param team team who is making the play
- * @return [ValueResult] if is valid or not
+ * @return [Result] if is valid or not
  */
-private fun verifyPromotion(piece: Piece, location: Positions, team: Team): ValueResult<*> {
-    if(piece.representation != 'p'.uppercaseChar()) return ValueResult(InvalidCommand)
+private fun verifyPromotion(piece: Piece, location: Positions, team: Team): Result {
+    if(piece.representation != 'p'.uppercaseChar()) return InvalidCommand
     return if (team== Team.WHITE && location.line== Lines.L8
         || team== Team.BLACK && location.line== Lines.L1
     ){
-        ValueResult(ValidMovement)
-    } else ValueResult(InvalidMovement)
+        ValidMovement
+    } else InvalidMovement
 }

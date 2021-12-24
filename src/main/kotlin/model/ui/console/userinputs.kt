@@ -1,7 +1,6 @@
 package model.ui.console
 
-import model.domain.Board
-import model.domain.nextTeam
+import model.domain.BoardState
 
 /*
 import domain.Board
@@ -15,9 +14,9 @@ import model.domain.nextTeam
  * @param  board the board that is being played
  * @return a pair bearing the command text and its parameter
  */
-fun readChessCommand(board: Board):Pair<String,String?>{
-   val game = board.gameId
-   val teamTurn = nextTeam(board)
+fun readChessCommand(localBoardState: BoardState):Pair<String,String?>{
+   val game = localBoardState.id
+   val teamTurn = localBoardState.turn
    print("$game:$teamTurn> ")
    val input = readln()
    val command = input.substringBefore(delimiter = ' ')

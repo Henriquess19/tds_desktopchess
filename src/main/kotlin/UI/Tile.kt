@@ -1,5 +1,5 @@
 package UI
-
+/*
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,3 +46,5 @@ fun Tile(team: Team?, piece:Piece?, i:Int,onSelected: (Team?)-> Unit = { } ){
 fun move(){
     //Tile(Team.WHITE, piece = Piece(team = Team.WHITE, typeOfPiece = TypeOfPieces.B, representation = 'b'),)
 }
+
+ */

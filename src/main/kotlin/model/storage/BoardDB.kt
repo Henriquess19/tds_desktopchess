@@ -22,7 +22,7 @@ interface BoardDB {
     * @return [MovesList]the moves list present on that id
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   fun findgamebyId(moveslist: MovesList): MovesList
+   fun findgamebyId(id: String): MovesList
    /**
     * Updates the game on DB
     * @param moveslist the list that we wanna put on DB

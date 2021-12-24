@@ -13,55 +13,70 @@ typealias View = (input:Any?) -> Unit
 /**
  * The list to be drawn
  */
-private var moveListToDraw: MovesList = MovesList("-1", mutableListOf())
 
 /**
  * Display the message if the board was open or not
  */
 fun gameView(input:Any?) {
-      if (input == OpenedGame) {
-         println( "Game opened..")
-      }
-      else println("Something went wrong..")
+    val result  = input as toReturn
+    when (result.result) {
+        OpenedGame -> {
+            println( "Game opened..")
+                draw(board = result.boardState.movesList.currentState)
+            }
+        InvalidCommand -> println("You have to say the number of the game..")
+    }
 }
 /**
  * Display the messages after the play was made
  */
 fun playView(input:Any?) {
-   println(
-      when(input) {
-         ValidMovement -> ""
-         EndedGame -> "You won!"
-         NeedPromotion -> "Indicate your promotion.."
-         InvalidMovement -> "Movement Invalid.."
-         InvalidCommand-> "Command Invalid.. "
-         SameTeam-> "That´s your own piece.. "
-         ClosedGame -> "Game not opened.."
-         Encounter -> "Another piece is on the way.."
-         else -> "Something went wrong.."
+    val result  = input as toReturn
+    when(result.result) {
+      EndedGame -> println( "You won!")
+      NeedPromotion -> println("Indicate your promotion..")
+      InvalidMovement -> println("Movement Invalid..")
+      InvalidCommand -> println("Command Invalid.. ")
+      DifferentTeamPiece -> println("That´s not your piece..")
+      SameTeam -> println("That´s your own piece.. ")
+      ClosedGame ->{
+          return println("Game not opened..")
       }
-   )
+      Encounter -> println("Another piece is on the way..")
+    }
+    draw(board = result.boardState.movesList.currentState)
 }
+
+
+
 /**
  * Display refresh messages
  */
 fun refreshView(input:Any?) {
-      when (input) {
-          UpdatedGame -> println("Game updated..")
-          EndedGame -> println("You lost")
+    val result  = input as toReturn
+    when (result.result) {
+        UpdatedGame -> println("The Game was updated..")
+        InvalidMovement -> println("Wait for the other person to do her play.." )
+        EndedGame -> println("You lost..")
+        ClosedGame ->{
+            return println("Game not opened..")
+        }
           else -> println("Something went wrong..")
       }
+    draw(board = result.boardState.movesList.currentState)
 }
 /**
  * Display the list of moves
  */
 fun movesView(input: Any?) {
-   if (input == MovesGame) {
-      var idx = 0
-     val list = moveListToDraw
+     val result = input as toReturn
+     if (result.result == ClosedGame) return println("Game not opened..")
+     if (result.result == MovesGame) {
+     var idx = 0
+     val list = result.boardState.movesList.content
       println("----------MOVES-----------")
-     while (idx != list.content.size  && list.content.isNotEmpty()) {
-         val play = list.content[idx]
+     while (idx != list.size  && list.isNotEmpty()) {
+         val play = list[idx]
          println("\tNº${idx + 1}: ${play.team} -> ${play.play.move}")
          idx++
 
@@ -73,46 +88,24 @@ fun movesView(input: Any?) {
 }
 
 /**
- * Verify if is possible to draw and then call the functions to do it
- * @param result the result of the command
- * @param board the board it self
- */
-fun gameDraw(result: ValueResult<*>, board: Board){
-   val possibleResultsDraw = arrayOf(ValidMovement,OpenedGame,UpdatedGame,EndedGame)
-   if (result.data in possibleResultsDraw ){
-      draw(board.localBoard)
-      updateMoveDraw(board)
-   }
-}
-
-/**
  * Fun the receives the [BoardState] and draw the information
  */
-private fun draw(board: BoardState) {
-   val boards= board.toString()
-   println("    a b c d e f g h ")
-   println("   -----------------")
-   var idx = 0
-   for (i in Lines.L8.ordinal downTo Lines.L1.ordinal) {
-      print("${i + 1} | ")
-      for (k in Columns.CA.ordinal..Columns.CH.ordinal) {
-         val piece = boards[idx]
-         if(piece != ' ') {
-            print(piece)
-            print(" ")
-         }
-         else print("  ")
-         idx++
-      }
-      println("| ")
-   }
-   println("   -----------------\n")
+private fun draw(board: String) {
+    println("    a b c d e f g h ")
+    println("   -----------------")
+    var idx = 0
+    for (i in Lines.L8.ordinal downTo Lines.L1.ordinal) {
+        print("${i + 1} | ")
+        for (k in Columns.CA.ordinal..Columns.CH.ordinal) {
+            val piece = board[idx]
+            if (piece != ' ') {
+                print(piece)
+                print(" ")
+            } else print("  ")
+            idx++
+        }
+        println("| ")
+    }
+    println("   -----------------\n")
 }
 
-/**
- * Update the move list  to be drawn
- * @param board the board itself
- */
-private fun updateMoveDraw(board: Board){
-   moveListToDraw = board.moveList()
-}

@@ -1,10 +1,7 @@
 package model.domain
 
-import model.ui.console.gameView
-import model.ui.console.movesView
-import model.ui.console.playView
-import model.ui.console.refreshView
-import kotlin.reflect.KFunction1
+import model.storage.MongoDbChess
+import model.ui.console.*
 
 /*
  * Point where the domain and ui are combine
@@ -15,7 +12,7 @@ import kotlin.reflect.KFunction1
  */
 data class CommandsHandler(
     val action: ChessCommands,
-    val display: KFunction1<Any?, Unit>
+    val display:View
 )
 
 /**
@@ -24,14 +21,14 @@ data class CommandsHandler(
  * @return Map that associates the strings to the command
  */
 
-fun buildCommandsHandler(board: Board): Map<String, CommandsHandler>{
+fun buildCommandsHandler(localBoard: BoardState,dbBoard: MongoDbChess): Map<String, CommandsHandler>{
     return mapOf(
-        "OPEN" to CommandsHandler(Open(board), ::gameView),
-        "JOIN" to CommandsHandler(Join(board),::gameView),
-        "PLAY" to CommandsHandler(Play(board),::playView),
-        "REFRESH" to CommandsHandler(Refresh(board),::refreshView),
-        "MOVES" to CommandsHandler(Moves(),::movesView),
-        "EXIT" to CommandsHandler(Exit(),::movesView),
+        "OPEN" to CommandsHandler(action = Open(localBoard,dbBoard), display =  ::gameView),
+        "JOIN" to CommandsHandler(action = Join(localBoard, dbBoard),display = ::gameView),
+        "PLAY" to CommandsHandler(action = Play(localBoard,dbBoard),display = ::playView),
+        "REFRESH" to CommandsHandler(action = Refresh(localBoard,dbBoard),display = ::refreshView),
+        "MOVES" to CommandsHandler(action = Moves(localBoard),display = ::movesView),
+        "EXIT" to CommandsHandler(action = Exit(), display = { })
     )
 }
 

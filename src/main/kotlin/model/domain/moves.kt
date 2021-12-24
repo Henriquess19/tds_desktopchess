@@ -26,13 +26,6 @@ data class Move(val move: String){
 }
 
 /**
- * Extension function that converts this string to an [Move] instance.
- * @return  the [Move] instance
- * @throws  IllegalArgumentException if this string is not a valid author identifier.
- */
-fun String.toMove() = Move(this)
-
-/**
  * Checks whether the given string is a valid move identifier.
  * @param   move  the string to be checked
  * @return  true if [move] can be used as an move identifier, false otherwise
@@ -44,9 +37,12 @@ private fun isAValidCommandMove(move:String) = move.isNotEmpty() && (move.length
  * @param move the move to be made not completed
  * @return the string prepared
  */
-fun stringPrepared(move:String):String {
-    TypeOfPieces.values().forEach {
-        if (move[0] == it.char && move.length > 4) return move
+fun stringPrepared(move:String,piece: Piece?, team: Team):String {
+    if(move.length == 5 || move.length == 7) return move
+    if(piece == null){
+        return "D$move"
+    }else {
+        val representation = if(team == Team.WHITE) piece.representation.uppercase() else piece.representation.lowercase()
+            return "${representation}$move"
     }
-    return "P$move"
 }

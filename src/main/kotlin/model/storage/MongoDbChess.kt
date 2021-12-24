@@ -29,10 +29,9 @@ class MongoDbChess(private val db: MongoDatabase): BoardDB {
     * @return [MovesList]the moves list present on that id
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   override fun findgamebyId(moveslist: MovesList): MovesList {
+   override fun findgamebyId(id:String): MovesList {
       try {
-         return db.getCollectionWithId<MovesList>(moveslist._id).getAll()
-            .filter { it._id == moveslist._id }.first()
+         return db.getCollectionWithId<MovesList>(id).getAll().first { it._id == id }
       }catch (failure:MongoException){
          throw ChessDBAccessException(failure)
       }
