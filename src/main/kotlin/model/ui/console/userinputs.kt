@@ -2,16 +2,9 @@ package model.ui.console
 
 import model.domain.BoardState
 
-/*
-import domain.Board
-import domain.nextTeam
-import model.domain.Board
-import model.domain.nextTeam
-
-
-
+/**
  * Reads a line from the console and parses it to obtain the corresponding command.
- * @param  board the board that is being played
+ * @param  localBoardState the board that is being played
  * @return a pair bearing the command text and its parameter
  */
 fun readChessCommand(localBoardState: BoardState):Pair<String,String?>{

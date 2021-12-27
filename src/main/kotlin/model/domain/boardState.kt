@@ -5,16 +5,21 @@ import androidx.compose.ui.text.toUpperCase
 import movePieceVerity
 
 /**
- * Representation of the columns in a board of chess
- */
-
-/**
  * The two teams that are playable
  */
 enum class Team{WHITE,BLACK;
+
+    /**
+     * The other Team to the one who call it
+     */
     val other: Team
         get() = if(this ==WHITE) BLACK else WHITE
 }
+
+/**
+ * Turning a string to a team
+ * @return the team who is being representated
+ */
 fun String.toTeam():Team {
     return if(this.lowercase() == "white") Team.WHITE
     else  Team.BLACK
@@ -35,6 +40,7 @@ const val INITIAL_BOARD =
 /**
  * Represents the list of moves identified by an id
  * @property _id  The id that contains the Plays
+ * @property currentState the state of the board representaded in a string
  * @property content  The various plays
  */
 data class MovesList(var _id:String = "-1", val currentState:String = INITIAL_BOARD  ,var content: MutableList<PlayMade> = mutableListOf())
@@ -46,7 +52,13 @@ data class MovesList(var _id:String = "-1", val currentState:String = INITIAL_BO
  */
 data class PlayMade(val team: Team, val play: Move)
 
-
+/**
+ * @property side size of the board itself
+ * @property turn who is making the play, or null when ended
+ * @property board the board itself with the pieces
+ * @property id the current id of the board
+ * @property openBoard if the board is open or not
+ */
 data class BoardState internal constructor
     (val side: Int = BOARD_SIDE,
      val turn: Team? = Team.WHITE,
@@ -76,7 +88,8 @@ data class BoardState internal constructor
     /**
      * Make the piece move, if its valid
      * @param move the move to be made
-     * @return [BoardState] the game updated with the move
+     * @param team the team who is making the move
+     * @return The new board and what type of result, valid, invalid etc.
      */
     fun makeMove(move: Move ,team: Team): Pair<BoardState, Result> {
         val oldPosition = Positions(line = move.move[2].toLine(), column = move.move[1].toColumn())
@@ -111,6 +124,13 @@ data class BoardState internal constructor
     fun containsPiece(positions: Positions): Boolean {
         return board.containsKey(positions)
     }
+
+    /**
+     * Add a new entry the list of plays
+     * @param play the play that was made
+     * @return The newlist of plays with the new entry
+     */
+
     private fun addANewMove(play :PlayMade):MutableList<PlayMade>{
         val newList = movesList.content
         newList.add(play)
@@ -147,11 +167,21 @@ data class BoardState internal constructor
         }
         return strboard
     }
+
+    /**
+     * From the last entry on the move list catches the team who made it
+     * @return the team who made the move
+     */
     fun getTeam():Team{
         val content = movesList.content
         return if(content.isEmpty()) Team.WHITE else content.last().team.other
     }
 
+    /**
+     * From the string cathes the piece thats its being move, or null if its empty space
+     * @param move the move itself
+     * @return The piece itself or null if its empty
+     */
     fun getPiece(move:String):Piece?{
         val oldColumn = move[0].toColumn()
         val oldLine = move[1].toLine()

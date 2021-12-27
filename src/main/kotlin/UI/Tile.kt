@@ -18,13 +18,24 @@ import model.domain.Team
 import model.domain.TypeOfPieces
 
 //alterei a piece para ter o nome do tipo da peça para ser mais facil fazer esta macacada
+/**
+ * Based on the team, and the piece representation, calls the corresponding image
+ * @param team the team who making the play
+ * @param piece the piece iself
+ * @return a string with the corresponding name, of the image
+ */
 fun chooseImage(team:Team, piece:Piece):String{
     val pieceRepresentation  = piece.representation.lowercaseChar()
     return if(team == Team.WHITE) "w_${pieceRepresentation}.png"
     else "b_${pieceRepresentation}.png"
 
 }
-
+/**
+ * The Tile of one position in the board
+ * @param team the team of the corresponding position of the board or null if its empty
+ * @param piece the piece that´s it's represented in that position or null if its none
+ * @param onSelected The team of the corresponding position or null if its empty
+ */
 @Composable
 fun Tile(team: Team?, piece:Piece?, i:Int,onSelected: (Team?)-> Unit = { } ){
     Box(modifier = Modifier
@@ -40,10 +51,4 @@ fun Tile(team: Team?, piece:Piece?, i:Int,onSelected: (Team?)-> Unit = { } ){
             Image(painter = image, contentDescription = "pieceImage", modifier = Modifier.padding(start = 8.dp))
         }
     }
-}
-
-@Composable
-@Preview
-fun move(){
-    //Tile(Team.WHITE, piece = Piece(team = Team.WHITE, typeOfPiece = TypeOfPieces.B, representation = 'b'),)
 }

@@ -35,6 +35,8 @@ private fun isAValidCommandMove(move:String) = move.isNotEmpty() && (move.length
 /**
  * If the string dont have the piece it will add a P, to function without problems
  * @param move the move to be made not completed
+ * @param piece that is being moved
+ * @param team who is making the move
  * @return the string prepared
  */
 fun stringPrepared(move:String,piece: Piece?, team: Team):String {

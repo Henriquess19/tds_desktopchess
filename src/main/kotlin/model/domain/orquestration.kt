@@ -3,13 +3,12 @@ package model.domain
 import model.storage.MongoDbChess
 import model.ui.console.*
 
-/*
+/**
  * Point where the domain and ui are combine
  * @param action the domain part, the data itself
  * @param display the representation of that data for the user
  */
-/*
- */
+
 data class CommandsHandler(
     val action: ChessCommands,
     val display:View

@@ -11,8 +11,15 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import model.domain.*
 
+/**
+ * Based on the result of the board, shows a message to the mistake made, and return the board
+ * @param board the board that is currently being played
+ * @param team making the play
+ * @param movement the movement tried to be made
+ * @return the new board and the same result
+ */
 @Composable
-fun composingResults(board: Pair<BoardState, model.domain.Result>, team: Team, movement: Move): Pair<BoardState, model.domain.Result> {
+fun composingResults(board: Pair<BoardState, Result>, team: Team, movement: Move): Pair<BoardState, Result> {
     val newMovement = remember { mutableStateOf(movement) }
     var message = ""
     when(board.second){

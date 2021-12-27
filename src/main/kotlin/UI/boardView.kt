@@ -18,9 +18,9 @@ fun BoardView(board:BoardState, onTileSelected: (Piece?, coordinate: Positions) 
     val lineThickness = 8.dp
     var idx = 0
     Column(modifier = Modifier.background(Color.Black)) {
-        repeat(BOARD_SIDE){ lineIndex->
+        repeat(board.side){ lineIndex->
             Row{
-                repeat(BOARD_SIDE){columnIndex->
+                repeat(board.side){columnIndex->
                     val charOfThePiece = boards[idx++]
                     val team = charOfThePiece.teamCheck()
                     val piece = charOfThePiece.toPiece(charOfThePiece.teamCheck())
@@ -36,7 +36,17 @@ fun BoardView(board:BoardState, onTileSelected: (Piece?, coordinate: Positions) 
         }
     }
 }
+
+/**
+ * Type of pieces thats its possible pawn be promoted to
+ */
 val piecesThatCanBePromotedTo = arrayOf(TypeOfPieces.B,TypeOfPieces.R,TypeOfPieces.N, TypeOfPieces.Q)
+
+/**
+ * If its need a promotion, displays the various pieces that can be promoted to, in a column
+ * @param team the team who is needing the promotion
+ * @param onTileSelected when selected a tile, gets the piece
+ */
 @Composable
 fun promotionView(team: Team, onTileSelected: (Piece) -> Unit) {
     val lineThickness = 8.dp
@@ -54,7 +64,12 @@ fun promotionView(team: Team, onTileSelected: (Piece) -> Unit) {
         }
     }
 }
-
+/**
+ * Display in a box the piece that was called
+ * @param team the team who is making the play
+ * @param piece that´s is need to be shown
+ * @param onSelected The team who made it
+ */
 @Composable
 fun PieceThatPromotesTo(team: Team, piece: Piece,onSelected: (Team?)-> Unit = { } ){
     Box(modifier = Modifier

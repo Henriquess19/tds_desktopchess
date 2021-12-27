@@ -2,8 +2,6 @@ package model.domain
 
 import model.storage.MongoDbChess
 
-var OPEN_GAME = false
-
 fun interface ChessCommands{
     /**
      * Executes this command passing it the given parameter
@@ -16,21 +14,17 @@ fun interface ChessCommands{
      */
     operator fun invoke(parameter: String? = null) = execute(parameter)
 }
-
 /**
- * Open command that will check if game with the id passed is opened and if it open it, else will create with that id
- * @param board the that will be worked
- */
-/*
-   fun createGame(id: String){
-      gameId = id
-      dbBoard.createID(gameId)
-      localBoard
-      localBoard.moves._id =gameId
-      createMoves()
+ * To help to return both the board and the result of the operation
+ * @property boardState The current state of the board
+ * @property result The result of the command made invalid, valid, sameTeam etc.
  */
 data class toReturn (val boardState:BoardState,val result: Result)
-
+/**
+ * Open command that will check if game with the id passed is opened and if it open it, else will create with that id
+ * @param localBoard The board being played currently
+ * @param dbBoard The state of the board stored in db
+ */
 class Open(private val localBoard: BoardState,private val dbBoard: MongoDbChess): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
         if (parameter!= null) {
@@ -59,7 +53,8 @@ class Open(private val localBoard: BoardState,private val dbBoard: MongoDbChess)
 }
 /**
  * Join command that will permit to one people to join that game with black pieces
- * @param board the that will be worked
+ * @param localBoard The board being played currently
+ * @param dbBoard The state of the board stored in db
  */
 class Join(
             private val localBoard: BoardState,private val dbBoard: MongoDbChess ): ChessCommands {
@@ -85,7 +80,8 @@ class Join(
 
 /**
  * Play command that will execute the moved passed
- * @param board the that will be worked
+ * @param localBoard The board being played currently
+ * @param dbBoard The state of the board stored in db
  */
 class Play(
     private val localBoard: BoardState,
@@ -118,7 +114,8 @@ class Play(
 }
 /**
  * Refresh command that will refresh the board to the actual state
- * @param board the that will be worked
+ * @param localBoard The board being played currently
+ * @param dbBoard The state of the board stored in db
  */
 class Refresh(private val localBoard: BoardState,
               private val dbBoard: MongoDbChess): ChessCommands {

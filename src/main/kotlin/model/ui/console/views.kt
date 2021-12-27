@@ -11,10 +11,6 @@ import model.domain.ValueResult
 typealias View = (input:Any?) -> Unit
 
 /**
- * The list to be drawn
- */
-
-/**
  * Display the message if the board was open or not
  */
 fun gameView(input:Any?) {

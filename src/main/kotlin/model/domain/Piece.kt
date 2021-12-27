@@ -5,14 +5,29 @@ package model.domain
 enum class TypeOfPieces(val char: Char){ R('r'),
     N('n'),B('b'),Q('q'),K('k'),P('p') }
 
+/**
+ * Takes a char and turn it to a piece
+ * @param team who is making the move, or null if its no onw
+ * @return The new Piece itself or null if the team is null
+ */
 fun Char.toPiece(team: Team?):Piece? {
     if(team == null) return null
     return Piece(team = team,
         typeOfPiece = TypeOfPieces.valueOf("${this.uppercaseChar()}"),
         representation = this)
 }
+
+/**
+ * Because a team white is upper case and black one is lower, the purpose of this is to do that
+ * @param team who is making the play
+ * @return the corresponding case to that team
+ */
 fun Char.toTeamRepresentation(team: Team):Char = if(team == Team.WHITE) this.uppercaseChar() else this.lowercaseChar()
 
+/**
+ * Based on the case of the char if the team is the black one the white
+ * @return The team who made ir, or null if the char is empty
+ */
 fun Char.teamCheck():Team?{
     if(this == ' ') return null
     return if(this.isLowerCase()) Team.BLACK
