@@ -1,9 +1,29 @@
 // Copyright 2000-2021 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
+import UI.*
+import androidx.compose.desktop.DesktopMaterialTheme
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowSize
+import androidx.compose.ui.window.WindowState
+import androidx.compose.ui.window.application
 import model.domain.*
 import model.storage.*
 import model.storage.mongodb.*
 import model.ui.console.readChessCommand
+import kotlin.Result
 
+/*
 fun main(){
 
    val dbConnection = getDBConnectionInfo()
@@ -45,58 +65,39 @@ fun main(){
       driver.close()
    }
 }
+*/
 
 
-/*
 @Composable
-@Preview
 fun App() {
-   DesktopMaterialTheme {
-      val board = remember{ mutableStateOf(Board()) }
-      Row{
-         BoardView(
-            board.value,
-            onTileSelected = { Piece: Piece?, Positions: Positions ->
-               val move = getmovement(Piece,Positions)
-               println()
-               if(move != null){
-                  val moves=move.split(',')
-                  board.value.playMove(Move(moves[1]),Team.valueOf(moves[0]))
-                  println(board.value.moveList())
-                  board.value = Board(BoardState(board.value.moveList()))
-                  //board.value = Board(BoardState(board.value.moveList()))
-                  //println(board.value.moveList())
-                  //Chamar board.playmove
-               }
-            }
-         )
-         movesView(board = board.value)
-      }
-   }
+    DesktopMaterialTheme {
+        val board = remember { mutableStateOf(Pair<BoardState, model.domain.Result>(BoardState(openBoard = true), ValidMovement)) }
+        val movement = remember { mutableStateOf(Move("aaaa")) }
+        val team = remember { mutableStateOf(Team.WHITE) }
+        Row {
+            BoardView(
+                board = board.value.first,
+                onTileSelected = { piece: Piece?, positions: Positions ->
+                    val move = getmovement(piece, positions)
+                    if (move != null) {
+                        val moves = move.split(',')
+                        movement.value = Move(move = moves[1])
+                        team.value = moves[0].toTeam()
+                        board.value = board.value.first.makeMove(move = movement.value, team = team.value)
+                    }
+                }
+            )
+            movesView(board = board.value.first)
+            if(board.value.second != ValidMovement) board.value = composingResults(board =  board.value, team = team.value, movement = movement.value )
+        }
+    }
 }
-
-
 
 fun main() = application {
-   Window(
-      state = WindowState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
-      onCloseRequest = ::exitApplication
-   ) {
-      App()
-   }
-}
-  val dbConnection = getDBConnectionInfo()
-    val driver =
-        if (dbConnection.mode == DbMode.REMOTE)
-            createMongoClient(dbConnection.connectionString)
-        else createMongoClient()
-    try {
-        val chess= Board(BoardState(MovesList("-1", mutableListOf())),
-            MongoDbChess(driver.getDatabase(dbConnection.dbName))
-        )
-        val dispatcher = buildCommandsHandler(chess)
-
+    Window(
+        state = WindowState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
+        onCloseRequest = ::exitApplication
+    ) {
+        App()
     }
-
-
-*/
+}

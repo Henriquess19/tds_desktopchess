@@ -1,6 +1,7 @@
 package model.domain
 
 import BoardStateInterface
+import androidx.compose.ui.text.toUpperCase
 import movePieceVerity
 
 /**
@@ -14,7 +15,10 @@ enum class Team{WHITE,BLACK;
     val other: Team
         get() = if(this ==WHITE) BLACK else WHITE
 }
-
+fun String.toTeam():Team {
+    return if(this.lowercase() == "white") Team.WHITE
+    else  Team.BLACK
+}
 /**
  * Initial game board format
  */
@@ -75,22 +79,17 @@ data class BoardState internal constructor
      * @return [BoardState] the game updated with the move
      */
     fun makeMove(move: Move ,team: Team): Pair<BoardState, Result> {
-        val oldLine = move.move[2].toLine()
-        val newline = move.move[4].toLine()
-        val oldColumn = move.move[1].toColumn()
-        val newColumn = move.move[3].toColumn()
-        val oldPosition = Positions(line = oldLine, column = oldColumn)
-        val newPosition = Positions(line =newline, column = newColumn)
-
-        var piece = board[oldPosition] ?: return Pair(BoardState(openBoard = true), InvalidMovement)
-        if(piece.team != getTeam()) return Pair(BoardState(openBoard = true), DifferentTeamPiece)
+        val oldPosition = Positions(line = move.move[2].toLine(), column = move.move[1].toColumn())
+        val newPosition = Positions(line =move.move[4].toLine(), column = move.move[3].toColumn())
+        var piece = board[oldPosition] ?: return Pair(BoardState(id = this.id,openBoard = true, board = this.board, movesList = this.movesList, turn = this.turn), InvalidMovement)
+        if(piece.team != getTeam()) return Pair(BoardState(id = this.id,openBoard = true, board = this.board, movesList = this.movesList, turn = this.turn), DifferentTeamPiece)
         val verification = movePieceVerity(piece, oldPosition, newPosition, this)
         if (verification == ValidMovement) {
             if (verifyPromotion(piece, newPosition, piece.team) == ValidMovement) {
                 if (move.length() > 5 && move.move[5] == '=' && move.move[6].uppercaseChar() != 'K') {
                     piece =piece.toPromotion(move.move[6])
                 } else {
-                    return Pair(BoardState(board = this.board, openBoard = true), NeedPromotion)
+                    return Pair(BoardState(id = this.id,openBoard = true, board = this.board, movesList = this.movesList, turn = this.turn), NeedPromotion)
                 }
             }
             val newBoard= BoardState(
@@ -102,7 +101,7 @@ data class BoardState internal constructor
                 id = id,openBoard = true
                 )
             return Pair(newBoard,checkCheckMate(position = newPosition))
-        }else return Pair(BoardState(board = this.board,openBoard = true), verification)
+        }else return Pair(BoardState(id = this.id,openBoard = true, board = this.board, movesList = this.movesList, turn = this.turn), verification)
     }
     /**
      * Verify if the position contains a piece
@@ -182,7 +181,7 @@ data class BoardState internal constructor
  * @return [Result] if is valid or not
  */
 private fun verifyPromotion(piece: Piece, location: Positions, team: Team): Result {
-    if(piece.representation != 'p'.uppercaseChar()) return InvalidCommand
+    if(piece.representation.uppercaseChar() != 'P') return InvalidCommand
     return if (team== Team.WHITE && location.line== Lines.L8
         || team== Team.BLACK && location.line== Lines.L1
     ){

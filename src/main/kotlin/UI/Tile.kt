@@ -1,5 +1,5 @@
 package UI
-/*
+
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,8 +19,9 @@ import model.domain.TypeOfPieces
 
 //alterei a piece para ter o nome do tipo da peça para ser mais facil fazer esta macacada
 fun chooseImage(team:Team, piece:Piece):String{
-    return if(team == Team.WHITE) "w_${piece.typeOfPiece.type}.png"
-    else "b_${piece.typeOfPiece.type}.png"
+    val pieceRepresentation  = piece.representation.lowercaseChar()
+    return if(team == Team.WHITE) "w_${pieceRepresentation}.png"
+    else "b_${pieceRepresentation}.png"
 
 }
 
@@ -46,5 +47,3 @@ fun Tile(team: Team?, piece:Piece?, i:Int,onSelected: (Team?)-> Unit = { } ){
 fun move(){
     //Tile(Team.WHITE, piece = Piece(team = Team.WHITE, typeOfPiece = TypeOfPieces.B, representation = 'b'),)
 }
-
- */

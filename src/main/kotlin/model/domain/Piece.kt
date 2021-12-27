@@ -11,6 +11,8 @@ fun Char.toPiece(team: Team?):Piece? {
         typeOfPiece = TypeOfPieces.valueOf("${this.uppercaseChar()}"),
         representation = this)
 }
+fun Char.toTeamRepresentation(team: Team):Char = if(team == Team.WHITE) this.uppercaseChar() else this.lowercaseChar()
+
 fun Char.teamCheck():Team?{
     if(this == ' ') return null
     return if(this.isLowerCase()) Team.BLACK

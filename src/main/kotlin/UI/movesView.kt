@@ -1,23 +1,20 @@
 package UI
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import model.domain.*
 
-private var moveListToDraw = mutableListOf<PlayMade>(PlayMade(team= Team.WHITE,play= Move("sjkdf")),PlayMade(team= Team.BLACK,play= Move("sjkdf")))
-/*
 @Composable
 @Preview
-fun movesView(board: Board) {
+fun movesView(board: BoardState) {
    var idx = 0
-   val list = board.moveList()
+   val list = board.movesList.content
    Column {
       Text("----------MOVES-----------")
-      while (idx != list.content.size && list.content.isNotEmpty()) {
+      while (idx != list.size && list.isNotEmpty()) {
          Column {
-            val play = list.content[idx]
+            val play = list[idx]
             Text("\tNº${idx + 1}: ${play.team} -> ${play.play.move}")
             idx++
          }
@@ -25,9 +22,9 @@ fun movesView(board: Board) {
    }
 }
 
-fun positionTostring(positions: Positions):String{
-   val line = positions.line.ordinal+1
-   val columm = positions.column.toString()[1]
+fun Positions.toStrings():String{
+   val line = this.line.ordinal+1
+   val columm = this.column.toString()[1]
    return "$columm$line"
 }
 
@@ -42,11 +39,10 @@ fun getmovement(piece: Piece?,positions: Positions):String?{
       movement += ","
       movement += piece.representation
    }
-   movement += positionTostring(positions)
+   movement += positions.toStrings()
    if (movement.length == 11) {
       return movement
    }
    return null
 }
 
- */

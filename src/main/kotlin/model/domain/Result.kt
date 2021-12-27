@@ -58,4 +58,7 @@ object NeedPromotion: Result()
  * Result produced when the is encounter the end game position (one of the kings dies)
  */
 object EndedGame: Result()
+/**
+ * Result produced when the piece doesnt correspond to the team
+ */
 object DifferentTeamPiece:Result()
