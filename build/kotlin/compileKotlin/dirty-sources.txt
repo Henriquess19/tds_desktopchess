@@ -1,0 +1,5 @@
+C:\Users\ricar\OneDrive\Documentos\GitHub\tds_desktopchess\src\main\kotlin\UI\boardView.kt
+C:\Users\ricar\OneDrive\Documentos\GitHub\tds_desktopchess\src\main\kotlin\UI\Tests.kt
+C:\Users\ricar\OneDrive\Documentos\GitHub\tds_desktopchess\src\main\kotlin\model\domain\boardState.kt
+C:\Users\ricar\OneDrive\Documentos\GitHub\tds_desktopchess\src\main\kotlin\model\domain\board.kt
+C:\Users\ricar\OneDrive\Documentos\GitHub\tds_desktopchess\src\main\kotlin\main.kt
