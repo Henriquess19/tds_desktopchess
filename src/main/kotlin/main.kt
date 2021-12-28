@@ -71,8 +71,8 @@ fun main(){
 @Composable
 fun App() {
     DesktopMaterialTheme {
-        val board = remember { mutableStateOf(Pair<BoardState, model.domain.Result>(BoardState(openBoard = true), ValidMovement)) }
-        val movement = remember { mutableStateOf(Move("aaaa")) } /*TODO(UATI??)*/
+        val board = remember { mutableStateOf(Pair<BoardState, MoveVerity>(BoardState(openBoard = true), MoveVerity(emptyList(),ValidMovement))) }
+        val movement = remember { mutableStateOf(Move("dummy")) } /*TODO(UATI??)*/
         val team = remember { mutableStateOf(Team.WHITE) }
         val piecesChecking =board.value.first.verifyCheck() /* TODO(Verify if you in Check before your turn)*/
         println(piecesChecking)
@@ -93,7 +93,7 @@ fun App() {
                 }
             )
             movesView(board = board.value.first)
-            if(board.value.second != ValidMovement) board.value = composingResults(board =  board.value, team = team.value, movement = movement.value )
+            if(board.value.second.result != ValidMovement) board.value = composingResults(board =  board.value, team = team.value, movement = movement.value )
         }
     }
 }

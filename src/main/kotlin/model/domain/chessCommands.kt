@@ -91,7 +91,7 @@ class Play(
             val team = localBoard.getTeam()
             val piece = localBoard.getPiece(move = parameter)
             val play = localBoard.makeMove(move = Move(stringPrepared(move = parameter, piece = piece, team = team)), team = team)
-            return when (play.second) {
+            return when (play.second.result) {
                 ValidMovement -> {
                     dbBoard.updateGame(moveslist = play.first.movesList)
                     ValueResult(
@@ -104,7 +104,7 @@ class Play(
                         toReturn(boardState = play.first, result = EndedGame)
                     )
                 }
-                else -> ValueResult(toReturn(boardState = localBoard, result = play.second))
+                else -> ValueResult(toReturn(boardState = localBoard, result = play.second.result))
             }
         } else {
             return ValueResult(toReturn(boardState = localBoard, result = InvalidCommand))
@@ -122,7 +122,7 @@ class Refresh(private val localBoard: BoardState, private val dbBoard: MongoDbCh
         val db = dbBoard.findgamebyId(localBoard.movesList._id)
         val lastMove = db.content.last()
         val otherPlayerMove = localBoard.makeMove(move = lastMove.play, team = lastMove.team)
-        return when (otherPlayerMove.second){
+        return when (otherPlayerMove.second.result){
             ValidMovement -> ValueResult(toReturn(boardState = otherPlayerMove.first,result = UpdatedGame))
             EndedGame -> ValueResult(toReturn(boardState = otherPlayerMove.first,result =EndedGame))
             else -> ValueResult(toReturn(boardState = localBoard,result =InvalidMovement))

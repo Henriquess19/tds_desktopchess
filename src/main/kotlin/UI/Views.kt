@@ -19,10 +19,10 @@ import model.domain.*
  * @return the new board and the same result
  */
 @Composable
-fun composingResults(board: Pair<BoardState, Result>, team: Team, movement: Move): Pair<BoardState, Result> {
+fun composingResults(board: Pair<BoardState, MoveVerity>, team: Team, movement: Move): Pair<BoardState, MoveVerity> {
     val newMovement = remember { mutableStateOf(movement) }
     var message = ""
-    when(board.second){
+    when(board.second.result){
         NeedPromotion ->{
             Text(text = "Need Promotion ", fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, modifier= Modifier.background(color = Color.Gray) )
             promotionView(team = board.first.getTeam(), onTileSelected = {piece: Piece ->
