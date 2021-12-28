@@ -21,6 +21,7 @@ fun gameView(input:Any?) {
                 draw(board = result.boardState.movesList.currentState)
             }
         InvalidCommand -> println("You have to say the number of the game..")
+       else -> println("Something went wrong..")
     }
 }
 /**
@@ -39,6 +40,7 @@ fun playView(input:Any?) {
           return println("Game not opened..")
       }
       Encounter -> println("Another piece is on the way..")
+       else -> println("Something went wrong..")
     }
     draw(board = result.boardState.movesList.currentState)
 }

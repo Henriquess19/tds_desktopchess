@@ -72,7 +72,7 @@ fun main(){
 fun App() {
     DesktopMaterialTheme {
         val board = remember { mutableStateOf(Pair<BoardState, model.domain.Result>(BoardState(openBoard = true), ValidMovement)) }
-        val movement = remember { mutableStateOf(Move("aaaa")) }
+        val movement = remember { mutableStateOf(Move("aaaa")) } /*TODO(UATI??)*/
         val team = remember { mutableStateOf(Team.WHITE) }
         Row {
             BoardView(

@@ -56,8 +56,7 @@ class Open(private val localBoard: BoardState,private val dbBoard: MongoDbChess)
  * @param localBoard The board being played currently
  * @param dbBoard The state of the board stored in db
  */
-class Join(
-            private val localBoard: BoardState,private val dbBoard: MongoDbChess ): ChessCommands {
+class Join(private val localBoard: BoardState,private val dbBoard: MongoDbChess ): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
         if (parameter != null) {
             return if (!dbBoard.gamesIDList().contains(element = parameter)) {
@@ -117,8 +116,7 @@ class Play(
  * @param localBoard The board being played currently
  * @param dbBoard The state of the board stored in db
  */
-class Refresh(private val localBoard: BoardState,
-              private val dbBoard: MongoDbChess): ChessCommands {
+class Refresh(private val localBoard: BoardState, private val dbBoard: MongoDbChess): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
         if(!localBoard.openBoard) return ValueResult(toReturn(boardState = localBoard,result =ClosedGame))
         val db = dbBoard.findgamebyId(localBoard.movesList._id)

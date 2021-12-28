@@ -40,7 +40,7 @@ fun chooseImage(team:Team, piece:Piece):String{
 fun Tile(team: Team?, piece:Piece?, i:Int,onSelected: (Team?)-> Unit = { } ){
     Box(modifier = Modifier
         .size(96.dp)
-        .background(color = if(i %2 ==0) Color.Blue else Color.White)
+        .background(color = if(i %2 ==0) Color.Blue else Color.Magenta) /*TODO(IF PUTS KING IN CHECK -> RED)*/
         .clickable(true) {
             onSelected(team)
         }

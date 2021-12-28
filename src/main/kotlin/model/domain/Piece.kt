@@ -1,6 +1,6 @@
 package model.domain
 /**
- * All the the seven different pieces, for each team, that game of chess have
+ * All the seven different pieces, for each team, that game of chess have
  */
 enum class TypeOfPieces(val char: Char){ R('r'),
     N('n'),B('b'),Q('q'),K('k'),P('p') }
