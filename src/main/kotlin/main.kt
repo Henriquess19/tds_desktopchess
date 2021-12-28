@@ -74,6 +74,11 @@ fun App() {
         val board = remember { mutableStateOf(Pair<BoardState, model.domain.Result>(BoardState(openBoard = true), ValidMovement)) }
         val movement = remember { mutableStateOf(Move("aaaa")) } /*TODO(UATI??)*/
         val team = remember { mutableStateOf(Team.WHITE) }
+        val piecesChecking =board.value.first.verifyCheck() /* TODO(Verify if you in Check before your turn)*/
+        println(piecesChecking)
+        val checkmate= board.value.first.verifyCheckmate(piecesChecking)
+        println(checkmate)
+        println("----------")
         Row {
             BoardView(
                 board = board.value.first,

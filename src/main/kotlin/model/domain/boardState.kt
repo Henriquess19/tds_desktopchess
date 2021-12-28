@@ -1,7 +1,5 @@
 package model.domain
 
-import BoardStateInterface
-import androidx.compose.ui.text.toUpperCase
 import movePieceVerity
 
 /**
@@ -136,10 +134,48 @@ data class BoardState internal constructor
         newList.add(play)
         return newList
     }
+    fun verifyCheck(): MutableMap<Positions, Piece> {
+        val piecesChecking = mutableMapOf<Positions,Piece>()
+        val king = turn?.let { 'K'.toTeamRepresentation(it).toPiece(it) }
+        val kingPosition = board.filter{ it.value == king }.keys.first()
+        val oppositionpieces = board.filterValues { it.team == turn?.other }
+        oppositionpieces.forEach {
+            val validcheck = movePieceVerity(it.value,it.key,kingPosition,this)
+            if(validcheck == ValidMovement) piecesChecking[it.key] = it.value
+        }
+        return piecesChecking
+    }
+
     fun checkCheckMate(position: Positions):Result{
         val piece = getPiece(positions = position) ?: return ValidMovement
         return if(piece.typeOfPiece ==TypeOfPieces.K) EndedGame
         else ValidMovement
+    }
+
+    fun verifyCheckmate(piecesChecking:MutableMap<Positions, Piece>): MutableMap<Positions, Positions> /** PiecePosition to Position **/{
+        val validMovements = mutableMapOf<Positions, Positions>()
+        /** Verify if king can move */
+
+
+
+        /** Verify if can take the attacker **/
+        /* Se o tamanho for 0 nao é preciso entrar aqui
+         * &
+         * se o tamanho for maior que 1 é impossivel matar 2+ peças em 1 jogada kekw */
+        if (piecesChecking.size == 1){
+            val treatingpieceposition = piecesChecking.keys.first()
+            val teampieces = board.filterValues { it.team == turn }
+            teampieces.forEach {
+                val killTreat = movePieceVerity(it.value,it.key,treatingpieceposition,this)
+                if(killTreat == ValidMovement) validMovements[it.key] = treatingpieceposition
+            }
+        }
+
+        /** Verify if some pice can block check (Verify too if you move that piece the king continues check)*/
+
+
+        return validMovements
+        TODO("Can I move out of mate? Can I block mate? Can I take the attacker?")
     }
     /**
      * Gets the piece specified
