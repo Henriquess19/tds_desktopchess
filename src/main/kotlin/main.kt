@@ -76,8 +76,10 @@ fun App() {
         val team = remember { mutableStateOf(Team.WHITE) }
         val piecesChecking =board.value.first.verifyCheck() /* TODO(Verify if you in Check before your turn)*/
         println(piecesChecking)
-        val checkmate= board.value.first.verifyCheckmate(piecesChecking)
-        println(checkmate)
+        if(piecesChecking.isNotEmpty()) {
+            val checkmate = board.value.first.verifyCheckmate(piecesChecking)
+            println(checkmate)
+        }
         println("----------")
         Row {
             BoardView(

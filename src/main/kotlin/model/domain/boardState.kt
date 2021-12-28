@@ -1,5 +1,7 @@
 package model.domain
 
+import org.litote.kmongo.MongoOperator
+
 /**
  * The two teams that are playable
  */
@@ -149,8 +151,6 @@ data class BoardState internal constructor
 
     fun verifyCheckmate(piecesChecking:MutableMap<Piece, MoveVerity>): MutableMap<Piece, MoveVerity> /** PiecePosition to Position **/{
         val validMovements = mutableMapOf<Piece, MoveVerity>()
-        /** Verify if king can move */
-
 
 
         /** Verify if can take the attacker or block check  TODO("(Verify too if you move that piece the king continues check)") **/
@@ -158,20 +158,67 @@ data class BoardState internal constructor
         val treatingpiecetiles = piecesChecking.values
         val teampieces = board.filterValues { it.team == turn }
 
-        treatingpiecetiles.forEach { moveverity ->
-            moveverity.tiles.forEach { position ->
-               teampieces.forEach { piece ->
-                   val killTreat = movePieceVerity(piece.value,piece.key,position,this)
-                   if(killTreat.result == ValidMovement) {
-                       validMovements[piece.value] = MoveVerity(position,ValidMovement)
-                   }
-               }
-           }
+        teampieces.forEach { piece ->
+            val tiles = mutableListOf<Positions>()
+            treatingpiecetiles.forEach { moveverity ->
+                if (piece.value.typeOfPiece == TypeOfPieces.K) { /** Verify if king can move */
+                    getAllKingMovements(piece.key).forEach { position ->
+                        if (position !in moveverity.tiles) {
+                            val getAway = movePieceVerity(piece.value, piece.key, position, this)
+                            if (getAway.result == ValidMovement) {
+                                tiles.add(position)
+                            }
+                        }
+                    }
+                }
+                else{
+                    moveverity.tiles.forEach { position ->
+                        val killTreat = movePieceVerity(piece.value, piece.key, position, this)
+                        if (killTreat.result == ValidMovement) {
+                            tiles.add(position)
+                        }
+                    }
+                }
+            }
+            if (tiles.isNotEmpty()) validMovements[piece.value] = MoveVerity(tiles,ValidMovement)
+        }
+        return validMovements
+    }
+
+    private fun getAllKingMovements(position:Positions):List<Positions>{
+        val validPositions = mutableListOf<Positions>()
+
+        if (position.line != Lines.L8){
+            validPositions.add(Positions((position.line.ordinal +1).toLine(),position.column))
+            if (position.column != Columns.CA){
+                validPositions.add(Positions((position.line.ordinal +1).toLine(),(position.column.ordinal -1).toColumn()))
+            }
+            if (position.column != Columns.CH){
+                validPositions.add(Positions((position.line.ordinal +1).toLine(),(position.column.ordinal +1).toColumn()))
+            }
         }
 
-        return validMovements
+        if (position.column != Columns.CA){
+            validPositions.add(Positions(position.line,(position.column.ordinal +1).toColumn()))
+        }
 
+        if (position.column != Columns.CH){
+            validPositions.add(Positions(position.line,(position.column.ordinal -1).toColumn()))
+        }
+
+        if (position.line != Lines.L1){
+            validPositions.add(Positions((position.line.ordinal -1).toLine(),position.column))
+            if (position.column != Columns.CA){
+                validPositions.add(Positions((position.line.ordinal -1).toLine(),(position.column.ordinal -1).toColumn()))
+            }
+            if (position.column != Columns.CH){
+                validPositions.add(Positions((position.line.ordinal -1).toLine(),(position.column.ordinal +1).toColumn()))
+            }
+        }
+
+        return validPositions
     }
+
     /**
      * Gets the piece specified
      * @param positions position where the piece should be
