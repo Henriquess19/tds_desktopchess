@@ -72,20 +72,20 @@ fun main(){
 fun App() {
     DesktopMaterialTheme {
         val board = remember { mutableStateOf(Pair<BoardState, MoveVerity>(BoardState(openBoard = true), MoveVerity(mutableListOf(),ValidMovement))) }
-        val movement = remember { mutableStateOf(Move("dummy")) } /*TODO(UATI??)*/
+        val movement = remember { mutableStateOf(Move("dummy")) }
         val team = remember { mutableStateOf(Team.WHITE) }
 
-        val piecesChecking =board.value.first.verifyCheck() /* TODO(Verify if you in Check before your turn)*/
-        //println(piecesChecking)
+        val piecesChecking = board.value.first.verifyCheck(board.value.first.turn!!)
+        var possiblecheckmate = mutableMapOf<Location, MoveVerity>()
+
         if(piecesChecking.isNotEmpty()) {
-            val checkmate = board.value.first.verifyCheckmate(piecesChecking)
-            /*if(board.value.first.endGameCondition(piecesProtectingCheck = checkmate)== EndedGame){
-                board.value.first.openBoard = false
-                endGameView(team = team.value)
-            }*/
-            println(checkmate)
+            possiblecheckmate = board.value.first.verifyCheckmate(piecesChecking)
+            if (possiblecheckmate.isEmpty()){
+                /* TODO(ENDGAME) */
+                println("Acabou")
+            }
         }
-        //println("----------")
+
         Row {
             BoardView(
                 board = board.value.first,
@@ -95,7 +95,16 @@ fun App() {
                         val moves = move.split(',')
                         movement.value = Move(move = moves[1])
                         team.value = moves[0].toTeam()
-                        board.value = board.value.first.makeMove(move = movement.value, team = team.value)
+
+                        if (possiblecheckmate.isEmpty()) {
+                            board.value = board.value.first.makeMove(move = movement.value, team = team.value)
+
+                        }else{
+                            val possiblemoves = checkconditionsToMove(possiblecheckmate)
+                            if (movement.value in possiblemoves){
+                                board.value = board.value.first.makeMove(move = movement.value, team = team.value)
+                            }
+                        }
                     }
                 }
             )

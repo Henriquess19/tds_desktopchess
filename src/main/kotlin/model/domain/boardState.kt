@@ -1,6 +1,7 @@
 package model.domain
 
 import model.ui.console.draw
+import org.litote.kmongo.MongoOperator
 
 /**
  * The two teams that are playable
@@ -136,11 +137,11 @@ data class BoardState internal constructor
         return newList
     }
 
-    fun verifyCheck(): MutableMap<Location, MoveVerity> {
+    fun verifyCheck(team:Team): MutableMap<Location, MoveVerity> {
         val piecesChecking = mutableMapOf<Location, MoveVerity>()
-        val king = turn?.let { 'K'.toTeamRepresentation(it).toPiece(it) }
+        val king = 'K'.toTeamRepresentation(team).toPiece(team)
         val kingPosition = board.filter{ it.value == king }.keys.first()
-        val oppositionpieces = board.filterValues { it.team == turn?.other }
+        val oppositionpieces = board.filterValues { it.team == team.other }
         oppositionpieces.forEach {
             val validcheck = movePieceVerity(it.value,it.key,kingPosition,this)
             if(validcheck.result == ValidMovement) {
@@ -156,6 +157,7 @@ data class BoardState internal constructor
     }
 
     fun verifyCheckmate(piecesChecking:MutableMap<Location, MoveVerity>): MutableMap<Location, MoveVerity>{
+        val possibleMovements = mutableMapOf<Location, MoveVerity>()
         val validMovements = mutableMapOf<Location, MoveVerity>()
 
         /** Verify if can take the attacker or block check  TODO("(Verify too if you move that piece the king continues check)") **/
@@ -189,22 +191,25 @@ data class BoardState internal constructor
                     }
                 }
             }
-            if (tiles.isNotEmpty()) validMovements[Location(piece.value,piece.key)] = MoveVerity(tiles,ValidMovement)
+            if (tiles.isNotEmpty()) possibleMovements[Location(piece.value,piece.key)] = MoveVerity(tiles,ValidMovement)
         }
 
 
-        validMovements.forEach { init ->
+        possibleMovements.forEach { init ->
             val pieceType = init.key.piece.typeOfPiece.char
             val initpos = init.key.position.toStr()
             val team = init.key.piece.team
+            val possiblePositions = mutableListOf<Positions>()
             init.value.tiles.forEach { end ->
                 val endpos = end.toStr()
                 val move = pieceType + initpos + endpos
                 val board = BoardState(id = id,openBoard = true, board = board, movesList = movesList, turn = turn)
-                if (stillValidMove(Move(move),team,board) == InvalidMovement) println("XUUUUUUUUUUUUUUPAAAAAAAAAAAAA")/*validMovements[init.key]?.tiles?.remove(end)*/
+                if(stillValidMove(Move(move),team,board) == ValidMovement){
+                   possiblePositions.add(end)
+                }
             }
+            if (possiblePositions.isNotEmpty()) validMovements[init.key] = MoveVerity(possiblePositions,ValidMovement)
         }
-
         return validMovements
     }
 
@@ -307,17 +312,25 @@ data class BoardState internal constructor
 }
 
 private fun stillValidMove(move: Move, team: Team,board:BoardState):Result{
-    draw(board = board.toString())
     val new = board.makeMove(move,team)
-    draw(board = new.first.toString())
-    println("----------------")
-    return if(new.first.verifyCheck().isEmpty()){
-        ValidMovement
-    }
-    else {
-        InvalidMovement
-    }
+    return if (new.first.verifyCheck(team).isEmpty()) ValidMovement
+        else InvalidMovement
 }
+
+fun checkconditionsToMove(checks:MutableMap<Location, MoveVerity>):List<Move>{
+    val possibleMoves = mutableListOf<Move>()
+    checks.forEach {
+        val piece = it.key.piece.representation
+        val initPos = it.key.position.toStr()
+        it.value.tiles.forEach {
+            val endpos = it.toStr()
+            val move = piece + initPos + endpos
+            possibleMoves.add(Move(move))
+        }
+    }
+    return possibleMoves
+}
+
 
 
 
