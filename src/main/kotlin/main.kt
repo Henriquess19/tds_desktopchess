@@ -71,18 +71,19 @@ fun main(){
 @Composable
 fun App() {
     DesktopMaterialTheme {
-        val board = remember { mutableStateOf(Pair<BoardState, MoveVerity>(BoardState(openBoard = true), MoveVerity(emptyList(),ValidMovement))) }
+        val board = remember { mutableStateOf(Pair<BoardState, MoveVerity>(BoardState(openBoard = true), MoveVerity(mutableListOf(),ValidMovement))) }
         val movement = remember { mutableStateOf(Move("dummy")) } /*TODO(UATI??)*/
         val team = remember { mutableStateOf(Team.WHITE) }
+
         val piecesChecking =board.value.first.verifyCheck() /* TODO(Verify if you in Check before your turn)*/
         //println(piecesChecking)
         if(piecesChecking.isNotEmpty()) {
             val checkmate = board.value.first.verifyCheckmate(piecesChecking)
-            if(board.value.first.endGameCondition(piecesProtectingCheck = checkmate)== EndedGame){
+            /*if(board.value.first.endGameCondition(piecesProtectingCheck = checkmate)== EndedGame){
                 board.value.first.openBoard = false
                 endGameView(team = team.value)
-            }
-            //println(checkmate)
+            }*/
+            println(checkmate)
         }
         //println("----------")
         Row {
@@ -94,7 +95,6 @@ fun App() {
                         val moves = move.split(',')
                         movement.value = Move(move = moves[1])
                         team.value = moves[0].toTeam()
-                        println(board.value.first.fakeMakeMove(move = movement.value))
                         board.value = board.value.first.makeMove(move = movement.value, team = team.value)
                     }
                 }

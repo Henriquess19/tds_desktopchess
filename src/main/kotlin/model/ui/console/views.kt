@@ -88,7 +88,8 @@ fun movesView(input: Any?) {
 /**
  * Fun the receives the [BoardState] and draw the information
  */
-private fun draw(board: String) {
+
+ fun draw(board: String) {
     println("    a b c d e f g h ")
     println("   -----------------")
     var idx = 0

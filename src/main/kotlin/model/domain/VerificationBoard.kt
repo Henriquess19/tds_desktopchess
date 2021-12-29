@@ -1,6 +1,6 @@
 package model.domain
 
-data class MoveVerity (val tiles: List<Positions>,val result: Result)
+data class MoveVerity (val tiles: MutableList<Positions>,val result: Result)
 
 /**
  *Verify if the position where we wanna go have a team mate there, if not call another functions to see if the move is valid
@@ -16,7 +16,7 @@ fun movePieceVerity(piece: Piece, initialPosition: Positions, wantedPosition: Po
     if (ocupied) {
         val ocupiedColor = boardState.getPiece(wantedPosition)?.team
         if (ocupiedColor == piece.team) {
-            return MoveVerity(emptyList(),SameTeam)
+            return MoveVerity(mutableListOf(),SameTeam)
         }
     }
     return when (piece.typeOfPiece) {
@@ -56,7 +56,7 @@ private fun moveVerityRook(
         for (i in higherColumn - 1 downTo lowerColumn + 1) {
             tiles.add(Positions(line= initialPosition.line,column= i.toColumn()))
             if (boardState.containsPiece(Positions(wantedPosition.line, i.toColumn())))
-                return MoveVerity(emptyList(),Encounter)
+                return MoveVerity(mutableListOf(),Encounter)
         }
     }
 
@@ -67,10 +67,10 @@ private fun moveVerityRook(
         for (i in higherLine - 1 downTo lowerLine + 1) {
             tiles.add(Positions(line= i.toLine(),column= initialPosition.column))
             if (boardState.containsPiece(Positions( i.toLine(), wantedPosition.column)))
-                return MoveVerity(emptyList(),Encounter)
+                return MoveVerity(mutableListOf(),Encounter)
         }
     }
-    else return MoveVerity(emptyList(),InvalidMovement)
+    else return MoveVerity(mutableListOf(),InvalidMovement)
 
     return MoveVerity(tiles,ValidMovement)
 }
@@ -102,7 +102,7 @@ private fun moveVerityPawn(
             if(wantedPosition.line == Lines.L4) tiles.add(Positions(Lines.L3, initialPosition.column))
             MoveVerity(tiles,ValidMovement)
         }
-        else MoveVerity(emptyList(),InvalidMovement)
+        else MoveVerity(mutableListOf(),InvalidMovement)
     }
 
     if (pieceTeam == Team.BLACK &&
@@ -115,7 +115,7 @@ private fun moveVerityPawn(
             if(wantedPosition.line == Lines.L5)tiles.add(Positions(Lines.L6, initialPosition.column))
             MoveVerity(tiles,ValidMovement)
         }
-        else MoveVerity(emptyList(),InvalidMovement)
+        else MoveVerity(mutableListOf(),InvalidMovement)
     }
 
     //Move infront
@@ -131,7 +131,7 @@ private fun moveVerityPawn(
         if (ocupied &&(initialPosition.line.ordinal == wantedPosition.line.ordinal + blackOrWhite ))
             return MoveVerity(tiles,ValidMovement)
     }
-    return MoveVerity(emptyList(),InvalidMovement)
+    return MoveVerity(mutableListOf(),InvalidMovement)
 }
 /**
  * Verify if the movement of the bishop its possible
@@ -151,7 +151,7 @@ private fun moveVerityBishop(
 
     if (initialPosition.column.ordinal == wantedPosition.column.ordinal
         || initialPosition.line.ordinal == wantedPosition.line.ordinal
-    ) return MoveVerity(emptyList(),InvalidMovement)
+    ) return MoveVerity(mutableListOf(),InvalidMovement)
 
     var line = Lines.values()[initialPosition.line.ordinal]
     var column = Columns.values()[initialPosition.column.ordinal]
@@ -164,14 +164,14 @@ private fun moveVerityBishop(
         if (initialPosition.line.ordinal > wantedPosition.line.ordinal) {
 
             // Diagonal left_down
-            if(!diagonalRightToLeftVerity(initialPosition,wantedPosition)) return MoveVerity(emptyList(),InvalidMovement)
+            if(!diagonalRightToLeftVerity(initialPosition,wantedPosition)) return MoveVerity(mutableListOf(),InvalidMovement)
             line = Lines.values()[initialPosition.line.ordinal -1]
 
             while (line.ordinal >= wantedPosition.line.ordinal + 1
                 && column.ordinal >= wantedPosition.column.ordinal +1
             ) {
 
-                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(emptyList(),Encounter)
+                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(mutableListOf(),Encounter)
 
                 tiles.add(Positions(line,column))
                 line = Lines.values()[line.ordinal- 1]
@@ -181,14 +181,14 @@ private fun moveVerityBishop(
         } else {
 
             // Diagonal left_up
-            if (!diagonalLeftToRightVerity(initialPosition,wantedPosition)) return MoveVerity(emptyList(),InvalidMovement)
+            if (!diagonalLeftToRightVerity(initialPosition,wantedPosition)) return MoveVerity(mutableListOf(),InvalidMovement)
             line = Lines.values()[initialPosition.line.ordinal + 1]
 
             while (line.ordinal <= wantedPosition.line.ordinal - 1
                 && column.ordinal >= wantedPosition.column.ordinal + 1
             ) {
 
-                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(emptyList(),Encounter)
+                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(mutableListOf(),Encounter)
 
                 tiles.add(Positions(line,column))
                 line = Lines.values()[line.ordinal + 1]
@@ -205,14 +205,14 @@ private fun moveVerityBishop(
         if (initialPosition.line.ordinal > wantedPosition.line.ordinal) {
 
             // Diagonal right_down
-            if (!diagonalLeftToRightVerity(initialPosition,wantedPosition)) return MoveVerity(emptyList(),InvalidMovement)
+            if (!diagonalLeftToRightVerity(initialPosition,wantedPosition)) return MoveVerity(mutableListOf(),InvalidMovement)
             line = Lines.values()[initialPosition.line.ordinal - 1]
 
             while (line.ordinal >= wantedPosition.line.ordinal + 1
                 && column.ordinal <= wantedPosition.column.ordinal - 1
             ) {
 
-                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(emptyList(),Encounter)
+                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(mutableListOf(),Encounter)
 
                 tiles.add(Positions(line,column))
                 line = Lines.values()[line.ordinal - 1]
@@ -222,14 +222,14 @@ private fun moveVerityBishop(
 
         } else {
             // Diagonal right_up
-            if(!diagonalRightToLeftVerity(initialPosition,wantedPosition)) return MoveVerity(emptyList(),InvalidMovement)
+            if(!diagonalRightToLeftVerity(initialPosition,wantedPosition)) return MoveVerity(mutableListOf(),InvalidMovement)
             line = Lines.values()[initialPosition.line.ordinal + 1]
 
             while (line.ordinal <= wantedPosition.line.ordinal - 1
                 && column.ordinal <= wantedPosition.column.ordinal - 1
             ) {
 
-                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(emptyList(),Encounter)
+                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(mutableListOf(),Encounter)
 
                 tiles.add(Positions(line,column))
                 line = Lines.values()[line.ordinal + 1]
@@ -255,12 +255,12 @@ private fun moveVerityKing(
     if (wantedPosition.column.ordinal != initialPosition.column.ordinal
         && wantedPosition.column.ordinal != initialPosition.column.ordinal - 1
         && wantedPosition.column.ordinal != initialPosition.column.ordinal + 1
-    ) return MoveVerity(emptyList(),InvalidMovement)
+    ) return MoveVerity(mutableListOf(),InvalidMovement)
 
     if (wantedPosition.line.ordinal != initialPosition.line.ordinal
         && wantedPosition.line.ordinal != initialPosition.line.ordinal - 1
         && wantedPosition.line.ordinal != initialPosition.line.ordinal + 1
-    ) return MoveVerity(emptyList(),InvalidMovement)
+    ) return MoveVerity(mutableListOf(),InvalidMovement)
 
     return MoveVerity(tiles,ValidMovement)
 }
@@ -300,7 +300,7 @@ private fun moveVerityKnight(
         if (initialPosition.line.ordinal == wantedPosition.line.ordinal - 1) return MoveVerity(tiles,ValidMovement)  // Valid movement; up
         if (initialPosition.line.ordinal == wantedPosition.line.ordinal + 1) return MoveVerity(tiles,ValidMovement)  // Valid movement; down
     }
-    return MoveVerity(emptyList(),InvalidMovement)
+    return MoveVerity(mutableListOf(),InvalidMovement)
 }
 /**
  * Verify if the movement of the queen its possible
@@ -324,8 +324,8 @@ private fun moveVerityQueen(
     val bishoptype = moveVerityBishop(initialPosition, wantedPosition, boardState)
     if (bishoptype.result == ValidMovement) tiles += bishoptype.tiles
 
-    return if (rooktype.result == ValidMovement || bishoptype.result == ValidMovement) MoveVerity(tiles.distinct(),ValidMovement)
-    else MoveVerity(emptyList(),InvalidMovement)
+    return if (rooktype.result == ValidMovement || bishoptype.result == ValidMovement) MoveVerity(tiles.distinct().toMutableList(),ValidMovement)
+    else MoveVerity(mutableListOf(),InvalidMovement)
 }
 /**
  * A nice formula to calculate the distance to the diagonal right move

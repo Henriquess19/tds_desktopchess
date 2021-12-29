@@ -1,5 +1,6 @@
 package model.domain
 
+import model.ui.console.draw
 import org.litote.kmongo.MongoOperator
 
 /**
@@ -41,7 +42,7 @@ const val INITIAL_BOARD =
  * @property currentState the state of the board representaded in a string
  * @property content  The various plays
  */
-data class MovesList(var _id:String = "-1", val currentState:String = INITIAL_BOARD  ,var content: MutableList<PlayMade> = mutableListOf())
+data class MovesList(var _id:String = "-1", var currentState:String = INITIAL_BOARD  ,var content: MutableList<PlayMade> = mutableListOf())
 
 /**
  * Represents the play that was made
@@ -92,23 +93,24 @@ data class BoardState internal constructor
     fun makeMove(move: Move ,team: Team): Pair<BoardState, MoveVerity> {
         val oldPosition = Positions(line = move.move[2].toLine(), column = move.move[1].toColumn())
         val newPosition = Positions(line =move.move[4].toLine(), column = move.move[3].toColumn())
-        var piece = board[oldPosition] ?: return Pair(BoardState(id = this.id,openBoard = true, board = this.board, movesList = this.movesList, turn = this.turn), MoveVerity(emptyList(),InvalidMovement))
-        if(piece.team != getTeam()) return Pair(BoardState(id = this.id,openBoard = true, board = this.board, movesList = this.movesList, turn = this.turn), MoveVerity(emptyList(),DifferentTeamPiece))
+        var piece = board[oldPosition] ?: return Pair(BoardState(id = this.id,openBoard = true, board = this.board, movesList = this.movesList, turn = this.turn), MoveVerity(mutableListOf(),InvalidMovement))
+        if(piece.team != getTeam()) return Pair(BoardState(id = this.id,openBoard = true, board = this.board, movesList = this.movesList, turn = this.turn), MoveVerity(mutableListOf(),DifferentTeamPiece))
         val verification = movePieceVerity(piece, oldPosition, newPosition, this)
         if (verification.result == ValidMovement) {
             if (verifyPromotion(piece, newPosition, piece.team) == ValidMovement) {
                 if (move.length() > 5 && move.move[5] == '=' && move.move[6].uppercaseChar() != 'K') {
                     piece =piece.toPromotion(move.move[6])
                 } else {
-                    return Pair(BoardState(id = this.id,openBoard = true, board = this.board, movesList = this.movesList, turn = this.turn), MoveVerity(emptyList(),NeedPromotion))
+                    return Pair(BoardState(id = this.id,openBoard = true, board = this.board, movesList = this.movesList, turn = this.turn), MoveVerity(mutableListOf(),NeedPromotion))
                 }
             }
+            val change = changePiecesPlaces(oldPosition, newPosition, piece)
             val newBoard= BoardState(
-                board = changePiecesPlaces(oldPosition, newPosition, piece),
+                board = change ,
                 turn = team.other,
                 movesList = MovesList(_id = movesList._id ,
-                    currentState = this.toString(),
-                    content = addANewMove(PlayMade(team = team, play= move))),
+                currentState = this.toString(),
+                content = addANewMove(PlayMade(team = team, play= move))),
                 id = id,openBoard = true
                 )
             return Pair(newBoard,verification)
@@ -135,15 +137,15 @@ data class BoardState internal constructor
         return newList
     }
 
-    fun verifyCheck(): MutableMap<Piece, MoveVerity> {
-        val piecesChecking = mutableMapOf<Piece, MoveVerity>()
+    fun verifyCheck(): MutableMap<Location, MoveVerity> {
+        val piecesChecking = mutableMapOf<Location, MoveVerity>()
         val king = turn?.let { 'K'.toTeamRepresentation(it).toPiece(it) }
         val kingPosition = board.filter{ it.value == king }.keys.first()
         val oppositionpieces = board.filterValues { it.team == turn?.other }
         oppositionpieces.forEach {
             val validcheck = movePieceVerity(it.value,it.key,kingPosition,this)
             if(validcheck.result == ValidMovement) {
-                piecesChecking[it.value] = validcheck
+                piecesChecking[Location(it.value,it.key)] = validcheck
             }
         }
         return piecesChecking
@@ -153,17 +155,9 @@ data class BoardState internal constructor
         return if(piecesProtectingCheck.isEmpty()) EndedGame
         else ValidMovement
     }
-    fun fakeMakeMove(move: Move):Result{
-        val oldPosition = Positions(line = move.move[2].toLine(), column = move.move[1].toColumn())
-        val newPosition = Positions(line =move.move[4].toLine(), column = move.move[3].toColumn())
-        val piece = board[oldPosition] ?: return InvalidMovement
-        if(piece.team != getTeam()) return DifferentTeamPiece
-        return movePieceVerity(piece, oldPosition, newPosition, this).result
-    }
 
-    fun verifyCheckmate(piecesChecking:MutableMap<Piece, MoveVerity>): MutableMap<Piece, MoveVerity> /** PiecePosition to Position **/{
-        val validMovements = mutableMapOf<Piece, MoveVerity>()
-
+    fun verifyCheckmate(piecesChecking:MutableMap<Location, MoveVerity>): MutableMap<Location, MoveVerity>{
+        val validMovements = mutableMapOf<Location, MoveVerity>()
 
         /** Verify if can take the attacker or block check  TODO("(Verify too if you move that piece the king continues check)") **/
 
@@ -173,7 +167,9 @@ data class BoardState internal constructor
         teampieces.forEach { piece ->
             val tiles = mutableListOf<Positions>()
             treatingpiecetiles.forEach { moveverity ->
-                if (piece.value.typeOfPiece == TypeOfPieces.K) { /** Verify if king can move */
+
+                /** Verify king moves */
+                if (piece.value.typeOfPiece == TypeOfPieces.K) {
                     getAllKingMovements(piece.key).forEach { position ->
                         if (position !in moveverity.tiles) {
                             val getAway = movePieceVerity(piece.value, piece.key, position, this)
@@ -183,6 +179,8 @@ data class BoardState internal constructor
                         }
                     }
                 }
+
+                /** Verify other pieces moves */
                 else{
                     moveverity.tiles.forEach { position ->
                         val killTreat = movePieceVerity(piece.value, piece.key, position, this)
@@ -192,8 +190,21 @@ data class BoardState internal constructor
                     }
                 }
             }
-            if (tiles.isNotEmpty()) validMovements[piece.value] = MoveVerity(tiles,ValidMovement)
+            if (tiles.isNotEmpty()) validMovements[Location(piece.value,piece.key)] = MoveVerity(tiles,ValidMovement)
         }
+
+
+        validMovements.forEach { init ->
+            val pieceType = init.key.piece.typeOfPiece.char
+            val initpos = init.key.position.toStr()
+            val team = init.key.piece.team
+            init.value.tiles.forEach { end ->
+                val endpos = end.toStr()
+                val move = pieceType + initpos + endpos
+                if (stillValidMove(Move(move),team,this) == InvalidMovement) println("XUUUUUUUUUUUUUUPAAAAAAAAAAAAA")/*validMovements[init.key]?.tiles?.remove(end)*/
+            }
+        }
+
         return validMovements
     }
 
@@ -230,6 +241,7 @@ data class BoardState internal constructor
 
         return validPositions
     }
+
 
     /**
      * Gets the piece specified
@@ -293,6 +305,23 @@ data class BoardState internal constructor
         return newBoard
     }
 }
+
+private fun stillValidMove(move: Move, team: Team,board:BoardState):Result{
+    val copyBoard = board.copy()
+    draw(board = copyBoard.toString())
+    copyBoard.makeMove(move,team)
+    draw(board = copyBoard.toString())
+    println("----------------")
+    return if(copyBoard.verifyCheck().isEmpty()){
+        ValidMovement
+    }
+    else {
+        InvalidMovement
+    }
+}
+
+
+
 /**
  * Verify if the promotion move is valid
  * @param piece the piece being moved

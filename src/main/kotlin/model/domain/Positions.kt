@@ -77,6 +77,8 @@ fun Char.toLine():Lines{
  */
 data class Positions(val line: Lines, val column: Columns)
 
+data class Location(val piece: Piece,val position:Positions)
+
 
 /**
  * Turns a position to a string
