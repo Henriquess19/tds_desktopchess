@@ -1,6 +1,7 @@
 package UI
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import model.domain.*
 
 /**
@@ -41,5 +43,13 @@ fun composingResults(board: Pair<BoardState, MoveVerity>, team: Team, movement: 
     }
     Text(text = message, fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, modifier = Modifier.background(color = Color.Gray) )
     return board
-
+}
+@Composable
+fun endGameView(team: Team,) {
+    Text(text = "The game ended with the victory too player $team",
+        fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold,
+        modifier= Modifier
+            .background(color = Color.Gray)
+            .size(50.dp)
+    )
 }

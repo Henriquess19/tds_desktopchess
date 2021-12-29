@@ -75,12 +75,16 @@ fun App() {
         val movement = remember { mutableStateOf(Move("dummy")) } /*TODO(UATI??)*/
         val team = remember { mutableStateOf(Team.WHITE) }
         val piecesChecking =board.value.first.verifyCheck() /* TODO(Verify if you in Check before your turn)*/
-        println(piecesChecking)
+        //println(piecesChecking)
         if(piecesChecking.isNotEmpty()) {
             val checkmate = board.value.first.verifyCheckmate(piecesChecking)
-            println(checkmate)
+            if(board.value.first.endGameCondition(piecesProtectingCheck = checkmate)== EndedGame){
+                board.value.first.openBoard = false
+                endGameView(team = team.value)
+            }
+            //println(checkmate)
         }
-        println("----------")
+        //println("----------")
         Row {
             BoardView(
                 board = board.value.first,
@@ -90,6 +94,7 @@ fun App() {
                         val moves = move.split(',')
                         movement.value = Move(move = moves[1])
                         team.value = moves[0].toTeam()
+                        println(board.value.first.fakeMakeMove(move = movement.value))
                         board.value = board.value.first.makeMove(move = movement.value, team = team.value)
                     }
                 }
@@ -99,6 +104,7 @@ fun App() {
         }
     }
 }
+
 
 fun main() = application {
     Window(

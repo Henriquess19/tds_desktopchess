@@ -149,6 +149,18 @@ data class BoardState internal constructor
         return piecesChecking
     }
 
+    fun endGameCondition(piecesProtectingCheck: MutableMap<Piece, MoveVerity>):Result{
+        return if(piecesProtectingCheck.isEmpty()) EndedGame
+        else ValidMovement
+    }
+    fun fakeMakeMove(move: Move):Result{
+        val oldPosition = Positions(line = move.move[2].toLine(), column = move.move[1].toColumn())
+        val newPosition = Positions(line =move.move[4].toLine(), column = move.move[3].toColumn())
+        val piece = board[oldPosition] ?: return InvalidMovement
+        if(piece.team != getTeam()) return DifferentTeamPiece
+        return movePieceVerity(piece, oldPosition, newPosition, this).result
+    }
+
     fun verifyCheckmate(piecesChecking:MutableMap<Piece, MoveVerity>): MutableMap<Piece, MoveVerity> /** PiecePosition to Position **/{
         val validMovements = mutableMapOf<Piece, MoveVerity>()
 
