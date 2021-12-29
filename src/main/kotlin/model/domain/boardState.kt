@@ -307,12 +307,11 @@ data class BoardState internal constructor
 }
 
 private fun stillValidMove(move: Move, team: Team,board:BoardState):Result{
-    val copyBoard = board.copy()
-    draw(board = copyBoard.toString())
-    copyBoard.makeMove(move,team)
-    draw(board = copyBoard.toString())
+    draw(board = board.toString())
+    val new = board.makeMove(move,team)
+    draw(board = new.first.toString())
     println("----------------")
-    return if(copyBoard.verifyCheck().isEmpty()){
+    return if(new.first.verifyCheck().isEmpty()){
         ValidMovement
     }
     else {
