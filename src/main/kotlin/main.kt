@@ -4,11 +4,10 @@ import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.WindowState
@@ -29,6 +29,7 @@ import model.storage.*
 import model.storage.mongodb.*
 import org.intellij.lang.annotations.JdkConstants
 import org.jetbrains.skija.paragraph.Alignment
+import org.litote.kmongo.MongoOperator
 
 /*
 fun main(){
@@ -70,6 +71,29 @@ fun main(){
    }
 }
 */
+
+@Composable
+fun TextDemo() {
+    Column(Modifier.padding(16.dp)) {
+        val textState = remember { mutableStateOf(TextFieldValue()) }
+        var id: String = "-1"
+
+        TextField(
+            value = textState.value,
+            maxLines = 1,
+            label= {Text("GameID")},
+            onValueChange = { textState.value = it }
+        )
+
+        Button(
+            onClick = {
+                id = textState.value.text
+                println(id)
+            }
+        ){       }
+    }
+}
+
 @Composable
 fun openGameView(mongoDB: MongoDbChess, ids:String,onSelected:(MovesList) -> Unit){
     Column {
@@ -111,7 +135,10 @@ fun App(mongoDB: MongoDbChess) {
         }
         val movement = remember { mutableStateOf(Move("dummy")) }
         val team = remember { mutableStateOf(Team.WHITE) }
-        openGameView(mongoDB = mongoDB, ids = "4",onSelected = { println(it)})
+
+        TextDemo()
+
+        //openGameView(mongoDB = mongoDB, ids = "4",onSelected = { println(it)})
         /*val piecesChecking = board.value.first.verifyCheck(board.value.first.getTeam())
         var possiblecheckmate = mutableMapOf<Location, MoveVerity>()
 
