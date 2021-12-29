@@ -29,7 +29,6 @@ fun composingResults(board: Pair<BoardState, MoveVerity>, team: Team, movement: 
             Text(text = "Need Promotion ", fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, modifier= Modifier.background(color = Color.Gray) )
             promotionView(team = board.first.getTeam(), onTileSelected = {piece: Piece ->
                 newMovement.value = Move(movement.move + "=${piece.representation.toTeamRepresentation(team = team)}")
-                println(newMovement)
             })
             return board.first.makeMove(move = newMovement.value , team = team)
         }

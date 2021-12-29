@@ -1,7 +1,6 @@
 package model.domain
 
 import model.ui.console.draw
-import org.litote.kmongo.MongoOperator
 
 /**
  * The two teams that are playable
@@ -27,7 +26,7 @@ fun String.toTeam():Team {
  * Initial game board format
  */
 const val INITIAL_BOARD =
-            "rnbqkbnr" +
+    "rnbqkbnr" +
             "pppppppp" +
             "        " +
             "        " +
@@ -109,11 +108,10 @@ data class BoardState internal constructor
                 board = change ,
                 turn = team.other,
                 movesList = MovesList(_id = movesList._id ,
-                currentState = toString(),
-                content = addANewMove(PlayMade(team = team, play= move))),
+                    currentState = change.mapToString(),
+                    content = addANewMove(PlayMade(team = team, play= move))),
                 id = id,openBoard = true
-                )
-            newBoard.movesList.currentState = newBoard.toString()
+            )
             return Pair(newBoard,verification)
         }else return Pair(BoardState(id = id,openBoard = true, board = board, movesList = movesList, turn = turn), verification)
     }
@@ -133,7 +131,7 @@ data class BoardState internal constructor
      */
 
     private fun addANewMove(play :PlayMade):MutableList<PlayMade>{
-        val newList = movesList.content
+        val newList = movesList.content.toMutableList()
         newList.add(play)
         return newList
     }
@@ -301,7 +299,7 @@ data class BoardState internal constructor
      * @param move the move made
      */
     private fun changePiecesPlaces(oldPosition: Positions, newPosition: Positions, piece: Piece): MutableMap<Positions, Piece>{
-        val newBoard:MutableMap<Positions, Piece> =  board
+        val newBoard:MutableMap<Positions, Piece> =  board.toMutableMap()
         newBoard[newPosition] = piece
         newBoard.remove(oldPosition)
         return newBoard
@@ -338,4 +336,18 @@ private fun verifyPromotion(piece: Piece, location: Positions, team: Team): Resu
     ){
         ValidMovement
     } else InvalidMovement
+}
+fun MutableMap<Positions, Piece>.mapToString(): String {
+    var strboard = ""
+    for (i in Lines.L8.ordinal downTo Lines.L1.ordinal) {
+        for (j in Columns.CA.ordinal..Columns.CH.ordinal) {
+            val boardPiece = this[Positions(Lines.values()[i], Columns.values()[j])]?.representation
+            if (boardPiece != null) {
+                strboard += boardPiece
+            } else {
+                strboard += " "
+            }
+        }
+    }
+    return strboard
 }
