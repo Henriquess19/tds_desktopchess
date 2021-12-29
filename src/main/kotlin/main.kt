@@ -2,9 +2,13 @@
 import UI.*
 import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -12,7 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.WindowState
@@ -20,12 +27,11 @@ import androidx.compose.ui.window.application
 import model.domain.*
 import model.storage.*
 import model.storage.mongodb.*
-import model.ui.console.readChessCommand
-import kotlin.Result
+import org.intellij.lang.annotations.JdkConstants
+import org.jetbrains.skija.paragraph.Alignment
 
 /*
 fun main(){
-
    val dbConnection = getDBConnectionInfo()
    val driver =
       if (dbConnection.mode == DbMode.REMOTE)
@@ -34,7 +40,6 @@ fun main(){
    try {
       var localBoard = BoardState(openBoard = false)
       val mongoDB = MongoDbChess(driver.getDatabase(dbConnection.dbName))
-
       while (true){
          val dispatcher = buildCommandsHandler(localBoard = localBoard, dbBoard = mongoDB)
          val(command,parameter) = readChessCommand(localBoardState = localBoard)
@@ -51,7 +56,6 @@ fun main(){
             }
          }
       }
-
    }
    catch (e: ChessDBAccessException) {
       println(
@@ -66,16 +70,49 @@ fun main(){
    }
 }
 */
+@Composable
+fun openGameView(mongoDB: MongoDbChess, ids:String,onSelected:(MovesList) -> Unit){
+    Column {
+        val id = remember{ mutableStateOf("-1")}
+        val result = remember{ mutableStateOf(MovesList(_id = id.value))}
+        Text(text = "Open a Game ", fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, modifier= Modifier.background(color = Color.Gray) )
+        Button(onClick = {
+            id.value = ids
 
+        }){
+            if(id.value.toInt() > 0) {
+                if (mongoDB.gamesIDList().contains(element = id.value)) {
+                    val movesList = mongoDB.findgamebyId(id = id.value)
+                    //val playsMade = movesList.content
+                    //val team = if (playsMade.isEmpty()) Team.WHITE else playsMade.last().team.other
+                    result.value = movesList
+
+                } else {
+                    mongoDB.createID(id = id.value)
+                    mongoDB.createGame(MovesList(_id = id.value))
+                    result.value = MovesList(_id = id.value)
+                }
+            }
+            onSelected(result.value)
+        }
+    }
+}
 
 @Composable
-fun App() {
+fun App(mongoDB: MongoDbChess) {
     DesktopMaterialTheme {
-        val board = remember { mutableStateOf(Pair<BoardState, MoveVerity>(BoardState(openBoard = true), MoveVerity(mutableListOf(),ValidMovement))) }
+        val board = remember {
+            mutableStateOf(
+                Pair<BoardState, MoveVerity>(
+                    BoardState(openBoard = true),
+                    MoveVerity(mutableListOf(), ValidMovement)
+                )
+            )
+        }
         val movement = remember { mutableStateOf(Move("dummy")) }
         val team = remember { mutableStateOf(Team.WHITE) }
-
-        val piecesChecking = board.value.first.verifyCheck(board.value.first.turn!!)
+        openGameView(mongoDB = mongoDB, ids = "4",onSelected = { println(it)})
+        /*val piecesChecking = board.value.first.verifyCheck(board.value.first.getTeam())
         var possiblecheckmate = mutableMapOf<Location, MoveVerity>()
 
         if(piecesChecking.isNotEmpty()) {
@@ -112,14 +149,25 @@ fun App() {
             if(board.value.second.result != ValidMovement) board.value = composingResults(board =  board.value, team = team.value, movement = movement.value )
         }
     }
+
+         */
+    }
 }
 
 
-fun main() = application {
-    Window(
-        state = WindowState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
-        onCloseRequest = ::exitApplication
-    ) {
-        App()
+fun main(){
+    val dbConnection = getDBConnectionInfo()
+    val driver =
+        if (dbConnection.mode == DbMode.REMOTE)
+            createMongoClient(dbConnection.connectionString)
+        else createMongoClient()
+    val mongoDB = MongoDbChess(driver.getDatabase(dbConnection.dbName))
+    application {
+        Window(
+            state = WindowState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
+            onCloseRequest = ::exitApplication
+        ) {
+            App(mongoDB)
+        }
     }
 }

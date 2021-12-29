@@ -205,7 +205,7 @@ data class BoardState internal constructor
                 val move = pieceType + initpos + endpos
                 val board = BoardState(id = id,openBoard = true, board = board, movesList = movesList, turn = turn)
                 if(stillValidMove(Move(move),team,board) == ValidMovement){
-                   possiblePositions.add(end)
+                    possiblePositions.add(end)
                 }
             }
             if (possiblePositions.isNotEmpty()) validMovements[init.key] = MoveVerity(possiblePositions,ValidMovement)
@@ -314,7 +314,7 @@ data class BoardState internal constructor
 private fun stillValidMove(move: Move, team: Team,board:BoardState):Result{
     val new = board.makeMove(move,team)
     return if (new.first.verifyCheck(team).isEmpty()) ValidMovement
-        else InvalidMovement
+    else InvalidMovement
 }
 
 fun checkconditionsToMove(checks:MutableMap<Location, MoveVerity>):List<Move>{
