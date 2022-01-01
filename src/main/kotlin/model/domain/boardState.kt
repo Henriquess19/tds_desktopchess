@@ -311,7 +311,7 @@ data class BoardState internal constructor
     }
 }
 
-private fun stillValidMove(move: Move, team: Team,board:BoardState):Result{
+fun stillValidMove(move: Move, team: Team,board:BoardState):Result{
     val new = board.makeMove(move,team)
     return if (new.first.verifyCheck(team).isEmpty()) ValidMovement
     else InvalidMovement
