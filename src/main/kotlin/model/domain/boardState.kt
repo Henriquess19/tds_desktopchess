@@ -62,7 +62,7 @@ data class BoardState internal constructor
      val turn: Team? = Team.WHITE,
      private val board: MutableMap<Positions, Piece> = mutableMapOf(),
      val movesList: MovesList = MovesList(),
-     var id: String = "-1",
+     var id: String = "",
 )
 {
 

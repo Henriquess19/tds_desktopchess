@@ -15,8 +15,8 @@ import androidx.compose.ui.input.key.*
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogState
 import androidx.compose.ui.window.WindowSize
+import androidx.compose.ui.window.rememberDialogState
 import model.domain.GameId
 import model.domain.toGameIdOrNull
 
@@ -25,7 +25,7 @@ import model.domain.toGameIdOrNull
 @Composable
 fun getGameID(onGameIdGiven:(GameId) -> Unit, onClose:() -> Unit) = Dialog(
    title = "Game ID",
-   //state = DialogState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
+   state = rememberDialogState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)), //DialogState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
    resizable = false,
    onCloseRequest = onClose
 ){

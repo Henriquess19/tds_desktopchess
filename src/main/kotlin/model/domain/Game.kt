@@ -50,10 +50,12 @@ data class GameStarted(
     * @return the new [GameStarted] instance
     * @throws IllegalStateException if it's not the local player turn to play
     */
-   fun makeMove(move: Move,team:Team) : GameStarted {
-      val newState = copy(board = board.first.makeMove(move,team))
-      repository.updateGame(board.first.movesList)
-      return newState
+   fun makeMove(move: Move) : GameStarted {
+      TODO()
+      //Play(board.first,repository,execute)
+      //val newState = copy(board = board.first.makeMove(move,team))
+      //repository.updateGame(board.first.movesList)
+     // return newState
    }
 
    /**

@@ -88,11 +88,34 @@ private fun GameNotStartedContent() = BoardView(BoardState(), onTileSelected = {
 
 @Composable
 private fun GameStartedContent(){
-   App()
+   val board = remember {
+      mutableStateOf(
+         Pair(
+            BoardState(),
+            MoveVerity(mutableListOf(), ValidMovement)
+         )
+      )
+   }
+   val movement = remember { mutableStateOf(Move("dummy")) }
+   val team = remember { mutableStateOf(Team.WHITE) }
+
+
+   Row {
+      BoardView(
+         board = board.value.first,
+         onTileSelected = { piece: Piece?, position: Positions ->
+            TODO()
+            //val move = getmovement(piece, position)
+            //GameStarted.makeMove(move)
+         }
+      )
+      movesView(board = board.value.first)
+      if(board.value.second.result != ValidMovement) board.value = composingResults(board =  board.value, team = team.value, movement = movement.value )
+   }
 }
 
 /** ----------------------------------------------------------------------------**/
-
+/* TODO("VERIFY WHERE TO PUT") */
 @Composable
 fun endgame(team:Team){
    Box {
@@ -111,73 +134,7 @@ fun endgame(team:Team){
    }
 }
 
-@Composable
-fun App() {
 
-      val board = remember {
-         mutableStateOf(
-            Pair<BoardState, MoveVerity>(
-               BoardState(),
-               MoveVerity(mutableListOf(), ValidMovement)
-            )
-         )
-      }
-      val movement = remember { mutableStateOf(Move("dummy")) }
-      val team = remember { mutableStateOf(Team.WHITE) }
-
-
-      //val piecesChecking = board.value.first.verifyCheck(board.value.first.getTeam())
-      var possiblecheckmate = mutableMapOf<Location, MoveVerity>()
-
-      /*if(piecesChecking.isNotEmpty()) {
-         possiblecheckmate = board.value.first.verifyCheckmate(piecesChecking)
-         if (possiblecheckmate.isEmpty()){
-            endgame(team.value)
-            /* TODO(NAO DEIXAR JOGAR MAIS) */
-         }
-      }*/
-
-      Row {
-         BoardView(
-            board = board.value.first,
-            onTileSelected = { piece: Piece?, positions: Positions ->
-               println(positions)
-               makePlay(board,movement,team,piece,positions,possiblecheckmate)
-            }
-         )
-         movesView(board = board.value.first)
-         if(board.value.second.result != ValidMovement) board.value = composingResults(board =  board.value, team = team.value, movement = movement.value )
-      }
-}
-
-fun makePlay(board:MutableState<Pair<BoardState, MoveVerity>>,
-             movement:MutableState<Move>,team:MutableState<Team>,
-             piece:Piece?,positions:Positions,
-             possiblecheckmate:MutableMap<Location, MoveVerity>){
-
-   val move = getmovement(piece, positions)
-   if (move != null) {
-      val moves = move.split(',')
-      movement.value = Move(move = moves[1])
-      team.value = moves[0].toTeam()
-      if (movement.value.move[0] == 'k' || movement.value.move[0] == 'K') {
-         val notInCheck = stillValidMove(movement.value, team.value, board.value.first)
-         if (notInCheck == ValidMovement)
-            board.value = board.value.first.makeMove(move = movement.value, team = team.value)
-      } else {
-         if (possiblecheckmate.isEmpty()) {
-            board.value = board.value.first.makeMove(move = movement.value, team = team.value)
-
-         } else {
-            val possiblemoves = checkconditionsToMove(possiblecheckmate)
-            if (movement.value in possiblemoves) {
-               board.value =
-                  board.value.first.makeMove(move = movement.value, team = team.value)
-            }
-         }
-      }
-   }
-}
 
 @Composable
 fun chooseGame(mongoDB: MongoDbChess, type:String) {
