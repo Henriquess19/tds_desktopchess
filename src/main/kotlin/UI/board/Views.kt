@@ -14,11 +14,11 @@ import androidx.compose.ui.unit.dp
 import model.domain.*
 
 /**
- * Based on the result of the board, shows a message to the mistake made, and return the board
- * @param board the board that is currently being played
+ * Based on the result of the UI.board, shows a message to the mistake made, and return the UI.board
+ * @param board the UI.board that is currently being played
  * @param team making the play
  * @param movement the movement tried to be made
- * @return the new board and the same result
+ * @return the new UI.board and the same result
  */
 @Composable
 fun composingResults(board: Pair<BoardState, MoveVerity>, team: Team, movement: Move): Pair<BoardState, MoveVerity> {

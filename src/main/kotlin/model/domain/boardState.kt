@@ -24,7 +24,7 @@ fun String.toTeam():Team {
     else  Team.BLACK
 }
 /**
- * Initial game board format
+ * Initial game UI.board format
  */
 const val INITIAL_BOARD =
     "rnbqkbnr" +
@@ -39,7 +39,7 @@ const val INITIAL_BOARD =
 /**
  * Represents the list of moves identified by an id
  * @property _id  The id that contains the Plays
- * @property currentState the state of the board representaded in a string
+ * @property currentState the state of the UI.board representaded in a string
  * @property content  The various plays
  */
 data class MovesList(var _id:String = "-1", var currentState:String = INITIAL_BOARD  ,var content: MutableList<PlayMade> = mutableListOf())
@@ -52,11 +52,11 @@ data class MovesList(var _id:String = "-1", var currentState:String = INITIAL_BO
 data class PlayMade(val team: Team, val play: Move)
 
 /**
- * @property side size of the board itself
+ * @property side size of the UI.board itself
  * @property turn who is making the play, or null when ended
- * @property board the board itself with the pieces
- * @property id the current id of the board
- * @property openBoard if the board is open or not
+ * @property board the UI.board itself with the pieces
+ * @property id the current id of the UI.board
+ * @property openBoard if the UI.board is open or not
  */
 data class BoardState internal constructor
     (val side: Int = BOARD_SIDE,
@@ -69,9 +69,9 @@ data class BoardState internal constructor
 {
 
     /**
-     * Init the board putting the pieces on corresponding initial positions
+     * Init the UI.board putting the pieces on corresponding initial positions
      */
-    init {
+    /*init {
         var k = 0
         for (i in Lines.L8.ordinal downTo Lines.L1.ordinal) {
             val type = movesList.currentState.ifEmpty { INITIAL_BOARD }
@@ -83,12 +83,12 @@ data class BoardState internal constructor
                 }
             }
         }
-    }
+    }*/
     /**
      * Make the piece move, if its valid
      * @param move the move to be made
      * @param team the team who is making the move
-     * @return The new board and what type of result, valid, invalid etc.
+     * @return The new UI.board and what type of result, valid, invalid etc.
      */
     fun makeMove(move: Move ,team: Team): Pair<BoardState, MoveVerity> {
         val oldPosition = Positions(line = move.move[2].toLine(), column = move.move[1].toColumn())
@@ -257,8 +257,8 @@ data class BoardState internal constructor
         return board[positions]
     }
     /**
-     * Overwrites the function string to transform the board in something readble
-     * @return the board in form of a string
+     * Overwrites the function string to transform the UI.board in something readble
+     * @return the UI.board in form of a string
      */
     override fun toString(): String {
         var strboard = ""

@@ -31,8 +31,8 @@ fun chooseImage(team:Team, piece:Piece):String{
 
 }
 /**
- * The Tile of one position in the board
- * @param team the team of the corresponding position of the board or null if its empty
+ * The Tile of one position in the UI.board
+ * @param team the team of the corresponding position of the UI.board or null if its empty
  * @param piece the piece that´s it's represented in that position or null if its none
  * @param onSelected The team of the corresponding position or null if its empty
  */

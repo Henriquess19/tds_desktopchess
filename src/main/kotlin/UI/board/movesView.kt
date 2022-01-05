@@ -10,7 +10,7 @@ import model.domain.*
 
 /**
  * Shows the current state of the moves, updated when its made a move
- * @param board the current state of the local board
+ * @param board the current state of the local UI.board
  */
 @Composable
 fun movesView(board: BoardState) {

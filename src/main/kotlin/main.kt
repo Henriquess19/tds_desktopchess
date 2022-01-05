@@ -73,11 +73,6 @@ fun main(){
 }
 */
 
-@Composable
-fun TextDemo() {
-
-}
-
 
 
 @Composable
@@ -108,127 +103,20 @@ fun openGameView(mongoDB: MongoDbChess, ids:String,onSelected:(MovesList) -> Uni
     }
 }
 
-@Composable
-fun endgame(team:Team){
-    Box {
-        val popupWidth = 200.dp
-        val popupHeight = 50.dp
-        val cornerSize = 16.dp
-
-        Popup() {
-            Box(
-                Modifier
-                    .size(popupWidth, popupHeight)
-                    .background(Color.White, RoundedCornerShape(cornerSize))
-            )
-            Text("$team WON!!!", modifier= Modifier.padding(12.dp))
-        }
-    }
-}
-
-@Composable
-fun App(mongoDB: MongoDbChess,value:String?) {
-    DesktopMaterialTheme {
-        println(value)
-        val board = remember {
-            mutableStateOf(
-                Pair<BoardState, MoveVerity>(
-                    BoardState(openBoard = true),
-                    MoveVerity(mutableListOf(), ValidMovement)
-                )
-            )
-        }
-        val movement = remember { mutableStateOf(Move("dummy")) }
-        val team = remember { mutableStateOf(Team.WHITE) }
-
-        TextDemo()
-        //openGameView(mongoDB = mongoDB, ids = "4",onSelected = { println(it)})
-
-        val piecesChecking = board.value.first.verifyCheck(board.value.first.getTeam())
-        var possiblecheckmate = mutableMapOf<Location, MoveVerity>()
-
-        if(piecesChecking.isNotEmpty()) {
-            possiblecheckmate = board.value.first.verifyCheckmate(piecesChecking)
-            if (possiblecheckmate.isEmpty()){
-                endgame(team.value)
-                /* TODO(NAO DEIXAR JOGAR MAIS) */
-            }
-        }
-
-        Row {
-                BoardView(
-                    board = board.value.first,
-                    onTileSelected = { piece: Piece?, positions: Positions ->
-                        val move = getmovement(piece, positions)
-                        if (move != null) {
-                            val moves = move.split(',')
-                            movement.value = Move(move = moves[1])
-                            team.value = moves[0].toTeam()
-                            if (movement.value.move[0] == 'k' || movement.value.move[0] == 'K') {
-                                val notInCheck = stillValidMove(movement.value, team.value, board.value.first)
-                                if (notInCheck == ValidMovement)
-                                    board.value = board.value.first.makeMove(move = movement.value, team = team.value)
-                            } else {
-                                if (possiblecheckmate.isEmpty()) {
-                                    board.value = board.value.first.makeMove(move = movement.value, team = team.value)
-
-                                } else {
-                                    val possiblemoves = checkconditionsToMove(possiblecheckmate)
-                                    if (movement.value in possiblemoves) {
-                                        board.value =
-                                            board.value.first.makeMove(move = movement.value, team = team.value)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                )
-            movesView(board = board.value.first)
-            if(board.value.second.result != ValidMovement) board.value = composingResults(board =  board.value, team = team.value, movement = movement.value )
-        }
-    }
-}
-
-@Composable
-fun chooseGame(mongoDB: MongoDbChess,type:String) {
-    Column {
-        val text = remember { mutableStateOf("-1") }
-
-        TextField(
-            value = text.value,
-            onValueChange = { text.value = it },
-            label = { Text("GameID") }
-        )
-
-        if(text.value != "-1"){
-            openGameView(mongoDB,text.value,onSelected = { println(it)})
-        }
-    }
-}
 
 
 fun main(){
     val dbConnection = getDBConnectionInfo()
+
     val driver =
         if (dbConnection.mode == DbMode.REMOTE)
             createMongoClient(dbConnection.connectionString)
         else createMongoClient()
-    val mongoDB = MongoDbChess(driver.getDatabase(dbConnection.dbName))
-    var value: String? = null
-    application {
-        Window(
-            title= "Chess Dos Suspeitos",
-            icon= painterResource(chooseImage(team = Team.BLACK ,piece = Piece(Team.BLACK,TypeOfPieces.K,'k'))),
-            state= WindowState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
-            onCloseRequest= ::exitApplication
-        ) {
-            MenuBar {
-                Menu("Game"){
-                    Item("Open", onClick = { value = "open"}) /* Nao sei como funcionar, porque nao se pode ter compose aqui*/
-                    Item("Join", onClick = { chooseGame(mongoDB,"join")})
-                }
-            }
-            App(mongoDB,value)
+
+    driver.use{
+        val mongoRepository = MongoDbChess(driver.getDatabase(dbConnection.dbName))
+        application {
+            MainWindow(/* mongoRepository */ ::exitApplication)
         }
     }
 }

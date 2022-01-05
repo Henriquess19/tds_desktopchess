@@ -11,7 +11,7 @@ import model.domain.ValueResult
 typealias View = (input:Any?) -> Unit
 
 /**
- * Display the message if the board was open or not
+ * Display the message if the UI.board was open or not
  */
 fun gameView(input:Any?) {
     val result  = input as toReturn

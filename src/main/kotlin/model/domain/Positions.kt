@@ -1,12 +1,12 @@
 package model.domain
 
 /**
- * Representation of the columns in a board of chess
+ * Representation of the columns in a UI.board of chess
  */
 enum class Columns{CA,CB,CC,CD,CE,CF,CG,CH}
 
 /**
- * The size of the side of the board
+ * The size of the side of the UI.board
  */
 const val BOARD_SIDE = 8
 
@@ -49,7 +49,7 @@ fun Char.toColumn():Columns{
 
 
 /**
- * Representation of the line in a board of chess
+ * Representation of the line in a UI.board of chess
  */
 enum class Lines{L1,L2,L3,L4,L5,L6,L7,L8}
 

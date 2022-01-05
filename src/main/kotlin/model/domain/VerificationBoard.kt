@@ -7,7 +7,7 @@ data class MoveVerity (val tiles: MutableList<Positions>,val result: Result)
  * @param   piece the piece to verify the move
  * @param   initialPosition original position of the piece
  * @param   wantedPosition where the piece is to be moved
- * @param   boardState current state of the board
+ * @param   boardState current state of the UI.board
  * @return  if its a valid movement returns true else returns false
  */
 fun movePieceVerity(piece: Piece, initialPosition: Positions, wantedPosition: Positions, boardState: BoardState): MoveVerity {
@@ -39,7 +39,7 @@ fun movePieceVerity(piece: Piece, initialPosition: Positions, wantedPosition: Po
  * Verify if the movement of the rook its possible
  * @param   initialPosition original position of the rook
  * @param   wantedPosition where the rook is to be moved
- * @param   boardState current state of the board
+ * @param   boardState current state of the UI.board
  * @return  returns according to the result interface
  */
 private fun moveVerityRook(
@@ -78,7 +78,7 @@ private fun moveVerityRook(
  * Verify if the movement of the pawn its possible
  * @param   initialPosition original position of the pawn
  * @param   wantedPosition where the pawn is to be moved
- * @param   boardState current state of the board
+ * @param   boardState current state of the UI.board
  * @return  returns according to the result interface
  */
 private fun moveVerityPawn(
@@ -137,7 +137,7 @@ private fun moveVerityPawn(
  * Verify if the movement of the bishop its possible
  * @param   initialPosition original position of the bishop
  * @param   wantedPosition where the bishop is to be moved
- * @param   boardState current state of the board
+ * @param   boardState current state of the UI.board
  * @return  returns according to the result interface
  */
 
