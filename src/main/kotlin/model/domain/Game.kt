@@ -22,8 +22,24 @@ object GameNotStarted : Game() {
     * @param localPlayer   the local player
     * @param gameId        the game identifier
     */
-   fun start(repository: BoardDB, localTurn: Team, gameId: GameId) =
-      GameStarted(repository, gameId, localTurn, Pair(BoardState(), MoveVerity()))
+   fun open(repository: BoardDB, localTurn: Team, gameId: GameId):Game{
+      val game = Open(BoardState(),repository).invoke(gameId.toString())
+      return if(game is ValueResult<*>){
+         val gameState = game.data as toReturn
+         GameStarted(repository,gameId,localTurn,Pair(gameState.boardState,MoveVerity()))
+      }
+      else GameStarted(repository, gameId, localTurn, Pair(BoardState(), MoveVerity()))
+   }
+
+
+   fun join(repository: BoardDB, localTurn: Team, gameId: GameId):Game{
+      val game = Join(BoardState(),repository).invoke(gameId.toString())
+      return if(game is ValueResult<*>){
+         val gameState = game.data as toReturn
+         GameStarted(repository,gameId,localTurn,Pair(gameState.boardState,MoveVerity()))
+      }
+      else GameStarted(repository, gameId, localTurn, Pair(BoardState(), MoveVerity()))
+   }
 }
 
 /**
@@ -54,9 +70,11 @@ data class GameStarted(
    fun makeMove(moves: String) : GameStarted {
       val move = moves.split(',')[1]
       val play = Play(board.first,repository).invoke(move)
-      println(play as toReturn)
-      if(play == ValidMovement) board = Pair((play as toReturn).boardState,board.second)
-      return this
+      return if(play is ValueResult<*>){
+         val BoardState = play.data as toReturn
+         GameStarted(repository,id,localTurn,Pair(BoardState.boardState,board.second))
+      }
+      else this
    }
 
    /**

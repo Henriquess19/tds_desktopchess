@@ -38,11 +38,11 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    val curentGameAction = gameAction.value
 
    fun openGame(id:GameId){
-      gameState.value = (currentGameState as GameNotStarted).start(mongoRepository,Team.WHITE,id)
+      gameState.value = (currentGameState as GameNotStarted).open(mongoRepository,Team.WHITE,id)
    }
 
    fun joinGame(id:GameId){
-      gameState.value = (currentGameState as GameNotStarted).start(mongoRepository,Team.BLACK,id)
+      gameState.value = (currentGameState as GameNotStarted).join(mongoRepository,Team.BLACK,id)
    }
 
    MainWindowMenu(currentGameState,
@@ -52,7 +52,7 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
 
    when(currentGameState){
       is GameNotStarted -> GameNotStartedContent()
-      is GameStarted -> GameStartedContent(mongoRepository,"123".toGameIdOrNull()!!)
+      is GameStarted -> GameStartedContent(currentGameState,mongoRepository,"123".toGameIdOrNull()!!)
    }
 
    if(curentGameAction != null){
@@ -83,34 +83,45 @@ private fun FrameWindowScope.MainWindowMenu(
 }
 
 @Composable
-private fun GameNotStartedContent() = BoardView(BoardState(), onTileSelected = {_,_ -> })
+private fun GameNotStartedContent(){
+   Column{
+      Row {
+         BoardView(BoardState(), onTileSelected = {_,_ -> })
+         movesView(BoardState())
+      }
+   }
+}
 
 @Composable
-private fun GameStartedContent(mongoRepository: BoardDB,id:GameId){
+private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB,id:GameId){
    val board = remember {
       mutableStateOf(
-         Pair(
-            BoardState(),
-            MoveVerity(mutableListOf(), ValidMovement)
-         )
+         currentGame.board
       )
    }
    val movement = remember { mutableStateOf(Move("dummy")) }
    val team = remember { mutableStateOf(Team.WHITE) }
 
-
-   Row {
-      BoardView(
-         board = board.value.first,
-         onTileSelected = { piece: Piece?, position: Positions ->
-            val move = getmovement(piece, position)
-            if (move != null) {
-               board.value = GameStarted(repository= mongoRepository, id = id,localTurn = team.value,board = board.value).makeMove(move).board
+   Column {
+      Row {
+         BoardView(
+            board = board.value.first,
+            onTileSelected = { piece: Piece?, position: Positions ->
+               val move = getmovement(piece, position)
+               if (move != null) {
+                  board.value = GameStarted(
+                     repository = mongoRepository,
+                     id = id,
+                     localTurn = team.value,
+                     board = board.value
+                  ).makeMove(move).board
+               }
             }
-         }
-      )
-      movesView(board = board.value.first)
-      if(board.value.second.result != ValidMovement) board.value = composingResults(board =  board.value, team = team.value, movement = movement.value )
+         )
+         movesView(board = board.value.first)
+         if (board.value.second.result != ValidMovement) board.value =
+            composingResults(board = board.value, team = team.value, movement = movement.value)
+      }
    }
 }
 
