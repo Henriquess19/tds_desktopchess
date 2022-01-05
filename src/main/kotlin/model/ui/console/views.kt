@@ -54,6 +54,7 @@ fun refreshView(input:Any?) {
     val result  = input as toReturn
     when (result.result) {
         UpdatedGame -> println("The Game was updated..")
+        CannotRefresh -> println("Its the first play, what you wanna refresh?")
         InvalidMovement -> println("Wait for the other person to do her play.." )
         EndedGame -> println("You lost..")
         ClosedGame ->{

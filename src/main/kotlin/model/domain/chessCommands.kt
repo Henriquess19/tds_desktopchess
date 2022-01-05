@@ -1,8 +1,6 @@
 package model.domain
 
-import UI.endgame
 import model.storage.BoardDB
-import model.storage.MongoDbChess
 
 fun interface ChessCommands{
     /**
@@ -30,26 +28,25 @@ data class toReturn (val boardState:BoardState,val result: Result)
 class Open(private val localBoard: BoardState,private val dbBoard: BoardDB): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
         if (parameter!= null) {
-                return if (dbBoard.gamesIDList().contains(element = parameter)) {
-                    val movesList = dbBoard.findgamebyId(id = parameter)
-                    val playsMade = movesList!!.content
-                    val team = if (playsMade.isEmpty()) Team.WHITE else playsMade.last().team.other
-                    val board = BoardState(id = parameter, turn = team,movesList = movesList)
-                    ValueResult(toReturn(
-                        boardState = board,
-                        result = OpenedGame))
-                } else {
-                    dbBoard.createID(id = parameter)
-                    dbBoard.createGame(MovesList(_id = parameter))
-                    val board = BoardState(id = parameter, movesList = MovesList(_id = parameter))
-                    ValueResult(toReturn(
-                        boardState = board,
-                        result = OpenedGame))
-                }
+            val state = dbBoard.getGame(id = parameter)
+            return if (state == null) {
+                dbBoard.updateGame(id = parameter, movesList = MovesList())
+                val board = BoardState(id = parameter)
+                ValueResult(toReturn(
+                    boardState = board,
+                    result = OpenedGame))
+            } else {
+                val team = if(state.content.isEmpty())Team.WHITE else state.content.last().team.other
+                val board = BoardState(id = parameter, turn = team,movesList = state)
+                ValueResult(toReturn(
+                    boardState = board,
+                    result = OpenedGame))
             }
-        return ValueResult(toReturn(boardState = localBoard, result = InvalidCommand))
+        }
+    return ValueResult(toReturn(boardState = localBoard, result = InvalidCommand))
     }
 }
+
 /**
  * Join command that will permit to one people to join that game with black pieces
  * @param localBoard The UI.board being played currently
@@ -58,20 +55,14 @@ class Open(private val localBoard: BoardState,private val dbBoard: BoardDB): Che
 class Join(private val localBoard: BoardState,private val dbBoard: BoardDB): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
         if (parameter != null) {
-            return if (!dbBoard.gamesIDList().contains(element = parameter)) {
-                ValueResult(toReturn(boardState = localBoard, result = GameNotExists))
+            val state = dbBoard.getGame(id = parameter)
+            if (state == null) {
+                return ValueResult(toReturn(boardState = localBoard, result = GameNotExists))
             } else {
-                val movesList = dbBoard.findgamebyId(id = parameter)
-                if(movesList!!.content.last().team == Team.WHITE){
-                return ValueResult(toReturn (boardState= BoardState(id = parameter,
-                    turn = Team.BLACK,movesList = movesList),result = OpenedGame))
-                }
-                else{
-                    ValueResult(toReturn (boardState= BoardState(id = parameter,
-                        turn = Team.BLACK,movesList = movesList),result = OpenedGame))
-                    }
-                }
-            }
+                val movesList = dbBoard.getGame(id = parameter)
+                if (movesList != null) {
+                    return ValueResult(toReturn(
+                            boardState = BoardState(id = parameter, turn = movesList.content.last().team.other, movesList = movesList), result = OpenedGame)) } } }
             return ValueResult(toReturn(boardState = localBoard, result = InvalidCommand))
         }
     }
@@ -86,9 +77,9 @@ class Play(
     private val dbBoard: BoardDB): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
         if (parameter != null) {
-            val move = parameter.split(',')
-            val movement = Move(move = move[1])
-            val team = move[0].toTeam()
+            val movement = Move(move = parameter)
+            val team = localBoard.getTeam()
+
 
             val piecesChecking = localBoard.verifyCheck(team)
             var possiblecheckmate = mutableMapOf<Location, MoveVerity>()
@@ -100,7 +91,6 @@ class Play(
                     /* TODO(NAO DEIXAR JOGAR MAIS) */
                 }
             }
-
             var play = Pair(BoardState(),MoveVerity())
             if (movement.move[0] == 'k' || movement.move[0] == 'K') {
                 val notInCheck = stillValidMove(movement, team,localBoard)
@@ -119,13 +109,13 @@ class Play(
             }
             return when (play.second.result) {
                 ValidMovement -> {
-                    dbBoard.updateGame(moveslist = play.first.movesList)
+                    dbBoard.updateGame(id = localBoard.id, movesList = play.first.movesList)
                     ValueResult(
                         toReturn(boardState = play.first, result = ValidMovement)
                     )
                 }
                 EndedGame -> {
-                    dbBoard.updateGame(moveslist = play.first.movesList)
+                    dbBoard.updateGame(id = localBoard.id,movesList = play.first.movesList)
                     ValueResult(
                         toReturn(boardState = play.first, result = EndedGame)
                     )
@@ -144,13 +134,23 @@ class Play(
  */
 class Refresh(private val localBoard: BoardState, private val dbBoard: BoardDB): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
-        val db = dbBoard.findgamebyId(localBoard.movesList._id)
-        val lastMove = db!!.content.last()
-        val otherPlayerMove = localBoard.makeMove(move = lastMove.play, team = lastMove.team)
-        return when (otherPlayerMove.second.result){
-            ValidMovement -> ValueResult(toReturn(boardState = otherPlayerMove.first,result = UpdatedGame))
-            EndedGame -> ValueResult(toReturn(boardState = otherPlayerMove.first,result =EndedGame))
-            else -> ValueResult(toReturn(boardState = localBoard,result =InvalidMovement))
+        if(localBoard.id !="") {
+            val db = dbBoard.getGame(localBoard.id)
+            val content = db?.content
+            return if(!content.isNullOrEmpty()) {
+                val lastMove = content.last()
+                val otherPlayerMove = localBoard.makeMove(move = lastMove.play, team = lastMove.team)
+                when (otherPlayerMove.second.result) {
+                    ValidMovement -> ValueResult(toReturn(boardState = otherPlayerMove.first, result = UpdatedGame))
+                    EndedGame -> ValueResult(toReturn(boardState = otherPlayerMove.first, result = EndedGame))
+                    else -> ValueResult(toReturn(boardState = localBoard, result = InvalidMovement))
+                }
+            } else{
+                ValueResult(toReturn(boardState = localBoard, result = UpdatedGame))
+            }
+        }
+        else{
+            return ValueResult(toReturn(boardState = localBoard, result = CannotRefresh))
         }
     }
 }

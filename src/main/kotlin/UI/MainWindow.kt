@@ -7,7 +7,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -105,7 +104,7 @@ private fun GameStartedContent(){
          board = board.value.first,
          onTileSelected = { piece: Piece?, position: Positions ->
             TODO()
-            //val move = getmovement(piece, position)
+            val move = getmovement(piece, position)
             //GameStarted.makeMove(move)
          }
       )
@@ -152,7 +151,7 @@ fun chooseGame(mongoDB: MongoDbChess, type:String) {
       }
    }
 }
-
+/*
 @Composable
 fun openGameView(mongoDB: MongoDbChess, ids:String,onSelected:(MovesList) -> Unit){
    Column {
@@ -165,7 +164,7 @@ fun openGameView(mongoDB: MongoDbChess, ids:String,onSelected:(MovesList) -> Uni
       }){
          if(id.value.toInt() > 0) {
             if (mongoDB.gamesIDList().contains(element = id.value)) {
-               val movesList = mongoDB.findgamebyId(id = id.value)
+               val movesList = mongoDB.getGame(id = id.value)
                //val playsMade = movesList.content
                //val team = if (playsMade.isEmpty()) Team.WHITE else playsMade.last().team.other
                result.value = movesList
@@ -180,4 +179,4 @@ fun openGameView(mongoDB: MongoDbChess, ids:String,onSelected:(MovesList) -> Uni
       }
    }
 }
-
+*/

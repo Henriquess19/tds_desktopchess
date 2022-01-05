@@ -42,7 +42,7 @@ const val INITIAL_BOARD =
  * @property currentState the state of the UI.board representaded in a string
  * @property content  The various plays
  */
-data class MovesList(var _id:String = "", var currentState:String = INITIAL_BOARD  ,var content: MutableList<PlayMade> = mutableListOf())
+data class MovesList(var currentState:String = INITIAL_BOARD  ,var content: MutableList<PlayMade> = mutableListOf())
 
 /**
  * Represents the play that was made
@@ -106,7 +106,7 @@ data class BoardState internal constructor
             val newBoard= BoardState(
                 board = change ,
                 turn = team.other,
-                movesList = MovesList(_id = movesList._id ,
+                movesList = MovesList(
                     currentState = change.mapToString(),
                     content = addANewMove(PlayMade(team = team, play= move))),
                 id = id

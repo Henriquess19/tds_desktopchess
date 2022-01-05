@@ -32,19 +32,27 @@ data class Move(val move: String){
  */
 private fun isAValidCommandMove(move:String) = move.isNotEmpty() && (move.length in (SMALLEST_MOVE_CMD ..  BIGGEST_MOVE_CMD))
 
+private var movement = ""
+
 /**
- * If the string dont have the piece it will add a P, to function without problems
- * @param move the move to be made not completed
- * @param piece that is being moved
- * @param team who is making the move
- * @return the string prepared
+ * Based on clicks made on canvas, prepare a move if its valid
+ * @param piece tried to be moved, if the position have the piece
+ * @param positions the current position of the click made
+ * @return A string if the conjecture of the teo clicks its a possible move
  */
-fun stringPrepared(move:String,piece: Piece?, team: Team):String {
-    if(move.length == 5 || move.length == 7) return move
-    if(piece == null){
-        return "D$move"
-    }else {
-        val representation = if(team == Team.WHITE) piece.representation.uppercase() else piece.representation.lowercase()
-            return "${representation}$move"
+fun getmovement(piece: Piece?,positions: Positions):String?{
+    if (movement.length == 11) {
+        movement = ""
     }
+    if(movement.isEmpty()){
+        if (piece == null) return null
+        movement += piece.team
+        movement += ","
+        movement += piece.representation
+    }
+    movement += positions.toStr()
+    if (movement.length == 11) {
+        return movement
+    }
+    return null
 }
