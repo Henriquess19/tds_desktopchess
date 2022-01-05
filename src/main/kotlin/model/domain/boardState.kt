@@ -57,8 +57,8 @@ data class PlayMade(val team: Team, val play: Move)
  * @property board the UI.board itself with the pieces
  * @property id the current id of the UI.board
  */
-data class BoardState internal constructor
-    (val side: Int = BOARD_SIDE,
+data class BoardState internal constructor(
+    val side: Int = BOARD_SIDE,
      val turn: Team? = Team.WHITE,
      private val board: MutableMap<Positions, Piece> = mutableMapOf(),
      val movesList: MovesList = MovesList(),

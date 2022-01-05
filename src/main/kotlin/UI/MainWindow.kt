@@ -52,7 +52,7 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
 
    when(currentGameState){
       is GameNotStarted -> GameNotStartedContent()
-      is GameStarted -> GameStartedContent()
+      is GameStarted -> GameStartedContent(mongoRepository,"123".toGameIdOrNull()!!)
    }
 
    if(curentGameAction != null){
@@ -86,7 +86,7 @@ private fun FrameWindowScope.MainWindowMenu(
 private fun GameNotStartedContent() = BoardView(BoardState(), onTileSelected = {_,_ -> })
 
 @Composable
-private fun GameStartedContent(){
+private fun GameStartedContent(mongoRepository: BoardDB,id:GameId){
    val board = remember {
       mutableStateOf(
          Pair(
@@ -103,9 +103,10 @@ private fun GameStartedContent(){
       BoardView(
          board = board.value.first,
          onTileSelected = { piece: Piece?, position: Positions ->
-            TODO()
             val move = getmovement(piece, position)
-            //GameStarted.makeMove(move)
+            if (move != null) {
+               board.value = GameStarted(repository= mongoRepository, id = id,localTurn = team.value,board = board.value).makeMove(move).board
+            }
          }
       )
       movesView(board = board.value.first)

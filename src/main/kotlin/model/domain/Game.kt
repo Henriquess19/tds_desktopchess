@@ -1,6 +1,7 @@
 package model.domain
 
 import model.storage.BoardDB
+import org.litote.kmongo.MongoOperator
 
 /**
  * Sum type used to define the game's state.
@@ -36,7 +37,7 @@ data class GameStarted(
    private val repository: BoardDB,
    private val id: GameId,
    val localTurn: Team,
-   val board: Pair<BoardState,MoveVerity>
+   var board: Pair<BoardState,MoveVerity>
 ) : Game() {
 
    /**
@@ -50,12 +51,12 @@ data class GameStarted(
     * @return the new [GameStarted] instance
     * @throws IllegalStateException if it's not the local player turn to play
     */
-   fun makeMove(move: Move) : GameStarted {
-      TODO()
-      //Play(board.first,repository,execute)
-      //val newState = copy(board = board.first.makeMove(move,team))
-      //repository.updateGame(board.first.movesList)
-     // return newState
+   fun makeMove(moves: String) : GameStarted {
+      val move = moves.split(',')[1]
+      val play = Play(board.first,repository).invoke(move)
+      println(play as toReturn)
+      if(play == ValidMovement) board = Pair((play as toReturn).boardState,board.second)
+      return this
    }
 
    /**

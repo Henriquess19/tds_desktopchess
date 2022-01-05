@@ -22,6 +22,7 @@ import model.domain.*
 import model.storage.*
 import model.ui.console.readChessCommand
 import org.litote.kmongo.service.MongoClientProvider.createMongoClient
+
 /*
 fun main(){
     val dbConnection = getDBConnectionInfo()
@@ -37,8 +38,9 @@ fun main(){
             MainWindow(mongoRepository,::exitApplication)
         }
     }
-}
-*/
+}*/
+
+
 
 fun main(){
     val dbConnection = getDBConnectionInfo()

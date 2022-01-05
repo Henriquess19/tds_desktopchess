@@ -59,11 +59,18 @@ class Join(private val localBoard: BoardState,private val dbBoard: BoardDB): Che
             if (state == null) {
                 return ValueResult(toReturn(boardState = localBoard, result = GameNotExists))
             } else {
-                val movesList = dbBoard.getGame(id = parameter)
-                if (movesList != null) {
-                    return ValueResult(toReturn(
-                            boardState = BoardState(id = parameter, turn = movesList.content.last().team.other, movesList = movesList), result = OpenedGame)) } } }
-            return ValueResult(toReturn(boardState = localBoard, result = InvalidCommand))
+                return ValueResult(
+                    toReturn(
+                        boardState = BoardState(
+                            id = parameter,
+                            turn = state.content.last().team.other,
+                            movesList = state
+                        ), result = OpenedGame
+                    )
+                )
+            }
+        }
+        return ValueResult(toReturn(boardState = localBoard, result = InvalidCommand))
         }
     }
 
@@ -140,6 +147,7 @@ class Refresh(private val localBoard: BoardState, private val dbBoard: BoardDB):
             return if(!content.isNullOrEmpty()) {
                 val lastMove = content.last()
                 val otherPlayerMove = localBoard.makeMove(move = lastMove.play, team = lastMove.team)
+                println(otherPlayerMove.second.result)
                 when (otherPlayerMove.second.result) {
                     ValidMovement -> ValueResult(toReturn(boardState = otherPlayerMove.first, result = UpdatedGame))
                     EndedGame -> ValueResult(toReturn(boardState = otherPlayerMove.first, result = EndedGame))
