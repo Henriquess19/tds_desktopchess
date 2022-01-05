@@ -1,6 +1,6 @@
 package model.domain
 
-data class MoveVerity (val tiles: MutableList<Positions>,val result: Result)
+data class MoveVerity (val tiles: MutableList<Positions> = mutableListOf<Positions>(), val result: Result = InvalidMovement)
 
 /**
  *Verify if the position where we wanna go have a team mate there, if not call another functions to see if the move is valid

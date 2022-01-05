@@ -1,5 +1,7 @@
 package model.domain
 
+import model.storage.BoardDB
+
 /**
  * Sum type used to define the game's state.
  * @see [GameNotStarted]
@@ -19,8 +21,8 @@ object GameNotStarted : Game() {
     * @param localPlayer   the local player
     * @param gameId        the game identifier
     */
-   fun start(repository: GamesRepository, localPlayer: Player, gameId: GameId) =
-      GameStarted(repository, gameId, localPlayer, Board())
+   fun start(repository: BoardDB, localTurn: Team, gameId: GameId) =
+      GameStarted(repository, gameId, localTurn, Pair(BoardState(), MoveVerity()))
 }
 
 /**
@@ -31,7 +33,7 @@ object GameNotStarted : Game() {
  * @param board         the game board
  */
 data class GameStarted(
-   private val repository: ,
+   private val repository: BoardDB,
    private val id: GameId,
    val localTurn: Team,
    val board: Pair<BoardState,MoveVerity>
@@ -48,21 +50,21 @@ data class GameStarted(
     * @return the new [GameStarted] instance
     * @throws IllegalStateException if it's not the local player turn to play
     */
-   fun makeMove(at: Coordinate) : GameStarted {
-      val newState = copy(board = board.makeMove(at))
-      repository.updateOngoingGame(id.toString(), newState.board.toSharedGameState())
+   fun makeMove(move: Move,team:Team) : GameStarted {
+      val newState = copy(board = board.first.makeMove(move,team))
+      repository.updateGame(board.first.movesList)
       return newState
    }
 
    /**
     * Creates a new instance from the data published to the repository
     */
-   fun refresh(): GameStarted {
-      val game = repository.getOngoingGame(id.toString())
-      return if (game != null) {
-         copy(board = game.toBoard())
+   /*fun refresh(): GameStarted {
+      val gameMoves = repository.findgamebyId(id.toString())
+      return if (gameMoves != null) {
+         copy(board = gameMoves.currentState.to)
       } else throw UnreachableSharedGameException(NullPointerException())
-   }
+   }*/
 }
 
 /**

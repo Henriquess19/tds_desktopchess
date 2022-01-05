@@ -17,24 +17,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogState
 import androidx.compose.ui.window.WindowSize
-
+import model.domain.GameId
+import model.domain.toGameIdOrNull
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun getGameID(onGameIdGiven:(/*GameId*/) -> Unit, onClose:() -> Unit) = Dialog(
+fun getGameID(onGameIdGiven:(GameId) -> Unit, onClose:() -> Unit) = Dialog(
    title = "Game ID",
-   state = DialogState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
+   //state = DialogState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
    resizable = false,
    onCloseRequest = onClose
 ){
+
    val userInput = remember {mutableStateOf("")}
    val currentInput = userInput.value
 
    val gameIdGiven = {
-      val gameId = currentInput
+      val gameId = currentInput.toGameIdOrNull()
       if(gameId == null){userInput.value = ""}
-      else {onGameIdGiven(/*gameId*/)}
+      else {onGameIdGiven(gameId)}
    }
 
    Column(modifier = Modifier.padding(16.dp)) {

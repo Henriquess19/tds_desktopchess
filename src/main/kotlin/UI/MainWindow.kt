@@ -19,36 +19,31 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import model.domain.*
+import model.storage.BoardDB
 import model.storage.MongoDbChess
 
-private sealed class AppState
-
-private object GameNotStarted:AppState()
-
-private object GameStarted:AppState()
-
-private typealias GameAction = (/*GameId*/) -> Unit
+private typealias GameAction = (GameId) -> Unit
 
 @Composable
-fun MainWindow(/*mongoRepository:*/ onCloseRequest:() -> Unit) = Window(
+fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    title= "Chess Dos Suspeitos",
    icon= painterResource(chooseImage(team = Team.BLACK ,piece = Piece(Team.BLACK, TypeOfPieces.K,'k'))),
    state= WindowState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
    onCloseRequest= onCloseRequest,
    resizable = false
 ){
-   val gameState = remember{mutableStateOf<AppState>(GameNotStarted)}
+   val gameState = remember{mutableStateOf<Game>(GameNotStarted)}
    val currentGameState = gameState.value
 
    val gameAction = remember{mutableStateOf<GameAction?>(null)}
    val curentGameAction = gameAction.value
 
-   fun openGame(/*id:GameId*/){
-      /* TODO() */
+   fun openGame(id:GameId){
+      gameState.value = (currentGameState as GameNotStarted).start(mongoRepository,Team.WHITE,id)
    }
 
-   fun joinGame(/*id:GameId*/){
-      /* TODO() */
+   fun joinGame(id:GameId){
+      gameState.value = (currentGameState as GameNotStarted).start(mongoRepository,Team.BLACK,id)
    }
 
    MainWindowMenu(currentGameState,
@@ -63,7 +58,7 @@ fun MainWindow(/*mongoRepository:*/ onCloseRequest:() -> Unit) = Window(
 
    if(curentGameAction != null){
       getGameID(
-         onGameIdGiven = {curentGameAction.invoke(); gameAction.value = null},
+         onGameIdGiven = {curentGameAction.invoke(it); gameAction.value = null},
          onClose = { gameAction.value = null }
       )
    }
@@ -71,7 +66,7 @@ fun MainWindow(/*mongoRepository:*/ onCloseRequest:() -> Unit) = Window(
 
 @Composable
 private fun FrameWindowScope.MainWindowMenu(
-   state: AppState,
+   state: Game,
    onOpenRequest:() -> Unit,
    onJoinRequest:() -> Unit,
 ) = MenuBar{

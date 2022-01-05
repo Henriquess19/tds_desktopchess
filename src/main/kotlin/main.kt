@@ -14,7 +14,7 @@ fun main(){
     driver.use{
         val mongoRepository = MongoDbChess(driver.getDatabase(dbConnection.dbName))
         application {
-            MainWindow(/* mongoRepository */ ::exitApplication)
+            MainWindow(mongoRepository,::exitApplication)
         }
     }
 }
