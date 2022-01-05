@@ -28,26 +28,23 @@ data class toReturn (val boardState:BoardState,val result: Result)
 class Open(private val localBoard: BoardState,private val dbBoard: MongoDbChess): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
         if (parameter!= null) {
-            if (parameter.toInt() >= 0) {
                 return if (dbBoard.gamesIDList().contains(element = parameter)) {
                     val movesList = dbBoard.findgamebyId(id = parameter)
                     val playsMade = movesList.content
                     val team = if (playsMade.isEmpty()) Team.WHITE else playsMade.last().team.other
-                    val board = BoardState(id = parameter.toInt(), turn = team,movesList = movesList, openBoard = true)
+                    val board = BoardState(id = parameter, turn = team,movesList = movesList)
                     ValueResult(toReturn(
                         boardState = board,
                         result = OpenedGame))
                 } else {
                     dbBoard.createID(id = parameter)
                     dbBoard.createGame(MovesList(_id = parameter))
-                    val board = BoardState(id = parameter.toInt(), movesList = MovesList(_id = parameter), openBoard = true)
+                    val board = BoardState(id = parameter, movesList = MovesList(_id = parameter))
                     ValueResult(toReturn(
                         boardState = board,
                         result = OpenedGame))
                 }
             }
-            return ValueResult(toReturn(boardState = localBoard, result = InvalidCommand))
-        }
         return ValueResult(toReturn(boardState = localBoard, result = InvalidCommand))
     }
 }
@@ -64,12 +61,12 @@ class Join(private val localBoard: BoardState,private val dbBoard: MongoDbChess 
             } else {
                 val movesList = dbBoard.findgamebyId(id = parameter)
                 if(movesList.content.last().team == Team.WHITE){
-                return ValueResult(toReturn (boardState= BoardState(id = parameter.toInt(),
-                    turn = Team.BLACK,movesList = movesList, openBoard = true),result = OpenedGame))
+                return ValueResult(toReturn (boardState= BoardState(id = parameter,
+                    turn = Team.BLACK,movesList = movesList),result = OpenedGame))
                 }
                 else{
-                    ValueResult(toReturn (boardState= BoardState(id = parameter.toInt(),
-                        turn = Team.BLACK,movesList = movesList, openBoard = true),result = OpenedGame))
+                    ValueResult(toReturn (boardState= BoardState(id = parameter,
+                        turn = Team.BLACK,movesList = movesList),result = OpenedGame))
                     }
                 }
             }
@@ -86,7 +83,6 @@ class Play(
     private val localBoard: BoardState,
     private val dbBoard: MongoDbChess): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
-        if (!localBoard.openBoard) return ValueResult(toReturn(boardState = localBoard, result = ClosedGame))
         if (parameter != null) {
             val team = localBoard.getTeam()
             val piece = localBoard.getPiece(move = parameter)
@@ -118,7 +114,6 @@ class Play(
  */
 class Refresh(private val localBoard: BoardState, private val dbBoard: MongoDbChess): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
-        if(!localBoard.openBoard) return ValueResult(toReturn(boardState = localBoard,result =ClosedGame))
         val db = dbBoard.findgamebyId(localBoard.movesList._id)
         val lastMove = db.content.last()
         val otherPlayerMove = localBoard.makeMove(move = lastMove.play, team = lastMove.team)
@@ -134,8 +129,7 @@ class Refresh(private val localBoard: BoardState, private val dbBoard: MongoDbCh
  */
 class Moves(private val localBoard: BoardState): ChessCommands {
     override fun execute(parameter: String?):ValueResult<*>{
-        return if(!localBoard.openBoard) ValueResult(toReturn(  boardState = localBoard, result = ClosedGame))
-        else ValueResult(toReturn(  boardState = localBoard, result = MovesGame))
+        return ValueResult(toReturn(  boardState = localBoard, result = MovesGame))
     }
 }
 /**

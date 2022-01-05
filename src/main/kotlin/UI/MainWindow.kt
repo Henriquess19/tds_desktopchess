@@ -1,9 +1,9 @@
 package UI
 
-import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -13,6 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
@@ -25,7 +27,7 @@ private object GameNotStarted:AppState()
 
 private object GameStarted:AppState()
 
-
+private typealias GameAction = (/*GameId*/) -> Unit
 
 @Composable
 fun MainWindow(/*mongoRepository:*/ onCloseRequest:() -> Unit) = Window(
@@ -36,16 +38,34 @@ fun MainWindow(/*mongoRepository:*/ onCloseRequest:() -> Unit) = Window(
    resizable = false
 ){
    val gameState = remember{mutableStateOf<AppState>(GameNotStarted)}
-
    val currentGameState = gameState.value
+
+   val gameAction = remember{mutableStateOf<GameAction?>(null)}
+   val curentGameAction = gameAction.value
+
+   fun openGame(/*id:GameId*/){
+      /* TODO() */
+   }
+
+   fun joinGame(/*id:GameId*/){
+      /* TODO() */
+   }
+
    MainWindowMenu(currentGameState,
-      onOpenRequest = {gameState.value = GameStarted},
-      onJoinRequest = {},
+      onOpenRequest = {gameAction.value = ::openGame},
+      onJoinRequest = {gameAction.value = ::joinGame},
    )
 
    when(currentGameState){
       is GameNotStarted -> GameNotStartedContent()
       is GameStarted -> GameStartedContent()
+   }
+
+   if(curentGameAction != null){
+      getGameID(
+         onGameIdGiven = {curentGameAction.invoke(); gameAction.value = null},
+         onClose = { gameAction.value = null }
+      )
    }
 }
 
@@ -69,7 +89,7 @@ private fun FrameWindowScope.MainWindowMenu(
 }
 
 @Composable
-private fun GameNotStartedContent() = BoardView(BoardState(openBoard=false), onTileSelected = {_,_ -> })
+private fun GameNotStartedContent() = BoardView(BoardState(), onTileSelected = {_,_ -> })
 
 @Composable
 private fun GameStartedContent(){
@@ -102,7 +122,7 @@ fun App() {
       val board = remember {
          mutableStateOf(
             Pair<BoardState, MoveVerity>(
-               BoardState(openBoard = true),
+               BoardState(),
                MoveVerity(mutableListOf(), ValidMovement)
             )
          )
@@ -180,3 +200,32 @@ fun chooseGame(mongoDB: MongoDbChess, type:String) {
       }
    }
 }
+
+@Composable
+fun openGameView(mongoDB: MongoDbChess, ids:String,onSelected:(MovesList) -> Unit){
+   Column {
+      val id = remember{ mutableStateOf("-1")}
+      val result = remember{ mutableStateOf(MovesList(_id = id.value))}
+      Text(text = "Open a Game ", fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, modifier= Modifier.background(color = Color.Gray) )
+      Button(onClick = {
+         id.value = ids
+
+      }){
+         if(id.value.toInt() > 0) {
+            if (mongoDB.gamesIDList().contains(element = id.value)) {
+               val movesList = mongoDB.findgamebyId(id = id.value)
+               //val playsMade = movesList.content
+               //val team = if (playsMade.isEmpty()) Team.WHITE else playsMade.last().team.other
+               result.value = movesList
+
+            } else {
+               mongoDB.createID(id = id.value)
+               mongoDB.createGame(MovesList(_id = id.value))
+               result.value = MovesList(_id = id.value)
+            }
+         }
+         onSelected(result.value)
+      }
+   }
+}
+
