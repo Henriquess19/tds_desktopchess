@@ -3,7 +3,6 @@ package UI
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -12,14 +11,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import model.domain.*
 import model.storage.BoardDB
 import model.storage.MongoDbChess
+import org.litote.kmongo.MongoOperator
 
 private typealias GameAction = (GameId) -> Unit
 
@@ -44,10 +42,15 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    fun joinGame(id:GameId){
       gameState.value = (currentGameState as GameNotStarted).join(mongoRepository,Team.BLACK,id)
    }
+   fun refreshGame(){
+      gameState.value = (currentGameState as GameStarted).refresh()
+   }
+
 
    MainWindowMenu(currentGameState,
       onOpenRequest = {gameAction.value = ::openGame},
       onJoinRequest = {gameAction.value = ::joinGame},
+      onRefreshRequested = {refreshGame()}
    )
 
    when(currentGameState){
@@ -68,17 +71,22 @@ private fun FrameWindowScope.MainWindowMenu(
    state: Game,
    onOpenRequest:() -> Unit,
    onJoinRequest:() -> Unit,
+   onRefreshRequested:(GameStarted) -> Unit
 ) = MenuBar{
 
-   data class MenuState(val open:Boolean,val join:Boolean)
+   data class MenuState(val open:Boolean,val join:Boolean,val refresh:Boolean)
    val menuState = MenuState(
       open = state is GameNotStarted,
-      join = state is GameNotStarted
+      join = state is GameNotStarted,
+      refresh = state is GameStarted
    )
 
    Menu("Game"){
       Item("Open", enabled= menuState.open, onClick = onOpenRequest)
       Item("Join", enabled= menuState.join, onClick = onJoinRequest)
+   }
+   Menu("Options"){
+      Item("Refresh", enabled= menuState.refresh, onClick = {onRefreshRequested(state as GameStarted)})
    }
 }
 
@@ -94,11 +102,16 @@ private fun GameNotStartedContent(){
 
 @Composable
 private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB,id:GameId){
+   println("Entrou")
+   println(currentGame.board)
    val board = remember {
       mutableStateOf(
          currentGame.board
       )
    }
+
+   println(board.value)
+   println("-----------")
    val movement = remember { mutableStateOf(Move("dummy")) }
    val team = remember { mutableStateOf(Team.WHITE) }
 
@@ -106,15 +119,17 @@ private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB,
       Row {
          BoardView(
             board = board.value.first,
-            onTileSelected = { piece: Piece?, position: Positions ->
-               val move = getmovement(piece, position)
-               if (move != null) {
-                  board.value = GameStarted(
-                     repository = mongoRepository,
-                     id = id,
-                     localTurn = team.value,
-                     board = board.value
-                  ).makeMove(move).board
+            onTileSelected = { piece: Piece?, position: Position ->
+               if(currentGame.localTurn == board.value.first.turn) {
+                  val move = getmovement(piece, position)
+                  if (move != null) {
+                     board.value = GameStarted(
+                        repository = mongoRepository,
+                        id = id,
+                        localTurn = team.value,
+                        board = board.value
+                     ).makeMove(move).board
+                  }
                }
             }
          )

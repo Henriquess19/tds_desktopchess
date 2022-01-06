@@ -1,8 +1,5 @@
 package model.domain
 
-import model.ui.console.draw
-import org.litote.kmongo.MongoOperator
-
 /**
  * The two teams that are playable
  */
@@ -59,10 +56,10 @@ data class PlayMade(val team: Team, val play: Move)
  */
 data class BoardState internal constructor(
     val side: Int = BOARD_SIDE,
-     val turn: Team? = Team.WHITE,
-     private val board: MutableMap<Positions, Piece> = mutableMapOf(),
-     val movesList: MovesList = MovesList(),
-     var id: String = "",
+    val turn: Team? = Team.WHITE,
+    private val board: MutableMap<Position, Piece> = mutableMapOf(),
+    val movesList: MovesList = MovesList(),
+    var id: String = "",
 )
 {
 
@@ -77,7 +74,7 @@ data class BoardState internal constructor(
                 val key = type[k++]
                 val whichTeam = if(key.isLowerCase()) Team.BLACK else Team.WHITE
                 if (key != ' ') {
-                    board[Positions(Lines.values()[i], Columns.values()[j])] = Piece(whichTeam, TypeOfPieces.valueOf(key.uppercase()), key)
+                    board[Position(Lines.values()[i], Columns.values()[j])] = Piece(whichTeam, TypeOfPieces.valueOf(key.uppercase()), key)
                 }
             }
         }
@@ -89,8 +86,8 @@ data class BoardState internal constructor(
      * @return The new UI.board and what type of result, valid, invalid etc.
      */
     fun makeMove(move: Move ,team: Team): Pair<BoardState, MoveVerity> {
-        val oldPosition = Positions(line = move.move[2].toLine(), column = move.move[1].toColumn())
-        val newPosition = Positions(line =move.move[4].toLine(), column = move.move[3].toColumn())
+        val oldPosition = Position(line = move.move[2].toLine(), column = move.move[1].toColumn())
+        val newPosition = Position(line =move.move[4].toLine(), column = move.move[3].toColumn())
         var piece = board[oldPosition] ?: return Pair(BoardState(id = id, board = board, movesList = movesList, turn = turn), MoveVerity(mutableListOf(),InvalidMovement))
         if(piece.team != getTeam()) return Pair(BoardState(id = id, board = board, movesList = movesList, turn = turn), MoveVerity(mutableListOf(),DifferentTeamPiece))
         val verification = movePieceVerity(piece, oldPosition, newPosition, this)
@@ -116,11 +113,11 @@ data class BoardState internal constructor(
     }
     /**
      * Verify if the position contains a piece
-     * @param positions position where the piece should be
+     * @param position position where the piece should be
      * @return if contains return true else false
      */
-    fun containsPiece(positions: Positions): Boolean {
-        return board.containsKey(positions)
+    fun containsPiece(position: Position): Boolean {
+        return board.containsKey(position)
     }
 
     /**
@@ -164,7 +161,7 @@ data class BoardState internal constructor(
         val teampieces = board.filterValues { it.team == turn }
 
         teampieces.forEach { piece ->
-            val tiles = mutableListOf<Positions>()
+            val tiles = mutableListOf<Position>()
             treatingpiecetiles.forEach { moveverity ->
 
                 /** Verify king moves */
@@ -197,7 +194,7 @@ data class BoardState internal constructor(
             val pieceType = init.key.piece.typeOfPiece.char
             val initpos = init.key.position.toStr()
             val team = init.key.piece.team
-            val possiblePositions = mutableListOf<Positions>()
+            val possiblePositions = mutableListOf<Position>()
             init.value.tiles.forEach { end ->
                 val endpos = end.toStr()
                 val move = pieceType + initpos + endpos
@@ -211,34 +208,34 @@ data class BoardState internal constructor(
         return validMovements
     }
 
-    private fun getAllKingMovements(position:Positions):List<Positions>{
-        val validPositions = mutableListOf<Positions>()
+    private fun getAllKingMovements(position:Position):List<Position>{
+        val validPositions = mutableListOf<Position>()
 
         if (position.line != Lines.L8){
-            validPositions.add(Positions((position.line.ordinal +1).toLine(),position.column))
+            validPositions.add(Position((position.line.ordinal +1).toLine(),position.column))
             if (position.column != Columns.CA){
-                validPositions.add(Positions((position.line.ordinal +1).toLine(),(position.column.ordinal -1).toColumn()))
+                validPositions.add(Position((position.line.ordinal +1).toLine(),(position.column.ordinal -1).toColumn()))
             }
             if (position.column != Columns.CH){
-                validPositions.add(Positions((position.line.ordinal +1).toLine(),(position.column.ordinal +1).toColumn()))
+                validPositions.add(Position((position.line.ordinal +1).toLine(),(position.column.ordinal +1).toColumn()))
             }
         }
 
         if (position.column != Columns.CA){
-            validPositions.add(Positions(position.line,(position.column.ordinal +1).toColumn()))
+            validPositions.add(Position(position.line,(position.column.ordinal +1).toColumn()))
         }
 
         if (position.column != Columns.CH){
-            validPositions.add(Positions(position.line,(position.column.ordinal -1).toColumn()))
+            validPositions.add(Position(position.line,(position.column.ordinal -1).toColumn()))
         }
 
         if (position.line != Lines.L1){
-            validPositions.add(Positions((position.line.ordinal -1).toLine(),position.column))
+            validPositions.add(Position((position.line.ordinal -1).toLine(),position.column))
             if (position.column != Columns.CA){
-                validPositions.add(Positions((position.line.ordinal -1).toLine(),(position.column.ordinal -1).toColumn()))
+                validPositions.add(Position((position.line.ordinal -1).toLine(),(position.column.ordinal -1).toColumn()))
             }
             if (position.column != Columns.CH){
-                validPositions.add(Positions((position.line.ordinal -1).toLine(),(position.column.ordinal +1).toColumn()))
+                validPositions.add(Position((position.line.ordinal -1).toLine(),(position.column.ordinal +1).toColumn()))
             }
         }
 
@@ -248,11 +245,11 @@ data class BoardState internal constructor(
 
     /**
      * Gets the piece specified
-     * @param positions position where the piece should be
+     * @param position position where the piece should be
      * @return the piece itself
      */
-    fun getPiece(positions: Positions): Piece? {
-        return board[positions]
+    fun getPiece(position: Position): Piece? {
+        return board[position]
     }
     /**
      * Overwrites the function string to transform the UI.board in something readble
@@ -262,7 +259,7 @@ data class BoardState internal constructor(
         var strboard = ""
         for (i in Lines.L8.ordinal downTo Lines.L1.ordinal) {
             for (j in Columns.CA.ordinal..Columns.CH.ordinal) {
-                val boardPiece = board[Positions(Lines.values()[i], Columns.values()[j])]?.representation
+                val boardPiece = board[Position(Lines.values()[i], Columns.values()[j])]?.representation
                 if (boardPiece != null) {
                     strboard += boardPiece
                 } else {
@@ -290,8 +287,8 @@ data class BoardState internal constructor(
     fun getPiece(move:String):Piece?{
         val oldColumn = move[0].toColumn()
         val oldLine = move[1].toLine()
-        val position = Positions(line = oldLine, column = oldColumn)
-        return getPiece(positions = position)
+        val position = Position(line = oldLine, column = oldColumn)
+        return getPiece(position = position)
     }
 
     /**
@@ -301,8 +298,8 @@ data class BoardState internal constructor(
      * @param piece the piece itself
      * @param move the move made
      */
-    private fun changePiecesPlaces(oldPosition: Positions, newPosition: Positions, piece: Piece): MutableMap<Positions, Piece>{
-        val newBoard:MutableMap<Positions, Piece> =  board.toMutableMap()
+    private fun changePiecesPlaces(oldPosition: Position, newPosition: Position, piece: Piece): MutableMap<Position, Piece>{
+        val newBoard:MutableMap<Position, Piece> =  board.toMutableMap()
         newBoard[newPosition] = piece
         newBoard.remove(oldPosition)
         return newBoard
@@ -339,7 +336,7 @@ fun checkconditionsToMove(checks:MutableMap<Location, MoveVerity>):List<Move>{
  * @param team team who is making the play
  * @return [Result] if is valid or not
  */
-private fun verifyPromotion(piece: Piece, location: Positions, team: Team): Result {
+private fun verifyPromotion(piece: Piece, location: Position, team: Team): Result {
     if(piece.representation.uppercaseChar() != 'P') return InvalidCommand
     return if (team== Team.WHITE && location.line== Lines.L8
         || team== Team.BLACK && location.line== Lines.L1
@@ -347,11 +344,11 @@ private fun verifyPromotion(piece: Piece, location: Positions, team: Team): Resu
         ValidMovement
     } else InvalidMovement
 }
-fun MutableMap<Positions, Piece>.mapToString(): String {
+fun MutableMap<Position, Piece>.mapToString(): String {
     var strboard = ""
     for (i in Lines.L8.ordinal downTo Lines.L1.ordinal) {
         for (j in Columns.CA.ordinal..Columns.CH.ordinal) {
-            val boardPiece = this[Positions(Lines.values()[i], Columns.values()[j])]?.representation
+            val boardPiece = this[Position(Lines.values()[i], Columns.values()[j])]?.representation
             if (boardPiece != null) {
                 strboard += boardPiece
             } else {

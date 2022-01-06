@@ -75,16 +75,16 @@ fun Char.toLine():Lines{
  * @property lines  The line where the piece is
  * @property column  The column where the piece is
  */
-data class Positions(val line: Lines, val column: Columns)
+data class Position(val line: Lines, val column: Columns)
 
-data class Location(val piece: Piece,val position:Positions)
+data class Location(val piece: Piece,val position:Position)
 
 
 /**
  * Turns a position to a string
  * @return the string itself
  */
-fun Positions.toStr():String{
+fun Position.toStr():String{
     val line = this.line.ordinal+1
     val columm = this.column.toString()[1]
     return "$columm$line"

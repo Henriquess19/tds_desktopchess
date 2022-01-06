@@ -1,6 +1,6 @@
 package model.domain
 
-data class MoveVerity (val tiles: MutableList<Positions> = mutableListOf<Positions>(), val result: Result = InvalidMovement)
+data class MoveVerity (val tiles: MutableList<Position> = mutableListOf<Position>(), val result: Result = InvalidMovement)
 
 /**
  *Verify if the position where we wanna go have a team mate there, if not call another functions to see if the move is valid
@@ -10,7 +10,7 @@ data class MoveVerity (val tiles: MutableList<Positions> = mutableListOf<Positio
  * @param   boardState current state of the UI.board
  * @return  if its a valid movement returns true else returns false
  */
-fun movePieceVerity(piece: Piece, initialPosition: Positions, wantedPosition: Positions, boardState: BoardState): MoveVerity {
+fun movePieceVerity(piece: Piece, initialPosition: Position, wantedPosition: Position, boardState: BoardState): MoveVerity {
     val ocupied = boardState.containsPiece(wantedPosition)
 
     if (ocupied) {
@@ -43,19 +43,19 @@ fun movePieceVerity(piece: Piece, initialPosition: Positions, wantedPosition: Po
  * @return  returns according to the result interface
  */
 private fun moveVerityRook(
-    initialPosition: Positions,
-    wantedPosition: Positions,
-    boardState: BoardState
+   initialPosition: Position,
+   wantedPosition: Position,
+   boardState: BoardState
 ): MoveVerity {
-    val tiles = mutableListOf<Positions>()
-    tiles.add(Positions(line= initialPosition.line,column= initialPosition.column))
+    val tiles = mutableListOf<Position>()
+    tiles.add(Position(line= initialPosition.line,column= initialPosition.column))
     //walk on the collumn
     if (initialPosition.line == wantedPosition.line) {
         val higherColumn = Math.max(initialPosition.column.ordinal, wantedPosition.column.ordinal)
         val lowerColumn = Math.min(initialPosition.column.ordinal, wantedPosition.column.ordinal)
         for (i in higherColumn - 1 downTo lowerColumn + 1) {
-            tiles.add(Positions(line= initialPosition.line,column= i.toColumn()))
-            if (boardState.containsPiece(Positions(wantedPosition.line, i.toColumn())))
+            tiles.add(Position(line= initialPosition.line,column= i.toColumn()))
+            if (boardState.containsPiece(Position(wantedPosition.line, i.toColumn())))
                 return MoveVerity(mutableListOf(),Encounter)
         }
     }
@@ -65,8 +65,8 @@ private fun moveVerityRook(
         val higherLine = Math.max(initialPosition.line.ordinal, wantedPosition.line.ordinal)
         val lowerLine = Math.min(initialPosition.line.ordinal, wantedPosition.line.ordinal)
         for (i in higherLine - 1 downTo lowerLine + 1) {
-            tiles.add(Positions(line= i.toLine(),column= initialPosition.column))
-            if (boardState.containsPiece(Positions( i.toLine(), wantedPosition.column)))
+            tiles.add(Position(line= i.toLine(),column= initialPosition.column))
+            if (boardState.containsPiece(Position( i.toLine(), wantedPosition.column)))
                 return MoveVerity(mutableListOf(),Encounter)
         }
     }
@@ -82,14 +82,14 @@ private fun moveVerityRook(
  * @return  returns according to the result interface
  */
 private fun moveVerityPawn(
-    pieceTeam: Team,
-    initialPosition: Positions,
-    wantedPosition: Positions,
-    ocupied: Boolean,
-    boardState: BoardState
+   pieceTeam: Team,
+   initialPosition: Position,
+   wantedPosition: Position,
+   ocupied: Boolean,
+   boardState: BoardState
 ): MoveVerity{
-    val tiles = mutableListOf<Positions>()
-    tiles.add(Positions(line= initialPosition.line,column= initialPosition.column))
+    val tiles = mutableListOf<Position>()
+    tiles.add(Position(line= initialPosition.line,column= initialPosition.column))
 
     //Initial pawn position
     if (pieceTeam == Team.WHITE &&
@@ -98,8 +98,8 @@ private fun moveVerityPawn(
                 wantedPosition.line == Lines.L4) &&
         initialPosition.column == wantedPosition.column) {
 
-        return if (!ocupied && !(boardState.containsPiece(Positions(Lines.L3, initialPosition.column)))) {
-            if(wantedPosition.line == Lines.L4) tiles.add(Positions(Lines.L3, initialPosition.column))
+        return if (!ocupied && !(boardState.containsPiece(Position(Lines.L3, initialPosition.column)))) {
+            if(wantedPosition.line == Lines.L4) tiles.add(Position(Lines.L3, initialPosition.column))
             MoveVerity(tiles,ValidMovement)
         }
         else MoveVerity(mutableListOf(),InvalidMovement)
@@ -111,8 +111,8 @@ private fun moveVerityPawn(
                 wantedPosition.line == Lines.L5) &&
         initialPosition.column == wantedPosition.column) {
 
-        return if(!ocupied && !(boardState.containsPiece(Positions(Lines.L6, initialPosition.column)))){
-            if(wantedPosition.line == Lines.L5)tiles.add(Positions(Lines.L6, initialPosition.column))
+        return if(!ocupied && !(boardState.containsPiece(Position(Lines.L6, initialPosition.column)))){
+            if(wantedPosition.line == Lines.L5)tiles.add(Position(Lines.L6, initialPosition.column))
             MoveVerity(tiles,ValidMovement)
         }
         else MoveVerity(mutableListOf(),InvalidMovement)
@@ -142,12 +142,12 @@ private fun moveVerityPawn(
  */
 
 private fun moveVerityBishop(
-    initialPosition: Positions,
-    wantedPosition: Positions,
-    boardState: BoardState
+   initialPosition: Position,
+   wantedPosition: Position,
+   boardState: BoardState
 ): MoveVerity {
-    val tiles = mutableListOf<Positions>()
-    tiles.add(Positions(line= initialPosition.line,column= initialPosition.column))
+    val tiles = mutableListOf<Position>()
+    tiles.add(Position(line= initialPosition.line,column= initialPosition.column))
 
     if (initialPosition.column.ordinal == wantedPosition.column.ordinal
         || initialPosition.line.ordinal == wantedPosition.line.ordinal
@@ -171,9 +171,9 @@ private fun moveVerityBishop(
                 && column.ordinal >= wantedPosition.column.ordinal +1
             ) {
 
-                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(mutableListOf(),Encounter)
+                if (boardState.containsPiece(Position( line, column))) return MoveVerity(mutableListOf(),Encounter)
 
-                tiles.add(Positions(line,column))
+                tiles.add(Position(line,column))
                 line = Lines.values()[line.ordinal- 1]
                 column = Columns.values()[column.ordinal - 1]
             }
@@ -188,9 +188,9 @@ private fun moveVerityBishop(
                 && column.ordinal >= wantedPosition.column.ordinal + 1
             ) {
 
-                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(mutableListOf(),Encounter)
+                if (boardState.containsPiece(Position( line, column))) return MoveVerity(mutableListOf(),Encounter)
 
-                tiles.add(Positions(line,column))
+                tiles.add(Position(line,column))
                 line = Lines.values()[line.ordinal + 1]
                 column = Columns.values()[column.ordinal - 1]
             }
@@ -212,9 +212,9 @@ private fun moveVerityBishop(
                 && column.ordinal <= wantedPosition.column.ordinal - 1
             ) {
 
-                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(mutableListOf(),Encounter)
+                if (boardState.containsPiece(Position( line, column))) return MoveVerity(mutableListOf(),Encounter)
 
-                tiles.add(Positions(line,column))
+                tiles.add(Position(line,column))
                 line = Lines.values()[line.ordinal - 1]
                 column = Columns.values()[column.ordinal + 1]
             }
@@ -229,9 +229,9 @@ private fun moveVerityBishop(
                 && column.ordinal <= wantedPosition.column.ordinal - 1
             ) {
 
-                if (boardState.containsPiece(Positions( line, column))) return MoveVerity(mutableListOf(),Encounter)
+                if (boardState.containsPiece(Position( line, column))) return MoveVerity(mutableListOf(),Encounter)
 
-                tiles.add(Positions(line,column))
+                tiles.add(Position(line,column))
                 line = Lines.values()[line.ordinal + 1]
                 column = Columns.values()[column.ordinal + 1]
             }
@@ -246,11 +246,11 @@ private fun moveVerityBishop(
  * @return  returns according to the result interface
  */
 private fun moveVerityKing(
-    initialPosition: Positions,
-    wantedPosition: Positions,
+   initialPosition: Position,
+   wantedPosition: Position,
 ): MoveVerity {
-    val tiles = mutableListOf<Positions>()
-    tiles.add(Positions(line= initialPosition.line,column= initialPosition.column))
+    val tiles = mutableListOf<Position>()
+    tiles.add(Position(line= initialPosition.line,column= initialPosition.column))
 
     if (wantedPosition.column.ordinal != initialPosition.column.ordinal
         && wantedPosition.column.ordinal != initialPosition.column.ordinal - 1
@@ -271,11 +271,11 @@ private fun moveVerityKing(
  * @return  returns according to the result interface
  */
 private fun moveVerityKnight(
-    initialPosition: Positions,
-    wantedPosition: Positions,
+   initialPosition: Position,
+   wantedPosition: Position,
 ): MoveVerity {
-    val tiles = mutableListOf<Positions>()
-    tiles.add(Positions(line= initialPosition.line,column= initialPosition.column))
+    val tiles = mutableListOf<Position>()
+    tiles.add(Position(line= initialPosition.line,column= initialPosition.column))
 
     //Up movement
     if (initialPosition.line.ordinal == wantedPosition.line.ordinal - 2) {
@@ -309,12 +309,12 @@ private fun moveVerityKnight(
  * @return  returns according to the result interface
  */
 private fun moveVerityQueen(
-    initialPosition: Positions,
-    wantedPosition: Positions,
-    boardState: BoardState
+   initialPosition: Position,
+   wantedPosition: Position,
+   boardState: BoardState
 ):MoveVerity {
-    val tiles = mutableListOf<Positions>()
-    tiles.add(Positions(line= initialPosition.line,column= initialPosition.column))
+    val tiles = mutableListOf<Position>()
+    tiles.add(Position(line= initialPosition.line,column= initialPosition.column))
 
     /* Check type rook movement */
     val rooktype = moveVerityRook(initialPosition, wantedPosition,boardState)
@@ -333,7 +333,7 @@ private fun moveVerityQueen(
  * @param   wantedPosition where the piece is to be moved
  * @return  if its a valid movement returns true else returns false
  */
-private fun diagonalLeftToRightVerity (initialPosition: Positions, wantedPosition: Positions): Boolean {
+private fun diagonalLeftToRightVerity (initialPosition: Position, wantedPosition: Position): Boolean {
     val initialDif = initialPosition.line.ordinal - initialPosition.column.ordinal
     val finalDif = wantedPosition.line.ordinal - wantedPosition.column.ordinal
     return initialDif == finalDif + 2 * (wantedPosition.column.ordinal - initialPosition.column.ordinal)
@@ -344,7 +344,7 @@ private fun diagonalLeftToRightVerity (initialPosition: Positions, wantedPositio
  * @param   wantedPosition where the piece is to be moved
  * @return  if its a valid movement returns true else returns false
  */
-private fun diagonalRightToLeftVerity (initialPosition: Positions, wantedPosition: Positions): Boolean {
+private fun diagonalRightToLeftVerity (initialPosition: Position, wantedPosition: Position): Boolean {
     val initialDif = initialPosition.line.ordinal - initialPosition.column.ordinal
     val finalDif = wantedPosition.line.ordinal - wantedPosition.column.ordinal
     return initialDif == finalDif

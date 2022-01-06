@@ -1,8 +1,7 @@
 package model.storage
 
-import model.domain.MoveVerity
 import model.domain.MovesList
-import model.domain.Positions
+import model.domain.Position
 
 typealias Exception = java.lang.Exception
 
@@ -18,12 +17,12 @@ interface BoardDB {
     * @return [MovesList]the moves list present on that id
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   fun getGame(id: String): Pair<MovesList, MutableList<Positions>>?
+   fun getGame(id: String): Pair<MovesList, MutableList<Position>>?
    /**
     * Updates the game on DB
     * @param movesList the list that we wanna put on DB
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   fun updateGame(id:String, movesList: MovesList,positions: MutableList<Positions>): Boolean
+   fun updateGame(id:String, movesList: MovesList,positions: MutableList<Position>): Boolean
 
 }

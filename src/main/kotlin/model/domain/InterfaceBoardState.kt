@@ -14,17 +14,17 @@ interface BoardStateInterface {
    fun makeMove(move: Move, team: model.domain.Team): Pair<BoardState, ValueResult<*>>
    /**
     * Verificate if the position contains a piece
-    * @param positions position where the piece should be
+    * @param position position where the piece should be
     * @return if contains return true else false
     */
-   fun containsPiece(positions: model.domain.Positions):Boolean
+   fun containsPiece(position: model.domain.Position):Boolean
    /**
     * Gets the piece specified
     * @param line line where the piece should be
-    * @param positions position where the piece should be
+    * @param position position where the piece should be
     * @return the piece itself
     */
-   fun getPiece(positions: model.domain.Positions): Piece?
+   fun getPiece(position: model.domain.Position): Piece?
 
    /**
     * Based on the move made, and which team turn is, can see if the piece is their ones

@@ -30,7 +30,7 @@ class Open(private val localBoard: BoardState,private val dbBoard: BoardDB): Che
         if (parameter!= null) {
             val state = dbBoard.getGame(id = parameter)
             return if (state == null) {
-                dbBoard.updateGame(id = parameter, movesList = MovesList(), positions = mutableListOf<Positions>())
+                dbBoard.updateGame(id = parameter, movesList = MovesList(), positions = mutableListOf<Position>())
                 val board = BoardState(id = parameter)
                 ValueResult(toReturn(
                     board= Pair(board,MoveVerity()),

@@ -26,6 +26,7 @@ object GameNotStarted : Game() {
       val game = Open(BoardState(),repository).invoke(gameId.toString())
       return if(game is ValueResult<*>){
          val gameState = game.data as toReturn
+         println(localTurn)
          GameStarted(repository,gameId,localTurn,Pair(gameState.board.first,gameState.board.second))
       }
       else GameStarted(repository, gameId, localTurn, Pair(BoardState(), MoveVerity()))
@@ -36,6 +37,7 @@ object GameNotStarted : Game() {
       val game = Join(BoardState(),repository).invoke(gameId.toString())
       return if(game is ValueResult<*>){
          val gameState = game.data as toReturn
+         println(localTurn)
          GameStarted(repository,gameId,localTurn,Pair(gameState.board.first,gameState.board.second))
       }
       else GameStarted(repository, gameId, localTurn, Pair(BoardState(), MoveVerity()))
@@ -80,12 +82,12 @@ data class GameStarted(
    /**
     * Creates a new instance from the data published to the repository
     */
-   /*fun refresh(): GameStarted {
-      val gameMoves = repository.findgamebyId(id.toString())
-      return if (gameMoves != null) {
-         copy(board = gameMoves.currentState.to)
-      } else throw UnreachableSharedGameException(NullPointerException())
-   }*/
+   fun refresh(): GameStarted {
+      val dbGame = repository.getGame(id.toString())
+      return if (dbGame != null) {
+         GameStarted(repository,id,localTurn,Pair(BoardState(movesList = dbGame.first),MoveVerity(dbGame.second,ValidMovement)))
+      } else this
+   }
 }
 
 /**
