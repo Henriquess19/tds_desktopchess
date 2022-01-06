@@ -18,7 +18,7 @@ fun gameView(input:Any?) {
     when (result.result) {
         OpenedGame -> {
             println( "Game opened..")
-                draw(board = result.boardState.movesList.currentState)
+                draw(board = result.board.first.movesList.currentState)
             }
         InvalidCommand -> println("You have to say the number of the game..")
        else -> println("Something went wrong..")
@@ -42,7 +42,7 @@ fun playView(input:Any?) {
       Encounter -> println("Another piece is on the way..")
        else -> println("Something went wrong..")
     }
-    draw(board = result.boardState.movesList.currentState)
+    draw(board = result.board.first.movesList.currentState)
 }
 
 
@@ -62,7 +62,7 @@ fun refreshView(input:Any?) {
         }
           else -> println("Something went wrong..")
       }
-    draw(board = result.boardState.movesList.currentState)
+    draw(board = result.board.first.movesList.currentState)
 }
 /**
  * Display the list of moves
@@ -72,7 +72,7 @@ fun movesView(input: Any?) {
      if (result.result == ClosedGame) return println("Game not opened..")
      if (result.result == MovesGame) {
      var idx = 0
-     val list = result.boardState.movesList.content
+     val list = result.board.first.movesList.content
       println("----------MOVES-----------")
      while (idx != list.size  && list.isNotEmpty()) {
          val play = list[idx]

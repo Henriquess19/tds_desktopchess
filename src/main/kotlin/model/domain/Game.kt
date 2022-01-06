@@ -26,7 +26,7 @@ object GameNotStarted : Game() {
       val game = Open(BoardState(),repository).invoke(gameId.toString())
       return if(game is ValueResult<*>){
          val gameState = game.data as toReturn
-         GameStarted(repository,gameId,localTurn,Pair(gameState.boardState,MoveVerity()))
+         GameStarted(repository,gameId,localTurn,Pair(gameState.board.first,gameState.board.second))
       }
       else GameStarted(repository, gameId, localTurn, Pair(BoardState(), MoveVerity()))
    }
@@ -36,7 +36,7 @@ object GameNotStarted : Game() {
       val game = Join(BoardState(),repository).invoke(gameId.toString())
       return if(game is ValueResult<*>){
          val gameState = game.data as toReturn
-         GameStarted(repository,gameId,localTurn,Pair(gameState.boardState,MoveVerity()))
+         GameStarted(repository,gameId,localTurn,Pair(gameState.board.first,gameState.board.second))
       }
       else GameStarted(repository, gameId, localTurn, Pair(BoardState(), MoveVerity()))
    }
@@ -71,8 +71,8 @@ data class GameStarted(
       val move = moves.split(',')[1]
       val play = Play(board.first,repository).invoke(move)
       return if(play is ValueResult<*>){
-         val BoardState = play.data as toReturn
-         GameStarted(repository,id,localTurn,Pair(BoardState.boardState,board.second))
+         val gameState = play.data as toReturn
+         GameStarted(repository,id,localTurn,Pair(gameState.board.first,gameState.board.second))
       }
       else this
    }
