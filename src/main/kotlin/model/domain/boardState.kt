@@ -86,9 +86,11 @@ data class BoardState internal constructor(
      * @return The new UI.board and what type of result, valid, invalid etc.
      */
     fun makeMove(move: Move ,team: Team): Pair<BoardState, MoveVerity> {
+        println(movesList.content)
         val oldPosition = Position(line = move.move[2].toLine(), column = move.move[1].toColumn())
         val newPosition = Position(line =move.move[4].toLine(), column = move.move[3].toColumn())
         var piece = board[oldPosition] ?: return Pair(BoardState(id = id, board = board, movesList = movesList, turn = turn), MoveVerity(mutableListOf(),InvalidMovement))
+        println(getTeam())
         if(piece.team != getTeam()) return Pair(BoardState(id = id, board = board, movesList = movesList, turn = turn), MoveVerity(mutableListOf(),DifferentTeamPiece))
         val verification = movePieceVerity(piece, oldPosition, newPosition, this)
         if (verification.result == ValidMovement) {

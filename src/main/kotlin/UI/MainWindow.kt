@@ -8,6 +8,7 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -27,7 +28,7 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    icon= painterResource(chooseImage(team = Team.BLACK ,piece = Piece(Team.BLACK, TypeOfPieces.K,'k'))),
    state= WindowState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
    onCloseRequest= onCloseRequest,
-   resizable = false
+   resizable = true
 ){
    val gameState = remember{mutableStateOf<Game>(GameNotStarted)}
    val currentGameState = gameState.value
@@ -42,20 +43,16 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    fun joinGame(id:GameId){
       gameState.value = (currentGameState as GameNotStarted).join(mongoRepository,Team.BLACK,id)
    }
-   fun refreshGame(){
-      gameState.value = (currentGameState as GameStarted).refresh()
-   }
-
 
    MainWindowMenu(currentGameState,
       onOpenRequest = {gameAction.value = ::openGame},
       onJoinRequest = {gameAction.value = ::joinGame},
-      onRefreshRequested = {refreshGame()}
+      onRefreshRequested = {gameState.value = (currentGameState as GameStarted).refresh()}
    )
 
    when(currentGameState){
       is GameNotStarted -> GameNotStartedContent()
-      is GameStarted -> GameStartedContent(currentGameState,mongoRepository,"123".toGameIdOrNull()!!)
+      is GameStarted -> GameStartedContent(currentGameState,mongoRepository)
    }
 
    if(curentGameAction != null){
@@ -101,17 +98,9 @@ private fun GameNotStartedContent(){
 }
 
 @Composable
-private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB,id:GameId){
-   println("Entrou")
-   println(currentGame.board)
-   val board = remember {
-      mutableStateOf(
-         currentGame.board
-      )
-   }
+private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB){
 
-   println(board.value)
-   println("-----------")
+   val board = remember { mutableStateOf(currentGame.board)}
    val movement = remember { mutableStateOf(Move("dummy")) }
    val team = remember { mutableStateOf(Team.WHITE) }
 
@@ -120,15 +109,20 @@ private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB,
          BoardView(
             board = board.value.first,
             onTileSelected = { piece: Piece?, position: Position ->
-               if(currentGame.localTurn == board.value.first.turn) {
-                  val move = getmovement(piece, position)
-                  if (move != null) {
-                     board.value = GameStarted(
-                        repository = mongoRepository,
-                        id = id,
-                        localTurn = team.value,
-                        board = board.value
-                     ).makeMove(move).board
+               if (currentGame.localTurn == board.value.first.turn) {
+                  val moves = getmovement(piece, position)
+                  if (moves != null) {
+                     val move = moves.split(',')[1]
+                     val id = currentGame.board.first.id.toGameIdOrNull()
+                     if (id != null) {
+                        movement.value = Move(move)
+                        board.value = GameStarted(
+                           repository = mongoRepository,
+                           id = id,
+                           localTurn = team.value,
+                           board = board.value
+                        ).makeMove(move).board
+                     }
                   }
                }
             }

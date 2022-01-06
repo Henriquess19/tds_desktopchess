@@ -141,7 +141,7 @@ class Play(
  */
 class Refresh(private val localBoard: BoardState, private val dbBoard: BoardDB): ChessCommands {
     override fun execute(parameter: String?): ValueResult<*> {
-        if(localBoard.id !="") {
+        if(localBoard.id != "") {
             val dbGame = dbBoard.getGame(localBoard.id)
             return if(dbGame != null) {
                 val lastMove = dbGame.first.content.last()

@@ -69,8 +69,7 @@ data class GameStarted(
     * @return the new [GameStarted] instance
     * @throws IllegalStateException if it's not the local player turn to play
     */
-   fun makeMove(moves: String) : GameStarted {
-      val move = moves.split(',')[1]
+   fun makeMove(move: String) : GameStarted {
       val play = Play(board.first,repository).invoke(move)
       return if(play is ValueResult<*>){
          val gameState = play.data as toReturn
@@ -83,9 +82,10 @@ data class GameStarted(
     * Creates a new instance from the data published to the repository
     */
    fun refresh(): GameStarted {
-      val dbGame = repository.getGame(id.toString())
-      return if (dbGame != null) {
-         GameStarted(repository,id,localTurn,Pair(BoardState(movesList = dbGame.first),MoveVerity(dbGame.second,ValidMovement)))
+      val refresh = Refresh(board.first,repository).invoke()
+      return if(refresh is ValueResult<*>){
+         val gameState = refresh.data as toReturn
+         GameStarted(repository,id,localTurn,Pair(gameState.board.first,gameState.board.second))
       } else this
    }
 }
