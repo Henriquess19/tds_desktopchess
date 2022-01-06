@@ -82,10 +82,9 @@ data class GameStarted(
     * Creates a new instance from the data published to the repository
     */
    fun refresh(): GameStarted {
-      val refresh = Refresh(board.first,repository).invoke()
-      return if(refresh is ValueResult<*>){
-         val gameState = refresh.data as toReturn
-         GameStarted(repository,id,localTurn,Pair(gameState.board.first,gameState.board.second))
+      val refresh = repository.getGame(id.toString())
+      return if(refresh !=null){
+         GameStarted(repository,id,localTurn,Pair(BoardState(movesList = refresh.first),MoveVerity(refresh.second,ValidMovement)))
       } else this
    }
 }

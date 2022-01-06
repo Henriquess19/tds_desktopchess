@@ -94,8 +94,7 @@ class Play(
             if(piecesChecking.isNotEmpty()) {
                 possiblecheckmate = localBoard.verifyCheckmate(piecesChecking)
                 if (possiblecheckmate.isEmpty()){
-                    //endgame(team)
-                    /* TODO(NAO DEIXAR JOGAR MAIS) */
+                    return ValueResult(EndedGame)
                 }
             }
             var play = Pair(BoardState(),MoveVerity())
@@ -145,6 +144,7 @@ class Refresh(private val localBoard: BoardState, private val dbBoard: BoardDB):
             val dbGame = dbBoard.getGame(localBoard.id)
             return if(dbGame != null) {
                 val lastMove = dbGame.first.content.last()
+                println(localBoard)
                 val otherPlayerMove = localBoard.makeMove(move = lastMove.play, team = lastMove.team)
                 println(otherPlayerMove.second.result)
                 when (otherPlayerMove.second.result) {

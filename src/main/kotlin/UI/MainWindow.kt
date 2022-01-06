@@ -44,10 +44,21 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
       gameState.value = (currentGameState as GameNotStarted).join(mongoRepository,Team.BLACK,id)
    }
 
+   fun refresh(){
+      gameState.value = (currentGameState as GameStarted).refresh()
+   }
+
+   /* TODO(VER ONDE POR) */
+   fun endGame(){
+      endGameDialog(
+         onClose = {/*gameState.value = GameNotStarted*/}
+      )
+   }
+
    MainWindowMenu(currentGameState,
       onOpenRequest = {gameAction.value = ::openGame},
       onJoinRequest = {gameAction.value = ::joinGame},
-      onRefreshRequested = {gameState.value = (currentGameState as GameStarted).refresh()}
+      onRefreshRequested = {refresh()}
    )
 
    when(currentGameState){
@@ -97,11 +108,11 @@ private fun GameNotStartedContent(){
    }
 }
 
+
 @Composable
 private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB){
-
    val board = remember { mutableStateOf(currentGame.board)}
-   val movement = remember { mutableStateOf(Move("dummy")) }
+   val movement = remember { mutableStateOf(Move("none")) }
    val team = remember { mutableStateOf(Team.WHITE) }
 
    Column {
@@ -109,7 +120,7 @@ private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB)
          BoardView(
             board = board.value.first,
             onTileSelected = { piece: Piece?, position: Position ->
-               if (currentGame.localTurn == board.value.first.turn) {
+               if (currentGame.localTurn == board.value.first.turn || currentGame.localTurn != board.value.first.turn) {
                   val moves = getmovement(piece, position)
                   if (moves != null) {
                      val move = moves.split(',')[1]
@@ -124,6 +135,9 @@ private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB)
                         ).makeMove(move).board
                      }
                   }
+                  if (board.value.second.result == EndedGame){
+                     TODO()
+                  }
                }
             }
          )
@@ -134,70 +148,3 @@ private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB)
    }
 }
 
-/** ----------------------------------------------------------------------------**/
-/* TODO("VERIFY WHERE TO PUT") */
-@Composable
-fun endgame(team:Team){
-   Box {
-      val popupWidth = 200.dp
-      val popupHeight = 50.dp
-      val cornerSize = 16.dp
-
-      Popup() {
-         Box(
-            Modifier
-               .size(popupWidth, popupHeight)
-               .background(Color.White, RoundedCornerShape(cornerSize))
-         )
-         Text("$team WON!!!", modifier= Modifier.padding(12.dp))
-      }
-   }
-}
-
-
-
-@Composable
-fun chooseGame(mongoDB: MongoDbChess, type:String) {
-   Column {
-      val text = remember { mutableStateOf("-1") }
-
-      TextField(
-         value = text.value,
-         onValueChange = { text.value = it },
-         label = { Text("GameID") }
-      )
-
-      if(text.value != "-1"){
-         //openGameView(mongoDB,text.value,onSelected = { println(it)})
-      }
-   }
-}
-/*
-@Composable
-fun openGameView(mongoDB: MongoDbChess, ids:String,onSelected:(MovesList) -> Unit){
-   Column {
-      val id = remember{ mutableStateOf("-1")}
-      val result = remember{ mutableStateOf(MovesList(_id = id.value))}
-      Text(text = "Open a Game ", fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, modifier= Modifier.background(color = Color.Gray) )
-      Button(onClick = {
-         id.value = ids
-
-      }){
-         if(id.value.toInt() > 0) {
-            if (mongoDB.gamesIDList().contains(element = id.value)) {
-               val movesList = mongoDB.getGame(id = id.value)
-               //val playsMade = movesList.content
-               //val team = if (playsMade.isEmpty()) Team.WHITE else playsMade.last().team.other
-               result.value = movesList
-
-            } else {
-               mongoDB.createID(id = id.value)
-               mongoDB.createGame(MovesList(_id = id.value))
-               result.value = MovesList(_id = id.value)
-            }
-         }
-         onSelected(result.value)
-      }
-   }
-}
-*/
