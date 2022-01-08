@@ -26,21 +26,9 @@ object GameNotStarted : Game() {
       val game = Open(BoardState(),repository).invoke(gameId.toString())
       return if(game is ValueResult<*>){
          val gameState = game.data as toReturn
-         println(localTurn)
          GameStarted(repository,gameId,localTurn,Pair(gameState.board.first,gameState.board.second))
       }
-      else GameStarted(repository, gameId, localTurn, Pair(BoardState(), MoveVerity()))
-   }
-
-
-   fun join(repository: BoardDB, localTurn: Team, gameId: GameId):Game{
-      val game = Join(BoardState(),repository).invoke(gameId.toString())
-      return if(game is ValueResult<*>){
-         val gameState = game.data as toReturn
-         println(localTurn)
-         GameStarted(repository,gameId,localTurn,Pair(gameState.board.first,gameState.board.second))
-      }
-      else GameStarted(repository, gameId, localTurn, Pair(BoardState(), MoveVerity()))
+      else GameStarted(repository, gameId, localTurn, Pair(BoardState(id=gameId.toString()), MoveVerity()))
    }
 }
 
@@ -61,33 +49,49 @@ data class GameStarted(
    /**
     * Checks whether it's the local player turn to play
     */
-   fun isLocalPlayerTurn() = localTurn== board.first.turn
-
-   /**
-    * Makes a move, if it's the local player turn.
-    * @param at    the coordinates of the play to be made
-    * @return the new [GameStarted] instance
-    * @throws IllegalStateException if it's not the local player turn to play
-    */
-   fun makeMove(move: String) : GameStarted {
-      val play = Play(board.first,repository).invoke(move)
-      return if(play is ValueResult<*>){
-         val gameState = play.data as toReturn
-         GameStarted(repository,id,localTurn,Pair(gameState.board.first,gameState.board.second))
+   fun isLocalPlayerTurn() =
+      localTurn ==  if (board.first.movesList.content.isEmpty()) {
+        Team.WHITE
+      } else {
+        board.first.movesList.content.last().team.other
       }
-      else this
+
+
+      /**
+       * Makes a move, if it's the local player turn.
+       * @param at    the coordinates of the play to be made
+       * @return the new [GameStarted] instance
+       * @throws IllegalStateException if it's not the local player turn to play
+       */
+      fun makeMove(move: String) : GameStarted {
+         val play = Play(board.first,repository).invoke(move)
+         println(play)
+         return if(play is ValueResult<*>){
+            val gameState = play.data as toReturn
+            GameStarted(repository,id,localTurn,Pair(gameState.board.first,gameState.board.second))
+         }
+         else this
+      }
+
+      /**
+       * Creates a new instance from the data published to the repository
+       */
+      fun refresh(): GameStarted {
+         val refresh = repository.getGame(id.toString())
+         return if(refresh !=null){
+            GameStarted(repository,id,localTurn,Pair(BoardState(movesList = refresh.first, id= id.toString()),MoveVerity(refresh.second,ValidMovement)))
+         } else this
+      }
+
+      fun updateVerity():GameStarted{
+         return  GameStarted(repository,id,localTurn,Pair(board.first,MoveVerity(tiles= board.second.tiles,result= ValidMovement)))
+      }
+
+      fun promotionMove(move:String):GameStarted{
+         return makeMove(move)
+      }
    }
 
-   /**
-    * Creates a new instance from the data published to the repository
-    */
-   fun refresh(): GameStarted {
-      val refresh = repository.getGame(id.toString())
-      return if(refresh !=null){
-         GameStarted(repository,id,localTurn,Pair(BoardState(movesList = refresh.first),MoveVerity(refresh.second,ValidMovement)))
-      } else this
-   }
-}
 
 /**
  * Represents game identifiers.

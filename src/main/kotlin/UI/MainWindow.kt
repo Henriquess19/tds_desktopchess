@@ -19,8 +19,11 @@ import model.domain.*
 import model.storage.BoardDB
 import model.storage.MongoDbChess
 import org.litote.kmongo.MongoOperator
+import kotlin.Result
 
 private typealias GameAction = (GameId) -> Unit
+
+private typealias GameResult = (ValueResult<*>) -> Unit
 
 @Composable
 fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
@@ -28,7 +31,7 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    icon= painterResource(chooseImage(team = Team.BLACK ,piece = Piece(Team.BLACK, TypeOfPieces.K,'k'))),
    state= WindowState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
    onCloseRequest= onCloseRequest,
-   resizable = true
+   resizable = false
 ){
    val gameState = remember{mutableStateOf<Game>(GameNotStarted)}
    val currentGameState = gameState.value
@@ -36,12 +39,21 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    val gameAction = remember{mutableStateOf<GameAction?>(null)}
    val curentGameAction = gameAction.value
 
+   val gameResult = remember{mutableStateOf<ValueResult<*>?>(null)}
+   val currentgameResult = gameResult.value
+
+   val promotionNeeded = remember{mutableStateOf<String?>(null)}
+   val currentPromotionNeeded = promotionNeeded.value
+
+   val gameTeamEnded = remember{mutableStateOf<Team?>(null)}
+   val currentGameTeamEnded = gameTeamEnded.value
+
    fun openGame(id:GameId){
       gameState.value = (currentGameState as GameNotStarted).open(mongoRepository,Team.WHITE,id)
    }
 
    fun joinGame(id:GameId){
-      gameState.value = (currentGameState as GameNotStarted).join(mongoRepository,Team.BLACK,id)
+      gameState.value = (currentGameState as GameNotStarted).open(mongoRepository,Team.BLACK,id)
    }
 
    fun refresh(){
@@ -49,11 +61,12 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    }
 
    /* TODO(VER ONDE POR) */
-   fun endGame(){
+   /*fun endGame(){
       endGameDialog(
          onClose = {/*gameState.value = GameNotStarted*/}
       )
-   }
+   }*/
+
 
    MainWindowMenu(currentGameState,
       onOpenRequest = {gameAction.value = ::openGame},
@@ -63,16 +76,43 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
 
    when(currentGameState){
       is GameNotStarted -> GameNotStartedContent()
-      is GameStarted -> GameStartedContent(currentGameState,mongoRepository)
+      is GameStarted -> GameStartedContent(
+         currentGameState,
+         onPossibleMove = {move-> gameState.value = currentGameState.makeMove(move)},
+         composingResultValue = {result -> gameResult.value = ValueResult(result) },
+         onPromotionNeeded= {move ->  promotionNeeded.value= move},
+         onGameEnded={team -> gameTeamEnded.value = team}
+         )
+   }
+
+   if(currentGameTeamEnded != null){
+      endGameDialog(
+         team = currentGameTeamEnded,
+         onClose = {gameTeamEnded.value = null; gameState.value = GameNotStarted }
+      )
+   }
+
+
+   if(currentPromotionNeeded != null){
+      promotionDialog(
+         movement = currentPromotionNeeded,
+         onPieceGiven = {move-> promotionNeeded.value = null; gameState.value = (currentGameState as GameStarted).promotionMove(move)},
+         onClose = {promotionNeeded.value = currentPromotionNeeded}
+      )
+   }
+
+   if(currentgameResult != null){
+      resultDialog() { gameResult.value = null; gameState.value = (currentGameState as GameStarted).updateVerity() }
    }
 
    if(curentGameAction != null){
       getGameID(
          onGameIdGiven = {curentGameAction.invoke(it); gameAction.value = null},
-         onClose = { gameAction.value = null }
+         onClose = { gameAction.value = null}
       )
    }
 }
+
 
 @Composable
 private fun FrameWindowScope.MainWindowMenu(
@@ -110,40 +150,45 @@ private fun GameNotStartedContent(){
 
 
 @Composable
-private fun GameStartedContent(currentGame:GameStarted,mongoRepository: BoardDB){
-   val board = remember { mutableStateOf(currentGame.board)}
-   val movement = remember { mutableStateOf(Move("none")) }
-   val team = remember { mutableStateOf(Team.WHITE) }
+private fun GameStartedContent(
+   currentGame:GameStarted,
+   onPossibleMove: (move:String) -> Unit,
+   composingResultValue: (result: ValueResult<*>) -> Unit,
+   onPromotionNeeded:(move:String) ->Unit,
+   onGameEnded:(team:Team) -> Unit){
+
+   val board = currentGame.board
+   val move = remember{mutableStateOf<String>("")}
+
+   val possibleMovement = { piece: Piece?, position: Position ->
+      if (currentGame.isLocalPlayerTurn()) {
+         val moves = getmovement(piece, position)
+         if (moves != null) {
+            val mover = moves.split(',')[1]
+            val id = board.first.id.toGameIdOrNull()
+            if (id != null) {
+               move.value = mover
+               onPossibleMove(move.value)
+            }
+         }
+      }
+   }
+
+   if (board.second.result != ValidMovement) {
+      if (board.second.result == NeedPromotion){
+         onPromotionNeeded(move.value)
+      }else if (board.second.result == EndedGame) {
+            onGameEnded(board.first.movesList.content.last().team)
+      }else{
+         composingResultValue(ValueResult(board.second.result))
+      }
+   }
+
 
    Column {
       Row {
-         BoardView(
-            board = board.value.first,
-            onTileSelected = { piece: Piece?, position: Position ->
-               if (currentGame.localTurn == board.value.first.turn || currentGame.localTurn != board.value.first.turn) {
-                  val moves = getmovement(piece, position)
-                  if (moves != null) {
-                     val move = moves.split(',')[1]
-                     val id = currentGame.board.first.id.toGameIdOrNull()
-                     if (id != null) {
-                        movement.value = Move(move)
-                        board.value = GameStarted(
-                           repository = mongoRepository,
-                           id = id,
-                           localTurn = team.value,
-                           board = board.value
-                        ).makeMove(move).board
-                     }
-                  }
-                  if (board.value.second.result == EndedGame){
-                     TODO()
-                  }
-               }
-            }
-         )
-         movesView(board = board.value.first)
-         if (board.value.second.result != ValidMovement) board.value =
-            composingResults(board = board.value, team = team.value, movement = movement.value)
+         BoardView(board = board.first,onTileSelected = possibleMovement)
+         movesView(board = board.first)
       }
    }
 }

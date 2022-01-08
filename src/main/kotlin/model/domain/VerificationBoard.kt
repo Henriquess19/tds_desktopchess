@@ -1,6 +1,6 @@
 package model.domain
 
-data class MoveVerity (val tiles: MutableList<Position> = mutableListOf<Position>(), val result: Result = InvalidMovement)
+data class MoveVerity (val tiles: MutableList<Position> = mutableListOf<Position>(), val result: Result = ValidMovement)
 
 /**
  *Verify if the position where we wanna go have a team mate there, if not call another functions to see if the move is valid
@@ -16,7 +16,7 @@ fun movePieceVerity(piece: Piece, initialPosition: Position, wantedPosition: Pos
     if (ocupied) {
         val ocupiedColor = boardState.getPiece(wantedPosition)?.team
         if (ocupiedColor == piece.team) {
-            return MoveVerity(mutableListOf(),SameTeam)
+            return MoveVerity(mutableListOf(),InvalidMovement)
         }
     }
     return when (piece.typeOfPiece) {

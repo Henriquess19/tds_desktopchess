@@ -13,7 +13,6 @@ class ValueResult<T>(val data: T) : Result()
  * Result when the game don´t exists
  */
 object GameNotExists: Result()
-
 /**
  * Cannot refresh
  */

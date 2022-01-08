@@ -146,10 +146,6 @@ data class BoardState internal constructor(
         return piecesChecking
     }
 
-    fun endGameCondition(piecesProtectingCheck: MutableMap<Piece, MoveVerity>):Result{
-        return if(piecesProtectingCheck.isEmpty()) EndedGame
-        else ValidMovement
-    }
 
     fun verifyCheckmate(piecesChecking:MutableMap<Location, MoveVerity>): MutableMap<Location, MoveVerity>{
         val possibleMovements = mutableMapOf<Location, MoveVerity>()
@@ -279,17 +275,6 @@ data class BoardState internal constructor(
         return if(content.isEmpty()) Team.WHITE else content.last().team.other
     }
 
-    /**
-     * From the string cathes the piece thats its being move, or null if its empty space
-     * @param move the move itself
-     * @return The piece itself or null if its empty
-     */
-    fun getPiece(move:String):Piece?{
-        val oldColumn = move[0].toColumn()
-        val oldLine = move[1].toLine()
-        val position = Position(line = oldLine, column = oldColumn)
-        return getPiece(position = position)
-    }
 
     /**
      * Change the piece place, and do the eating process by removing the other piece from the map

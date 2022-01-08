@@ -1,5 +1,7 @@
 package model.domain
 
+import kotlin.Result
+
 /**
  * The biggest command size possible
  */
@@ -8,6 +10,9 @@ private const val BIGGEST_MOVE_CMD = 7
  * The smallest command size possible
  */
 private const val SMALLEST_MOVE_CMD = 2
+
+
+val movesErrorsResults = arrayOf<ValueResult<*>>(ValueResult(InvalidMovement),ValueResult(Encounter),ValueResult(SameTeam),ValueResult(NeedPromotion))
 
 /**
  * Represent the move to be made
