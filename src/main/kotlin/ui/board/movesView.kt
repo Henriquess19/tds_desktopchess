@@ -1,5 +1,4 @@
-package UI
-import androidx.compose.desktop.ui.tooling.preview.Preview
+package ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll

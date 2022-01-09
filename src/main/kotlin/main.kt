@@ -15,13 +15,10 @@ fun main(){
         }
     }
 }*/
-import UI.*
+import ui.*
 import androidx.compose.ui.window.*
 import isel.leic.tds.tictactoe.storage.mongodb.createMongoClient
-import model.domain.*
 import model.storage.*
-import model.ui.console.readChessCommand
-import org.litote.kmongo.service.MongoClientProvider.createMongoClient
 
 
 fun main(){

@@ -1,7 +1,6 @@
-package UI
+package ui
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -11,17 +10,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.WindowSize
 import androidx.compose.ui.window.rememberDialogState
+import model.domain.Team
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun resultDialog(onClose:() -> Unit) = Dialog(
-   title = "Error Founded",
+fun endGameDialog(team: Team, onClose:() -> Unit) = Dialog(
+   title = "Game Ended",
    state = rememberDialogState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),
    resizable = false,
    onCloseRequest = onClose
 ){
 
    Column(modifier = Modifier.padding(16.dp)) {
-      Text(text = "Invalid movement, try again!", modifier = Modifier.padding(8.dp))
+      Text(text = "$team won, congratulations!!", modifier = Modifier.padding(8.dp))
    }
 }
