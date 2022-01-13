@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import model.domain.Piece
 import model.domain.Team
 
-//alterei a piece para ter o nome do tipo da peça para ser mais facil fazer esta macacada
 /**
  * Based on the team, and the piece representation, calls the corresponding image
  * @param team the team who making the play
@@ -37,7 +36,7 @@ fun chooseImage(team:Team, piece:Piece):String{
 fun Tile(team: Team?, piece:Piece?, i:Int,onSelected: (Team?)-> Unit = { } ){
     Box(modifier = Modifier
         .size(96.dp)
-        .background(color = if(i %2 ==0) Color.Blue else Color.Magenta) /*TODO(IF PUTS KING IN CHECK -> RED)*/
+        .background(color = if(i %2 ==0) Color.Blue else Color.Magenta)  /*TODO(TILES COM O STOR)*/
         .clickable(true) {
             onSelected(team)
         }

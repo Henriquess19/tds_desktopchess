@@ -1,7 +1,6 @@
 package model.domain
 
 import model.storage.BoardDB
-import org.litote.kmongo.MongoOperator
 
 /**
  * Sum type used to define the game's state.
@@ -22,13 +21,13 @@ object GameNotStarted : Game() {
     * @param localPlayer   the local player
     * @param gameId        the game identifier
     */
-   fun open(repository: BoardDB, localTurn: Team, gameId: GameId):Game{
+   suspend fun open(repository: BoardDB, localTurn: Team, gameId: GameId):Game{
       val game = Open(BoardState(),repository).invoke(gameId.toString())
       return if(game is ValueResult<*>){
          val gameState = game.data as toReturn
-         GameStarted(repository,gameId,localTurn,Pair(gameState.board.first,gameState.board.second))
+         GameStarted(repository,gameId,localTurn,Triple(gameState.board.first,gameState.board.second,gameState.endedGame))
       }
-      else GameStarted(repository, gameId, localTurn, Pair(BoardState(id=gameId.toString()), MoveVerity()))
+      else GameStarted(repository, gameId, localTurn, Triple(BoardState(id=gameId.toString()), MoveVerity(),false))
    }
 }
 
@@ -43,7 +42,7 @@ data class GameStarted(
    private val repository: BoardDB,
    private val id: GameId,
    val localTurn: Team,
-   var board: Pair<BoardState,MoveVerity>
+   var board: Triple<BoardState, MoveVerity, Boolean>
 ) : Game() {
 
    /**
@@ -59,16 +58,15 @@ data class GameStarted(
 
       /**
        * Makes a move, if it's the local player turn.
-       * @param at    the coordinates of the play to be made
+       * @param at the coordinates of the play to be made
        * @return the new [GameStarted] instance
        * @throws IllegalStateException if it's not the local player turn to play
        */
-      fun makeMove(move: String) : GameStarted {
+      suspend fun makeMove(move: String) : GameStarted {
          val play = Play(board.first,repository).invoke(move)
-         println(play)
          return if(play is ValueResult<*>){
             val gameState = play.data as toReturn
-            GameStarted(repository,id,localTurn,Pair(gameState.board.first,gameState.board.second))
+            GameStarted(repository,id,localTurn,Triple(gameState.board.first,MoveVerity(gameState.board.second.tiles,gameState.result), gameState.endedGame))
          }
          else this
       }
@@ -76,18 +74,18 @@ data class GameStarted(
       /**
        * Creates a new instance from the data published to the repository
        */
-      fun refresh(): GameStarted {
+      suspend fun refresh(): GameStarted {
          val refresh = repository.getGame(id.toString())
          return if(refresh !=null){
-            GameStarted(repository,id,localTurn,Pair(BoardState(movesList = refresh.first, id= id.toString()),MoveVerity(refresh.second,ValidMovement)))
+            GameStarted(repository,id,localTurn,Triple(BoardState(movesList = refresh.first, id= id.toString()),MoveVerity(refresh.second,ValidMovement),refresh.third))
          } else this
       }
 
       fun updateVerity():GameStarted{
-         return  GameStarted(repository,id,localTurn,Pair(board.first,MoveVerity(tiles= board.second.tiles,result= ValidMovement)))
+         return  GameStarted(repository,id,localTurn,Triple(board.first,MoveVerity(tiles= board.second.tiles,result= ValidMovement), board.third))
       }
 
-      fun promotionMove(move:String):GameStarted{
+      suspend fun promotionMove(move:String):GameStarted{
          return makeMove(move)
       }
    }

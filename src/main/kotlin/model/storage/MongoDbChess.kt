@@ -22,12 +22,13 @@ class MongoDbChess(private val db: MongoDatabase): BoardDB {
     * @return [MovesList]the moves list present on that id
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   override fun getGame(id:String): Pair<MovesList, MutableList<Position>>? {
+   override suspend fun getGame(id:String): Triple<MovesList, MutableList<Position>,Boolean>? {
       try {
          val docMoves = db.getCollectionWithId<GameInfo>(ON_GOING_GAMES_ROOT).getDocument(id)?.moves
          val docPositions = db.getCollectionWithId<GameInfo>(ON_GOING_GAMES_ROOT).getDocument(id)?.positions
-        return if (docMoves == null || docMoves.content.isEmpty() || docPositions == null) null
-         else Pair(docMoves,docPositions)
+         val docEnded = db.getCollectionWithId<GameInfo>(ON_GOING_GAMES_ROOT).getDocument(id)?.endedGame
+        return if (docMoves == null || docMoves.content.isEmpty() || docPositions == null || docEnded == null) null
+         else Triple(docMoves,docPositions,docEnded)
       }catch (failure:MongoException){
          throw ChessDBAccessException(failure)
       }
@@ -37,9 +38,9 @@ class MongoDbChess(private val db: MongoDatabase): BoardDB {
     * @param movesList the list that we wanna put on DB
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   override fun updateGame(id:String, movesList: MovesList,positions: MutableList<Position>): Boolean {
+   override suspend fun updateGame(id:String, movesList: MovesList,positions: MutableList<Position>,endedGame: Boolean): Boolean {
       try {
-            return db.getCollectionWithId<GameInfo>(ON_GOING_GAMES_ROOT).updateDocument(GameInfo(_id = id, moves = movesList, positions = positions))
+            return db.getCollectionWithId<GameInfo>(ON_GOING_GAMES_ROOT).updateDocument(GameInfo(_id = id, moves = movesList, positions = positions,endedGame=endedGame))
       }catch (failure:MongoException){
          throw ChessDBAccessException(failure)
       }
@@ -48,4 +49,4 @@ class MongoDbChess(private val db: MongoDatabase): BoardDB {
 /**
  * Defines the contents of documents bearing game state information
  */
-private data class GameInfo(val _id: String, val moves: MovesList,val positions:MutableList<Position>)
+private data class GameInfo(val _id: String, val moves: MovesList,val positions:MutableList<Position>,val endedGame: Boolean)

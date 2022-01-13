@@ -22,6 +22,6 @@ fun endGameDialog(team: Team, onClose:() -> Unit) = Dialog(
 ){
 
    Column(modifier = Modifier.padding(16.dp)) {
-      Text(text = "$team won, congratulations!!", modifier = Modifier.padding(8.dp))
+      Text(text = "$team won,congrats!!", modifier = Modifier.padding(8.dp))
    }
 }

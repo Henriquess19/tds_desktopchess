@@ -29,7 +29,6 @@ object OpenedGame: Result()
  * Result when the game is closed
  */
 object ClosedGame: Result()
-
 /**
  * Result when the game is updated
  */

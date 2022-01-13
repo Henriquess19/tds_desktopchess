@@ -154,7 +154,7 @@ data class BoardState internal constructor(
         /** Verify if can take the attacker or block check  TODO("(Verify too if you move that piece the king continues check)") **/
 
         val treatingpiecetiles = piecesChecking.values
-        val teampieces = board.filterValues { it.team == turn }
+        val teampieces = board.filterValues { it.team == getTeam() }
 
         teampieces.forEach { piece ->
             val tiles = mutableListOf<Position>()

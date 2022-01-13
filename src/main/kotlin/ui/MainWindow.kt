@@ -1,14 +1,15 @@
 package ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.*
 import model.domain.*
 import model.storage.BoardDB
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 private typealias GameAction = (GameId) -> Unit
 
@@ -35,16 +36,33 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    val gameTeamEnded = remember{mutableStateOf<Team?>(null)}
    val currentGameTeamEnded = gameTeamEnded.value
 
+   val coroutineScope = rememberCoroutineScope()
+
+   LaunchedEffect(currentGameState){
+      while(true){
+         if(currentGameState is GameStarted && !currentGameState.isLocalPlayerTurn()){
+            gameState.value = (currentGameState as GameStarted).refresh()
+         }
+         delay(5_000)
+      }
+   }
+
    fun openGame(id:GameId){
-      gameState.value = (currentGameState as GameNotStarted).open(mongoRepository,Team.WHITE,id)
+      coroutineScope.launch {
+         gameState.value = (currentGameState as GameNotStarted).open(mongoRepository, Team.WHITE, id)
+      }
    }
 
    fun joinGame(id:GameId){
-      gameState.value = (currentGameState as GameNotStarted).open(mongoRepository,Team.BLACK,id)
+      coroutineScope.launch {
+         gameState.value = (currentGameState as GameNotStarted).open(mongoRepository, Team.BLACK, id)
+      }
    }
 
    fun refresh(){
-      gameState.value = (currentGameState as GameStarted).refresh()
+      coroutineScope.launch {
+         gameState.value = (currentGameState as GameStarted).refresh()
+      }
    }
 
    /* TODO(VER ONDE POR) */
@@ -65,14 +83,15 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
       is GameNotStarted -> GameNotStartedContent()
       is GameStarted -> GameStartedContent(
          currentGameState,
-         onPossibleMove = {move-> gameState.value = currentGameState.makeMove(move)},
-         composingResultValue = {result -> gameResult.value = ValueResult(result) },
-         onPromotionNeeded= {move ->  promotionNeeded.value= move},
-         onGameEnded={team -> gameTeamEnded.value = team}
+         onPossibleMove = {move-> coroutineScope.launch { gameState.value = currentGameState.makeMove(move)}},
+         composingResultValue = {result -> coroutineScope.launch { gameResult.value = ValueResult(result) }},
+         onPromotionNeeded= {move -> coroutineScope.launch { promotionNeeded.value= move}},
+         onGameEnded={team -> coroutineScope.launch {gameTeamEnded.value = team}}
          )
    }
 
    if(currentGameTeamEnded != null){
+      println("acabou")
       endGameDialog(
          team = currentGameTeamEnded,
          onClose = {gameTeamEnded.value = null; gameState.value = GameNotStarted }
@@ -83,13 +102,13 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    if(currentPromotionNeeded != null){
       promotionDialog(
          movement = currentPromotionNeeded,
-         onPieceGiven = {move-> promotionNeeded.value = null; gameState.value = (currentGameState as GameStarted).promotionMove(move)},
+         onPieceGiven = {move-> promotionNeeded.value = null; coroutineScope.launch { gameState.value = (currentGameState as GameStarted).promotionMove(move)}},
          onClose = {promotionNeeded.value = currentPromotionNeeded}
       )
    }
 
    if(currentgameResult != null){
-      resultDialog() { gameResult.value = null; gameState.value = (currentGameState as GameStarted).updateVerity() }
+      resultDialog() { gameResult.value = null; coroutineScope.launch { gameState.value = (currentGameState as GameStarted).updateVerity()}}
    }
 
    if(curentGameAction != null){
@@ -147,6 +166,8 @@ private fun GameStartedContent(
    val board = currentGame.board
    val move = remember{mutableStateOf<String>("")}
 
+   if (board.third) onGameEnded(board.first.movesList.content.last().team) /** TODO(Verify bug, just have ended when black tries to play) **/
+
    val possibleMovement = { piece: Piece?, position: Position ->
       if (currentGame.isLocalPlayerTurn()) {
          val moves = getmovement(piece, position)
@@ -161,16 +182,14 @@ private fun GameStartedContent(
       }
    }
 
-   if (board.second.result != ValidMovement) {
+   if (!board.second.result.equals(OpenedGame) && !board.second.result.equals(ValidMovement) && !board.second.result.equals(EndedGame)) {
+      println(board.second.result)
       if (board.second.result == NeedPromotion){
          onPromotionNeeded(move.value)
-      }else if (board.second.result == EndedGame) {
-            onGameEnded(board.first.movesList.content.last().team)
       }else{
          composingResultValue(ValueResult(board.second.result))
       }
    }
-
 
    Column {
       Row {

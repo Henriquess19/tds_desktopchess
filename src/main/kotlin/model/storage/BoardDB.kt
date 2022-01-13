@@ -17,12 +17,12 @@ interface BoardDB {
     * @return [MovesList]the moves list present on that id
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   fun getGame(id: String): Pair<MovesList, MutableList<Position>>?
+   suspend fun getGame(id: String): Triple<MovesList, MutableList<Position>, Boolean>?
    /**
     * Updates the game on DB
     * @param movesList the list that we wanna put on DB
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   fun updateGame(id:String, movesList: MovesList,positions: MutableList<Position>): Boolean
+   suspend fun updateGame(id:String, movesList: MovesList,positions: MutableList<Position>,endedGame:Boolean): Boolean
 
 }
