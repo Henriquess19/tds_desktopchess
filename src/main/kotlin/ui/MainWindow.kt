@@ -38,6 +38,9 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
 
    val coroutineScope = rememberCoroutineScope()
 
+   val gameTheme = remember{mutableStateOf<Theme>(Theme.CLASSIC)}
+   val currentTheme = gameTheme.value
+
    LaunchedEffect(currentGameState){
       while(true){
          if(currentGameState is GameStarted && !currentGameState.isLocalPlayerTurn()){
@@ -65,24 +68,20 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
       }
    }
 
-   /* TODO(VER ONDE POR) */
-   /*fun endGame(){
-      endGameDialog(
-         onClose = {/*gameState.value = GameNotStarted*/}
-      )
-   }*/
-
-
    MainWindowMenu(currentGameState,
       onOpenRequest = {gameAction.value = ::openGame},
       onJoinRequest = {gameAction.value = ::joinGame},
-      onRefreshRequested = {refresh()}
+      onRefreshRequested = {refresh()},
+      onThemeUpdateRequested = {gameTheme.value = it}
    )
 
    when(currentGameState){
-      is GameNotStarted -> GameNotStartedContent()
+      is GameNotStarted -> GameNotStartedContent(
+         currentTheme
+      )
       is GameStarted -> GameStartedContent(
          currentGameState,
+         currentTheme,
          onPossibleMove = {move-> coroutineScope.launch { gameState.value = currentGameState.makeMove(move)}},
          composingResultValue = {result -> coroutineScope.launch { gameResult.value = ValueResult(result) }},
          onPromotionNeeded= {move -> coroutineScope.launch { promotionNeeded.value= move}},
@@ -125,7 +124,8 @@ private fun FrameWindowScope.MainWindowMenu(
    state: Game,
    onOpenRequest:() -> Unit,
    onJoinRequest:() -> Unit,
-   onRefreshRequested:(GameStarted) -> Unit
+   onRefreshRequested:(GameStarted) -> Unit,
+   onThemeUpdateRequested:(Theme)-> Unit
 ) = MenuBar{
 
    data class MenuState(val open:Boolean,val join:Boolean,val refresh:Boolean)
@@ -141,14 +141,26 @@ private fun FrameWindowScope.MainWindowMenu(
    }
    Menu("Options"){
       Item("Refresh", enabled= menuState.refresh, onClick = {onRefreshRequested(state as GameStarted)})
+      Menu("Themes"){
+         Item("Classic", enabled=true, onClick = { onThemeUpdateRequested(Theme.CLASSIC)})
+         Item("Classic Inverted", enabled=true, onClick = {onThemeUpdateRequested(Theme.INVERSECLASSIC)})
+         Item("Gray", enabled=true, onClick = {onThemeUpdateRequested(Theme.GRAY)})
+         Item("Psycho", enabled=true, onClick = {onThemeUpdateRequested(Theme.PSYCHO)})
+         Item("Mono", enabled=true, onClick = {onThemeUpdateRequested(Theme.MONO)})
+         Item("Ice", enabled=true, onClick = {onThemeUpdateRequested(Theme.ICE)})
+         Item("Fire", enabled=true, onClick = {onThemeUpdateRequested(Theme.FIRE)})
+         Item("Hardcore", enabled=true, onClick = {onThemeUpdateRequested(Theme.HARDCORE)})
+      }
    }
 }
 
 @Composable
-private fun GameNotStartedContent(){
+private fun GameNotStartedContent(
+   currentTheme: Theme
+){
    Column{
       Row {
-         BoardView(BoardState(), onTileSelected = {_,_ -> })
+         BoardView(BoardState(),currentTheme, onTileSelected = {_,_ -> })
          movesView(BoardState())
       }
    }
@@ -158,6 +170,7 @@ private fun GameNotStartedContent(){
 @Composable
 private fun GameStartedContent(
    currentGame:GameStarted,
+   currentTheme:Theme,
    onPossibleMove: (move:String) -> Unit,
    composingResultValue: (result: ValueResult<*>) -> Unit,
    onPromotionNeeded:(move:String) ->Unit,
@@ -193,7 +206,7 @@ private fun GameStartedContent(
 
    Column {
       Row {
-         BoardView(board = board.first,onTileSelected = possibleMovement)
+         BoardView(board = board.first,onTileSelected = possibleMovement,theme= currentTheme)
          movesView(board = board.first)
       }
    }

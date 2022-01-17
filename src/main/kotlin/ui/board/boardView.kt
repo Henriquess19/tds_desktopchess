@@ -13,7 +13,7 @@ import model.domain.*
 
 @Composable
 @Preview
-fun BoardView(board:BoardState, onTileSelected: (Piece?, coordinate: Position) -> Unit ){
+fun BoardView(board:BoardState, theme: Theme, onTileSelected: (Piece?, coordinate: Position) -> Unit ){
     val boards= board.movesList.currentState
     val lineThickness = 8.dp
     var idx = 0
@@ -24,7 +24,7 @@ fun BoardView(board:BoardState, onTileSelected: (Piece?, coordinate: Position) -
                     val charOfThePiece = boards[idx++]
                     val team = charOfThePiece.teamCheck()
                     val piece = charOfThePiece.toPiece(charOfThePiece.teamCheck())
-                    Tile(team = team, piece = piece, i = lineIndex + columnIndex ,onSelected = {
+                    Tile(theme= theme,team = team, piece = piece, i = lineIndex + columnIndex ,onSelected = {
                         onTileSelected(piece, Position((BOARD_SIDE-1-lineIndex).toLine(), columnIndex.toColumn()))
                     } )
                     if (columnIndex < BOARD_SIDE - 1)

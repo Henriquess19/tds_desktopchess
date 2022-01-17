@@ -14,6 +14,17 @@ import androidx.compose.ui.unit.dp
 import model.domain.Piece
 import model.domain.Team
 
+enum class Theme(val color1:Color,val color2:Color){
+    CLASSIC(Color.Black,Color.White),
+    INVERSECLASSIC(Color.White,Color.Black),
+    GRAY(Color.DarkGray,Color.Gray),
+    PSYCHO(Color.Blue,Color.Magenta),
+    MONO(Color.White,Color.White),
+    ICE(Color.Blue, Color.White),
+    FIRE(Color.Red,Color.Yellow),
+    HARDCORE(Color.Transparent,Color.Transparent)
+    }
+
 /**
  * Based on the team, and the piece representation, calls the corresponding image
  * @param team the team who making the play
@@ -33,10 +44,10 @@ fun chooseImage(team:Team, piece:Piece):String{
  * @param onSelected The team of the corresponding position or null if its empty
  */
 @Composable
-fun Tile(team: Team?, piece:Piece?, i:Int,onSelected: (Team?)-> Unit = { } ){
+fun Tile(theme:Theme,team: Team?, piece:Piece?, i:Int,onSelected: (Team?)-> Unit = { } ){
     Box(modifier = Modifier
         .size(96.dp)
-        .background(color = if(i %2 ==0) Color.Blue else Color.Magenta)  /*TODO(TILES COM O STOR)*/
+        .background(color = if(i %2 ==0) theme.color1 else theme.color2)
         .clickable(true) {
             onSelected(team)
         }
