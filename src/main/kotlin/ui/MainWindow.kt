@@ -8,10 +8,12 @@ import androidx.compose.ui.window.*
 import model.domain.*
 import model.storage.BoardDB
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import ui.board.movesView
 
 private typealias GameAction = (GameId) -> Unit
+
+data class Changers(val result: ValueResult<*>? =null,val promotion: String?=null,val teamWinner:Team?=null)
 
 @Composable
 fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
@@ -27,19 +29,13 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    val gameAction = remember{mutableStateOf<GameAction?>(null)}
    val curentGameAction = gameAction.value
 
-   val gameResult = remember{mutableStateOf<ValueResult<*>?>(null)}
-   val currentgameResult = gameResult.value
-
-   val promotionNeeded = remember{mutableStateOf<String?>(null)}
-   val currentPromotionNeeded = promotionNeeded.value
-
-   val gameTeamEnded = remember{mutableStateOf<Team?>(null)}
-   val currentGameTeamEnded = gameTeamEnded.value
-
-   val coroutineScope = rememberCoroutineScope()
+   val gameChangers= remember{mutableStateOf<Changers?>(null)}
+   val currentgameChangers = gameChangers.value
 
    val gameTheme = remember{mutableStateOf<Theme>(Theme.CLASSIC)}
    val currentTheme = gameTheme.value
+
+   val coroutineScope = rememberCoroutineScope()
 
    LaunchedEffect(currentGameState){
       while(true){
@@ -83,31 +79,31 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
          currentGameState,
          currentTheme,
          onPossibleMove = {move-> coroutineScope.launch { gameState.value = currentGameState.makeMove(move)}},
-         composingResultValue = {result -> coroutineScope.launch { gameResult.value = ValueResult(result) }},
-         onPromotionNeeded= {move -> coroutineScope.launch { promotionNeeded.value= move}},
-         onGameEnded={team -> coroutineScope.launch {gameTeamEnded.value = team}}
+         composingResultValue = {result -> coroutineScope.launch { gameChangers.value = Changers(result= ValueResult(result)) }},
+         onPromotionNeeded= {move -> coroutineScope.launch { gameChangers.value = Changers(promotion =  move)}},
+         onGameEnded={team -> coroutineScope.launch {gameChangers.value = Changers(teamWinner =  team)}}
          )
    }
 
-   if(currentGameTeamEnded != null){
-      println("acabou")
-      endGameDialog(
-         team = currentGameTeamEnded,
-         onClose = {gameTeamEnded.value = null; gameState.value = GameNotStarted }
-      )
-   }
+   if(currentgameChangers != null){
 
+      if(currentgameChangers.promotion != null) {
+         promotionDialog(
+            movement = currentgameChangers.promotion,
+            onPieceGiven = {move-> coroutineScope.launch { gameState.value = (currentGameState as GameStarted).promotionMove(move)}; gameChangers.value = null},
+            onClose = {gameChangers.value = Changers(promotion =currentgameChangers.promotion)}
+         )
+      }
 
-   if(currentPromotionNeeded != null){
-      promotionDialog(
-         movement = currentPromotionNeeded,
-         onPieceGiven = {move-> promotionNeeded.value = null; coroutineScope.launch { gameState.value = (currentGameState as GameStarted).promotionMove(move)}},
-         onClose = {promotionNeeded.value = currentPromotionNeeded}
-      )
-   }
+      if(currentgameChangers.result != null){
+         resultDialog() { gameChangers.value = null; coroutineScope.launch { gameState.value = (currentGameState as GameStarted).updateVerity()}}
+      }
 
-   if(currentgameResult != null){
-      resultDialog() { gameResult.value = null; coroutineScope.launch { gameState.value = (currentGameState as GameStarted).updateVerity()}}
+      if(currentgameChangers.teamWinner != null){
+         endGameDialog(
+            team = currentgameChangers.teamWinner,
+            onClose = {gameChangers.value = null; gameState.value = GameNotStarted })
+      }
    }
 
    if(curentGameAction != null){
