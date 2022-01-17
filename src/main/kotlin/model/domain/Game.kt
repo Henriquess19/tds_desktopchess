@@ -38,6 +38,7 @@ object GameNotStarted : Game() {
  * @param localPlayer   the player playing locally
  * @param board         the game board
  */
+
 data class GameStarted(
    private val repository: BoardDB,
    private val id: GameId,
@@ -50,45 +51,46 @@ data class GameStarted(
     */
    fun isLocalPlayerTurn() =
       localTurn ==  if (board.first.movesList.content.isEmpty()) {
-        Team.WHITE
+         Team.WHITE
       } else {
-        board.first.movesList.content.last().team.other
+         board.first.movesList.content.last().team.other
       }
 
 
-      /**
-       * Makes a move, if it's the local player turn.
-       * @param at the coordinates of the play to be made
-       * @return the new [GameStarted] instance
-       * @throws IllegalStateException if it's not the local player turn to play
-       */
-      suspend fun makeMove(move: String) : GameStarted {
-         val play = Play(board.first,repository).invoke(move)
-         return if(play is ValueResult<*>){
-            val gameState = play.data as toReturn
-            GameStarted(repository,id,localTurn,Triple(gameState.board.first,MoveVerity(gameState.board.second.tiles,gameState.result), gameState.endedGame))
-         }
-         else this
+   /**
+    * Makes a move, if it's the local player turn.
+    * @param at the coordinates of the play to be made
+    * @return the new [GameStarted] instance
+    * @throws IllegalStateException if it's not the local player turn to play
+    */
+   suspend fun makeMove(move: String) : GameStarted {
+      val play = Play(board.first,repository).invoke(move)
+      return if(play is ValueResult<*>){
+         val gameState = play.data as toReturn
+         GameStarted(repository,id,localTurn,Triple(gameState.board.first,MoveVerity(gameState.board.second.tiles,gameState.result), gameState.endedGame))
       }
-
-      /**
-       * Creates a new instance from the data published to the repository
-       */
-      suspend fun refresh(): GameStarted {
-         val refresh = repository.getGame(id.toString())
-         return if(refresh !=null){
-            GameStarted(repository,id,localTurn,Triple(BoardState(movesList = refresh.first, id= id.toString()),MoveVerity(refresh.second,ValidMovement),refresh.third))
-         } else this
-      }
-
-      fun updateVerity():GameStarted{
-         return  GameStarted(repository,id,localTurn,Triple(board.first,MoveVerity(tiles= board.second.tiles,result= ValidMovement), board.third))
-      }
-
-      suspend fun promotionMove(move:String):GameStarted{
-         return makeMove(move)
-      }
+      else this
    }
+
+   /**
+    * Creates a new instance from the data published to the repository
+    */
+   suspend fun refresh(): GameStarted {
+      val refresh = Refresh(board.first,repository).invoke()
+      return if(refresh is ValueResult<*>){
+         val gameState = refresh.data as toReturn
+         GameStarted(repository, id, localTurn, Triple(gameState.board.first,MoveVerity(gameState.board.second.tiles,gameState.result), gameState.endedGame))
+      } else this
+   }
+
+   fun updateVerity():GameStarted{
+      return  GameStarted(repository,id,localTurn,Triple(board.first,MoveVerity(tiles= board.second.tiles,result= ValidMovement), board.third))
+   }
+
+   suspend fun promotionMove(move:String):GameStarted{
+      return makeMove(move)
+   }
+}
 
 
 /**
