@@ -26,9 +26,10 @@ fun reviewDialog(onPlayIndexGiven:(Int) -> Unit, onClose:() -> Unit) = Dialog(
 ){
    val idx = remember { mutableStateOf(0) }
 
+   println(storageOfBoards.size)
    Column() {
-      Row(modifier = Modifier.padding(16.dp)){
-         Button(onClick = { if(idx.value < storageOfBoards.size)idx.value++ ; onPlayIndexGiven(idx.value) }){ Text("Next") }
+      Row(){
+         Button(onClick = { if(idx.value < storageOfBoards.size-1) idx.value++ ; onPlayIndexGiven(idx.value) }){ Text("Next") }
          Button(onClick = { if (idx.value > 0) idx.value-- ; onPlayIndexGiven(idx.value)}){ Text("Previous") }
       }
    }

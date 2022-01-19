@@ -2,6 +2,14 @@ package model.domain
 
 import model.storage.BoardDB
 var storageOfBoards = mutableListOf<BoardState>()
+fun storeMovesAlreadyMade(id:String, dbstuff: MutableList<PlayMade>){
+    var tempBoard = BoardState(id = id)
+    storageOfBoards.add(tempBoard)
+    dbstuff.forEach { playMade ->
+        tempBoard = tempBoard.makeMove(playMade.play, playMade.team).first
+        storageOfBoards.add(tempBoard)
+    }
+}
 
 fun interface ChessCommands{
     /**
@@ -41,7 +49,7 @@ class Open(private val localBoard: BoardState, private val dbBoard: BoardDB): Ch
             } else {
                 val team = state.first.content.last().team.other
                 val board = BoardState(id = parameter, turn = team,movesList = state.first)
-                storageOfBoards.add(board)
+                storeMovesAlreadyMade(id=parameter, dbstuff = state.first.content)
                 val ended = state.third
                 ValueResult(toReturn(
                     board = Pair(board,MoveVerity(state.second,OpenedGame)),
@@ -65,8 +73,8 @@ class Join(private val localBoard: BoardState,private val dbBoard: BoardDB): Che
             if (state == null) {
                 return ValueResult(toReturn(board = Pair(localBoard,MoveVerity()), result = GameNotExists, endedGame= false))
             } else {
-                storageOfBoards.add(BoardState(id = parameter, turn = state.first.content.last().team.other))
-                storageOfBoards.add(BoardState(id = parameter, turn = state.first.content.last().team.other, movesList = state.first))
+                storeMovesAlreadyMade(id=parameter, dbstuff = state.first.content)
+                println(storageOfBoards)
                 return ValueResult(
                     toReturn(
                         board = Pair(BoardState(
@@ -112,12 +120,12 @@ class Play(
                 }
             }
 
+            val notInCheck = stillValidMove(movement, team,localBoard)
             if (movement.move[0] == 'k' || movement.move[0] == 'K') {
-                val notInCheck = stillValidMove(movement, team,localBoard)
                 if (notInCheck == ValidMovement)
                     play = localBoard.makeMove(move = movement, team = team)
             } else {
-                if (possiblecheckmate.isEmpty()) {
+                if (possiblecheckmate.isEmpty() && notInCheck == ValidMovement) {
                     play = localBoard.makeMove(move = movement, team = team)
 
                 } else {
