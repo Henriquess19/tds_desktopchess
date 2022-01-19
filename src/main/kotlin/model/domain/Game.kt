@@ -29,6 +29,15 @@ object GameNotStarted : Game() {
       }
       else GameStarted(repository, gameId, localTurn, Triple(BoardState(id=gameId.toString()), MoveVerity(),false))
    }
+
+   suspend fun join(repository: BoardDB, localTurn: Team, gameId: GameId):Game{
+      val game = Join(BoardState(),repository).invoke(gameId.toString())
+      return if(game is ValueResult<*>){
+         val gameState = game.data as toReturn
+         GameStarted(repository,gameId,localTurn,Triple(gameState.board.first,gameState.board.second,gameState.endedGame))
+      }
+      else GameStarted(repository, gameId, localTurn, Triple(BoardState(id=gameId.toString()), MoveVerity(),false))
+   }
 }
 
 /**
@@ -92,6 +101,15 @@ data class GameStarted(
    }
 }
 
+object GameEnded :Game() {
+
+   fun getBoardPlay(idx: Int): BoardState {
+      val oi = storageOfBoards
+      return oi[idx]
+   }
+
+}
+
 
 /**
  * Represents game identifiers.
@@ -118,10 +136,3 @@ private fun isValidGameIdentifier(id: String) = id.isNotBlank()
  */
 fun String.toGameIdOrNull() = if (isValidGameIdentifier(this)) GameId(this) else null
 
-
-/**
- * Exception used to represent errors while trying to reach the shared game state
- *
- * @param cause the error's root cause
- */
-class UnreachableSharedGameException(cause: Throwable) : Exception(cause)

@@ -10,6 +10,7 @@ import model.storage.BoardDB
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ui.board.movesView
+import ui.dialogs.endGameDialog
 
 private typealias GameAction = (GameId) -> Unit
 
@@ -35,6 +36,9 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    val gameTheme = remember{mutableStateOf<Theme>(Theme.CLASSIC)}
    val currentTheme = gameTheme.value
 
+   val gameReviewIndex = remember{mutableStateOf<Int>(0)}
+   val currentReviewIndex = gameReviewIndex.value
+
    val coroutineScope = rememberCoroutineScope()
 
    LaunchedEffect(currentGameState){
@@ -54,7 +58,7 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
 
    fun joinGame(id:GameId){
       coroutineScope.launch {
-         gameState.value = (currentGameState as GameNotStarted).open(mongoRepository, Team.BLACK, id)
+         gameState.value = (currentGameState as GameNotStarted).join(mongoRepository, Team.BLACK, id)
       }
    }
 
@@ -82,7 +86,18 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
          composingResultValue = {result -> coroutineScope.launch { gameChangers.value = Changers(result= ValueResult(result)) }},
          onPromotionNeeded= {move -> coroutineScope.launch { gameChangers.value = Changers(promotion =  move)}},
          onGameEnded={team -> coroutineScope.launch {gameChangers.value = Changers(teamWinner =  team)}}
+      )
+      is GameEnded -> {
+         reviewDialog(
+            onPlayIndexGiven = { gameReviewIndex.value = it },
+            onClose = { gameState.value = GameNotStarted }
          )
+         GameEndedContent(
+            currentGameState,
+            currentReviewIndex,
+            currentTheme
+         )
+      }
    }
 
    if(currentgameChangers != null){
@@ -102,7 +117,8 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
       if(currentgameChangers.teamWinner != null){
          endGameDialog(
             team = currentgameChangers.teamWinner,
-            onClose = {gameChangers.value = null; gameState.value = GameNotStarted })
+            onReview = {gameChangers.value = null;gameState.value = GameEnded},
+            onClose = {gameChangers.value = null;gameState.value = GameNotStarted})
       }
    }
 
@@ -208,3 +224,12 @@ private fun GameStartedContent(
    }
 }
 
+@Composable
+private fun GameEndedContent(
+   currentGame: GameEnded,
+   currentIndex:Int,
+   currentTheme: Theme,
+){
+   val board = currentGame.getBoardPlay(currentIndex)
+   BoardView(board,currentTheme,onTileSelected = { _, _ -> })
+}
