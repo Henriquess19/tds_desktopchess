@@ -13,6 +13,12 @@ import model.domain.*
 
 @Composable
 @Preview
+/**
+ * Composable used to display a chess board
+ * @param board the board
+ * @param theme the theme that the person wants to use
+ * @param onTileSelected The function selected when the tile is selected
+ */
 fun BoardView(board:BoardState, theme: Theme, onTileSelected: (Piece?, coordinate: Position) -> Unit ){
     val boards= board.movesList.currentState
     val lineThickness = 8.dp

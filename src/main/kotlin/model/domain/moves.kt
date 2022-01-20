@@ -11,9 +11,6 @@ private const val BIGGEST_MOVE_CMD = 7
  */
 private const val SMALLEST_MOVE_CMD = 2
 
-
-val movesErrorsResults = arrayOf<ValueResult<*>>(ValueResult(InvalidMovement),ValueResult(Encounter),ValueResult(SameTeam),ValueResult(NeedPromotion))
-
 /**
  * Represent the move to be made
  * @property move the move

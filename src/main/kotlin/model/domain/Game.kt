@@ -18,7 +18,7 @@ object GameNotStarted : Game() {
     * Starts a game. The game's plays are published to the given repository.
     *
     * @param repository    the repository to where the game's plays are to be published
-    * @param localPlayer   the local player
+    * @param localTurn   the local player
     * @param gameId        the game identifier
     */
    suspend fun open(repository: BoardDB, localTurn: Team, gameId: GameId):Game{
@@ -29,7 +29,13 @@ object GameNotStarted : Game() {
       }
       else GameStarted(repository, gameId, localTurn, Triple(BoardState(id=gameId.toString()), MoveVerity(),false))
    }
-
+   /**
+    * Corroutine function when the player made join
+    * @param repository the repository that is being used
+    * @param localTurn  the local player
+    * @param gameId the game id
+    * @return [Game] the game after joined
+    */
    suspend fun join(repository: BoardDB, localTurn: Team, gameId: GameId):Game{
       val game = Join(BoardState(),repository).invoke(gameId.toString())
       return if(game is ValueResult<*>){
@@ -91,11 +97,18 @@ data class GameStarted(
          GameStarted(repository, id, localTurn, Triple(gameState.board.first,MoveVerity(gameState.board.second.tiles,gameState.result), gameState.endedGame))
       } else this
    }
-
+   /**
+    * Object to see the several board states throughout the game
+    *
+    */
    fun updateVerity():GameStarted{
       return  GameStarted(repository,id,localTurn,Triple(board.first,MoveVerity(tiles= board.second.tiles,result= ValidMovement), board.third))
    }
-
+   /**
+    * Move made after the piece of the promotion being chosen
+    * @param move the move of the new piece chosen
+    * @return the new [GameStarted] instance
+    */
    suspend fun promotionMove(move:String):GameStarted{
       return makeMove(move)
    }

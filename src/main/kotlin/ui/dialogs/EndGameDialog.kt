@@ -15,6 +15,12 @@ import model.domain.Team
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
+/**
+* Composable to show the window where the user is going to choose the gameId he wants to play
+*  @param team the team who won
+ *  @param onReview the function called when review is wanted
+*  @param onClose the function when closing the window
+*/
 fun endGameDialog(team: Team, onReview:()-> Unit,onClose:() -> Unit) = Dialog(
    title = "Game Ended",
    state = rememberDialogState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),

@@ -1,7 +1,16 @@
 package model.domain
 
 import model.storage.BoardDB
+/**
+ * To show on the end of the game, show the various plays that were made
+ */
 var storageOfBoards = mutableListOf<BoardState>()
+/**
+ * When opened a game, or joined one, compute all the state of the board, with all the moves made, and store
+ * it on storageOfBoards
+ * @param id the id of the game being worked
+ * @param listOfPlays the list of the plays made until that time, from both teams
+ */
 fun storeMovesAlreadyMade(id:String, dbstuff: MutableList<PlayMade>){
     var tempBoard = BoardState(id = id)
     storageOfBoards.add(tempBoard)
@@ -25,7 +34,7 @@ fun interface ChessCommands{
 }
 /**
  * To help to return both the UI.board and the result of the operation
- * @property boardState The current state of the UI.board
+ * @property board The current state of the UI.board
  * @property result The result of the command made invalid, valid, sameTeam etc.
  */
 data class toReturn (val board:Pair<BoardState,MoveVerity>,val result: Result,val endedGame:Boolean)

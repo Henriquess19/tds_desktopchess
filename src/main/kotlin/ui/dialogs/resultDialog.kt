@@ -14,6 +14,10 @@ import androidx.compose.ui.window.rememberDialogState
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
+/**
+*  Composable when found a error with the play made, shows a message error
+*  @param onClose function when the game is closing
+*/
 fun resultDialog(onClose:() -> Unit) = Dialog(
    title = "Error Founded",
    state = rememberDialogState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),

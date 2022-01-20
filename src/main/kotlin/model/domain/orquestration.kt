@@ -16,7 +16,8 @@ data class CommandsHandler(
 
 /**
  * Executes de the command the do draw of that
- * @param board where the data worked came from
+ * @param localBoard where the data worked came from
+ * @param dbBoard the database board
  * @return Map that associates the strings to the command
  */
 

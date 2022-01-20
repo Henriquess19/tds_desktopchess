@@ -18,6 +18,11 @@ import model.domain.storageOfBoards
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
+/**
+* Composable when the review game window is chosen
+* @param onPlayIndexGiven the function when clicked to see the next or the previous play
+* @param onClose the function when the window is closed
+*/
 fun reviewDialog(onPlayIndexGiven:(Int) -> Unit, onClose:() -> Unit) = Dialog(
    title = "Game Review",
    state = rememberDialogState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),

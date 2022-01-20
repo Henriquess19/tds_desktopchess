@@ -24,6 +24,12 @@ import model.domain.teamCheck
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
+/**
+* The composable shown when a piece is in the condition to receive the promotion
+* @param movement movement made
+* @param onPieceGiven function when the is that supposed to be promoted to is choosen
+* @param onClose function when the window is closed
+*/
 fun promotionDialog(movement:String,onPieceGiven:(String) ->Unit,onClose:() -> Unit) = Dialog(
    title = "Promotion Needed",
    state = rememberDialogState(size = WindowSize(Dp.Unspecified, Dp.Unspecified)),

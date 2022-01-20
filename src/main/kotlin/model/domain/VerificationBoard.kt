@@ -142,9 +142,9 @@ private fun moveVerityPawn(
  */
 
 private fun moveVerityBishop(
-   initialPosition: Position,
-   wantedPosition: Position,
-   boardState: BoardState
+    initialPosition: Position,
+    wantedPosition: Position,
+    boardState: BoardState
 ): MoveVerity {
     val tiles = mutableListOf<Position>()
     tiles.add(Position(line= initialPosition.line,column= initialPosition.column))

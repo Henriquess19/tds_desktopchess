@@ -13,7 +13,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import model.domain.Piece
 import model.domain.Team
-
+/**
+ * The various themes created, that can be choose by the user
+ */
 enum class Theme(val color1:Color,val color2:Color){
     CLASSIC(Color.Black,Color.White),
     INVERSECLASSIC(Color.White,Color.Black),

@@ -131,7 +131,11 @@ data class BoardState internal constructor(
         newList.add(play)
         return newList
     }
-
+    /**
+     * Verify if the king of the team is in check and see what pieces are
+     * @param team who´s kings can be in check
+     * @return a map of the pieces who are putting in check [Location] and the moves that can be made to avoid that [MoveVerity]
+     */
     fun verifyCheck(team:Team): MutableMap<Location, MoveVerity> {
         val piecesChecking = mutableMapOf<Location, MoveVerity>()
         val king = 'K'.toTeamRepresentation(team).toPiece(team)
@@ -145,13 +149,15 @@ data class BoardState internal constructor(
         }
         return piecesChecking
     }
-
+    /**
+     * Receives the pieces putting in check, and see if its possible to still save the king
+     * @param piecesChecking the pieces who are putting the king in check
+     * @return A map with the possibles ways, if there are any, that the king can be saved
+     */
 
     fun verifyCheckmate(piecesChecking:MutableMap<Location, MoveVerity>): MutableMap<Location, MoveVerity>{
         val possibleMovements = mutableMapOf<Location, MoveVerity>()
         val validMovements = mutableMapOf<Location, MoveVerity>()
-
-        /** Verify if can take the attacker or block check  TODO("(Verify too if you move that piece the king continues check)") **/
 
         val treatingpiecetiles = piecesChecking.values
         val teampieces = board.filterValues { it.team == getTeam() }
@@ -291,12 +297,22 @@ data class BoardState internal constructor(
     }
 }
 
+/**
+ * Fake make move, to check if after the play made, its still in check
+ * @param move to be made
+ * @param team who is making the play
+ * @return if its valid or not
+ */
 fun stillValidMove(move: Move, team: Team,board:BoardState):Result{
     val new = board.makeMove(move,team)
     return if (new.first.verifyCheck(team).isEmpty()) ValidMovement
     else InvalidMovement
 }
-
+/**
+ * To compute all the possibles moves that can be made
+ * @param checks the pieces and their location and the various moves that are computed
+ * @return a list of several moves
+ */
 fun checkconditionsToMove(checks:MutableMap<Location, MoveVerity>):List<Move>{
     val possibleMoves = mutableListOf<Move>()
     checks.forEach {
@@ -329,6 +345,10 @@ private fun verifyPromotion(piece: Piece, location: Position, team: Team): Resul
         ValidMovement
     } else InvalidMovement
 }
+/**
+ * Transform a map of pieces and location to a string
+ * @return the new string with the state of the board
+ */
 fun MutableMap<Position, Piece>.mapToString(): String {
     var strboard = ""
     for (i in Lines.L8.ordinal downTo Lines.L1.ordinal) {
