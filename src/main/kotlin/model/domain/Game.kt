@@ -98,8 +98,7 @@ data class GameStarted(
       } else this
    }
    /**
-    * Object to see the several board states throughout the game
-    *
+    * Return one instance with the result at [ValidMovement]
     */
    fun updateVerity():GameStarted{
       return  GameStarted(repository,id,localTurn,Triple(board.first,MoveVerity(tiles= board.second.tiles,result= ValidMovement), board.third))
@@ -116,11 +115,11 @@ data class GameStarted(
 
 object GameEnded :Game() {
 
-   fun getBoardPlay(idx: Int): BoardState {
-      val oi = storageOfBoards
-      return oi[idx]
-   }
-
+   /**
+    * Receives the number of the play to return the BoardState from the same
+    * @return BoardState from the idx number play
+    */
+   fun getBoardPlay(idx: Int): BoardState = storageOfBoards[idx]
 }
 
 

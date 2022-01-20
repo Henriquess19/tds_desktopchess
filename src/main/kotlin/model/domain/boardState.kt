@@ -154,7 +154,6 @@ data class BoardState internal constructor(
      * @param piecesChecking the pieces who are putting the king in check
      * @return A map with the possibles ways, if there are any, that the king can be saved
      */
-
     fun verifyCheckmate(piecesChecking:MutableMap<Location, MoveVerity>): MutableMap<Location, MoveVerity>{
         val possibleMovements = mutableMapOf<Location, MoveVerity>()
         val validMovements = mutableMapOf<Location, MoveVerity>()
@@ -210,6 +209,11 @@ data class BoardState internal constructor(
         return validMovements
     }
 
+    /**
+     * Receives the king position and returns all the possible moves for the king.
+     * @param position value position of the king
+     * @return List of positions that the king can go to
+     */
     private fun getAllKingMovements(position:Position):List<Position>{
         val validPositions = mutableListOf<Position>()
 

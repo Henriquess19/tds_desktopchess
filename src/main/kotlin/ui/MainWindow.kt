@@ -14,8 +14,18 @@ import ui.dialogs.endGameDialog
 
 private typealias GameAction = (GameId) -> Unit
 
+/**
+ * Values that define some changes in the game
+ */
 data class Changers(val result: ValueResult<*>? =null,val promotion: String?=null,val teamWinner:Team?=null)
 
+/**
+ * Composable that defines the application's main window. The application state is represented by the
+ * [mongoRepository].
+ *
+ * @param mongoRepository  The games' repository
+ * @param onCloseRequest The function to be called when the user intends to close the window
+ */
 @Composable
 fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    title= "Chess Dos Suspeitos",
@@ -75,6 +85,7 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
       onThemeUpdateRequested = {gameTheme.value = it}
    )
 
+   /** The diferent options for the gameStates **/
    when(currentGameState){
       is GameNotStarted -> GameNotStartedContent(
          currentTheme
@@ -100,8 +111,8 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
       }
    }
 
+   /** GameChangers Application (Promotion,InvalidMovents & EndingGame) **/
    if(currentgameChangers != null){
-
       if(currentgameChangers.promotion != null) {
          promotionDialog(
             movement = currentgameChangers.promotion,
@@ -109,11 +120,9 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
             onClose = {gameChangers.value = Changers(promotion =currentgameChangers.promotion)}
          )
       }
-
       if(currentgameChangers.result != null){
          resultDialog() { gameChangers.value = null; coroutineScope.launch { gameState.value = (currentGameState as GameStarted).updateVerity()}}
       }
-
       if(currentgameChangers.teamWinner != null){
          endGameDialog(
             team = currentgameChangers.teamWinner,
@@ -122,6 +131,7 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
       }
    }
 
+   /** Getting the dialog for obtain the gameId **/
    if(curentGameAction != null){
       getGameID(
          onGameIdGiven = {curentGameAction.invoke(it); gameAction.value = null},
@@ -130,7 +140,9 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
    }
 }
 
-
+/**
+ * The [MainWindow] menu
+ */
 @Composable
 private fun FrameWindowScope.MainWindowMenu(
    state: Game,
@@ -166,6 +178,9 @@ private fun FrameWindowScope.MainWindowMenu(
    }
 }
 
+/**
+ * The @composable for when the game is not started
+ */
 @Composable
 private fun GameNotStartedContent(
    currentTheme: Theme
@@ -178,7 +193,9 @@ private fun GameNotStartedContent(
    }
 }
 
-
+/**
+ * The @composable for when the game is being played
+ */
 @Composable
 private fun GameStartedContent(
    currentGame:GameStarted,
@@ -224,6 +241,9 @@ private fun GameStartedContent(
    }
 }
 
+/**
+ * The @composable for when the game has ended
+ */
 @Composable
 private fun GameEndedContent(
    currentGame: GameEnded,
