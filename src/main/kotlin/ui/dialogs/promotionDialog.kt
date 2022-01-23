@@ -51,7 +51,8 @@ fun promotionDialog(movement:String,onPieceGiven:(String) ->Unit,onClose:() -> U
          Box(Modifier.clickable(true) { onPieceGiven("$movement=B")})
          {
             val image = painterResource(chooseImage(team = team, piece = Piece(team = team, typeOfPiece = TypeOfPieces.B, representation = 'B')))
-            Image(painter = image, contentDescription = "pieceImage", modifier = Modifier.padding(start = 8.dp)) }
+            Image(painter = image, contentDescription = "pieceImage", modifier = Modifier.padding(start = 8.dp))
+         }
 
          Box (Modifier.clickable(true) { onPieceGiven("$movement=N")})
          {

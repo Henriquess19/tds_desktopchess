@@ -24,14 +24,14 @@ fun String.toTeam():Team {
  * Initial game UI.board format
  */
 const val INITIAL_BOARD =
-    "rnbqkbnr" +
-            "pppppppp" +
-            "        " +
-            "        " +
-            "        " +
-            "        " +
-            "PPPPPPPP" +
-            "RNBQKBNR"
+        "rnbqkbnr" +
+        "pppppppp" +
+        "        " +
+        "        " +
+        "        " +
+        "        " +
+        "PPPPPPPP" +
+        "RNBQKBNR"
 
 /**
  * Represents the list of moves identified by an id
@@ -79,6 +79,7 @@ data class BoardState internal constructor(
             }
         }
     }
+
     /**
      * Make the piece move, if its valid
      * @param move the move to be made
@@ -111,14 +112,13 @@ data class BoardState internal constructor(
             return Pair(newBoard,verification)
         }else return Pair(BoardState(id = id, board = board, movesList = movesList, turn = turn), verification)
     }
+
     /**
      * Verify if the position contains a piece
      * @param position position where the piece should be
      * @return if contains return true else false
      */
-    fun containsPiece(position: Position): Boolean {
-        return board.containsKey(position)
-    }
+    fun containsPiece(position: Position): Boolean = board.containsKey(position)
 
     /**
      * Add a new entry the list of plays

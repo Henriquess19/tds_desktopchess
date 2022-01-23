@@ -3,12 +3,12 @@ package model.domain
  * Sum type used to represent the execution result of the existing commands
  */
 sealed class Result
+
+class ValueResult<T>(val data: T) : Result()
 /**
  * Result produced when the command execution determines that the application should terminate.
  */
 object ExitResult: Result()
-
-class ValueResult<T>(val data: T) : Result()
 /**
  * Result when the game don´t exists
  */

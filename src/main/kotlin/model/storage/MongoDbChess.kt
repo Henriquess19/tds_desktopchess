@@ -17,7 +17,7 @@ private const val ON_GOING_GAMES_ROOT = "ongoing"
 class MongoDbChess(private val db: MongoDatabase): BoardDB {
 
    /**
-    * Gets the all the ids created
+    * Gets the id content
     * @param moveslist the moveslist we want to find by id
     * @return [MovesList]the moves list present on that id
     * @throws ChessDBAccessException if something goes wrong with the DB
@@ -38,9 +38,9 @@ class MongoDbChess(private val db: MongoDatabase): BoardDB {
     * @param movesList the list that we wanna put on DB
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   override suspend fun updateGame(id:String, movesList: MovesList,positions: MutableList<Position>,endedGame: Boolean): Boolean {
+   override suspend fun updateGame(game:GameInfo): Boolean {
       try {
-            return db.getCollectionWithId<GameInfo>(ON_GOING_GAMES_ROOT).updateDocument(GameInfo(_id = id, moves = movesList, positions = positions,endedGame=endedGame))
+            return db.getCollectionWithId<GameInfo>(ON_GOING_GAMES_ROOT).updateDocument(game)
       }catch (failure:MongoException){
          throw ChessDBAccessException(failure)
       }
@@ -49,4 +49,4 @@ class MongoDbChess(private val db: MongoDatabase): BoardDB {
 /**
  * Defines the contents of documents bearing game state information
  */
-private data class GameInfo(val _id: String, val moves: MovesList,val positions:MutableList<Position>,val endedGame: Boolean)
+data class GameInfo(val _id: String, val moves: MovesList,val positions:MutableList<Position>,val endedGame: Boolean)

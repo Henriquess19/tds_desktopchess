@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import model.domain.Piece
 import model.domain.Team
 /**
- * The various themes created, that can be choose by the user
+ * The various themes created, that can choose by the user
  */
 enum class Theme(val color1:Color,val color2:Color){
     CLASSIC(Color.Black,Color.White),

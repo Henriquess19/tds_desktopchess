@@ -46,6 +46,7 @@ interface Pieces{
      */
     fun toPromotion(piecePromotion:Char): Piece
 }
+
 /**
  * Represent the piece itself
  * @property team which team the piece is

@@ -111,7 +111,7 @@ fun MainWindow(mongoRepository: BoardDB, onCloseRequest:() -> Unit) = Window(
       }
    }
 
-   /** GameChangers Application (Promotion,InvalidMovents & EndingGame) **/
+   /** GameChangers Application (Promotion,InvalidMovements & EndingGame) **/
    if(currentgameChangers != null){
       if(currentgameChangers.promotion != null) {
          promotionDialog(
@@ -224,7 +224,7 @@ private fun GameStartedContent(
       }
    }
 
-   if (!board.second.result.equals(OpenedGame) && !board.second.result.equals(ValidMovement) && !board.second.result.equals(EndedGame)) {
+   if (board.second.result != OpenedGame && board.second.result != ValidMovement && board.second.result != EndedGame) {
       println(board.second.result)
       if (board.second.result == NeedPromotion){
          onPromotionNeeded(move.value)

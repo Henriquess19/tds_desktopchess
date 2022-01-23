@@ -27,7 +27,7 @@ fun isValid(value: Int) = value in 0 until BOARD_SIDE
  * @param char to be verified
  * @return if its true is valid and false if it´s not
  */
-fun isValid(char:Char) = columns.contains(char)
+fun isValid(char:Char) = columns.contains(char.uppercaseChar())
 /**
  * Takes the int and transform it to a valid column
  * @return The column corresponding

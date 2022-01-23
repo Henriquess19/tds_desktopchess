@@ -23,6 +23,6 @@ interface BoardDB {
     * @param movesList the list that we wanna put on DB
     * @throws ChessDBAccessException if something goes wrong with the DB
     */
-   suspend fun updateGame(id:String, movesList: MovesList,positions: MutableList<Position>,endedGame:Boolean): Boolean
+   suspend fun updateGame(game:GameInfo): Boolean
 
 }

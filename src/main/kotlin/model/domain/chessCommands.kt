@@ -1,10 +1,13 @@
 package model.domain
 
 import model.storage.BoardDB
+import model.storage.GameInfo
+
 /**
  * To show on the end of the game, show the various plays that were made
  */
 var storageOfBoards = mutableListOf<BoardState>()
+
 /**
  * When opened a game, or joined one, compute all the state of the board, with all the moves made, and store
  * it on storageOfBoards
@@ -48,7 +51,7 @@ class Open(private val localBoard: BoardState, private val dbBoard: BoardDB): Ch
         if (parameter!= null) {
             val state = dbBoard.getGame(id = parameter)
             return if (state == null) {
-                dbBoard.updateGame(id = parameter, movesList = MovesList(), positions = mutableListOf<Position>(),false)
+                dbBoard.updateGame(GameInfo(_id = parameter, moves = MovesList(), positions = mutableListOf<Position>(),false))
                 val board = BoardState(id = parameter)
                 storageOfBoards.add(board)
                 ValueResult(toReturn(
@@ -122,7 +125,7 @@ class Play(
             if(piecesChecking.isNotEmpty()) {
                 possiblecheckmate = localBoard.verifyCheckmate(piecesChecking)
                 if (possiblecheckmate.isEmpty()){
-                    dbBoard.updateGame(id = localBoard.id, movesList = play.first.movesList, positions = play.second.tiles,true)
+                    dbBoard.updateGame(GameInfo(_id = localBoard.id, moves = play.first.movesList, positions = play.second.tiles,true))
                     return ValueResult(
                         toReturn(board = play, result = EndedGame,endedGame=true)
                     )
@@ -148,7 +151,7 @@ class Play(
                 ValidMovement -> {
                     storageOfBoards.add(play.first)
                     println(storageOfBoards)
-                    dbBoard.updateGame(id = localBoard.id, movesList = play.first.movesList, positions = play.second.tiles,false)
+                    dbBoard.updateGame(GameInfo(_id = localBoard.id, moves = play.first.movesList, positions = play.second.tiles,false))
                     ValueResult(
                         toReturn(board = play, result = ValidMovement,endedGame= false)
                     )
@@ -156,7 +159,7 @@ class Play(
                 }
                 EndedGame -> {
                     storageOfBoards.add(play.first)
-                    dbBoard.updateGame(id = localBoard.id,movesList = play.first.movesList, positions = play.second.tiles,true)
+                    dbBoard.updateGame(GameInfo(_id = localBoard.id,moves = play.first.movesList, positions = play.second.tiles,true))
                     ValueResult(
                         toReturn(board = play, result = EndedGame,endedGame= true)
                     )
